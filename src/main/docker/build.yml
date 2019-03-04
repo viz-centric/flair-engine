@@ -1,0 +1,19 @@
+version: "2"
+
+services:
+    flair-engine:
+        build: ./
+    flair-engine-version:
+        extends: flair-engine
+        image: ${DOCKER_REGISTRY_URL}/flair-engine:${POM_VERSION}
+    flair-engine-latest:
+        extends: flair-engine
+        image: ${DOCKER_REGISTRY_URL}/flair-engine:latest-${GIT_LOCAL_BRANCH}
+    flair-engine-pgsql:
+        build: ./flair-engine-pgsql
+    flair-engine-pgsql-version:
+        extends: flair-engine-pgsql
+        image: ${DOCKER_REGISTRY_URL}/flair-engine-pgsql:${POM_VERSION}
+    flair-engine-pgsql-latest:
+        extends: flair-engine-pgsql
+        image: ${DOCKER_REGISTRY_URL}/flair-engine-pgsql:latest-${GIT_LOCAL_BRANCH}

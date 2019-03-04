@@ -1,0 +1,11 @@
+
+  ${AnsiColor.GREEN} #######  #           #     ###  ###### ${AnsiColor.RED}   #######  #     #   #####   ###  #     #  #######
+  ${AnsiColor.GREEN} #        #          # #     #   #     #${AnsiColor.RED}   #        ##    #  #     #   #   ##    #  #
+  ${AnsiColor.GREEN} #        #         #   #    #   #     #${AnsiColor.RED}   #        # #   #  #         #   # #   #  #
+  ${AnsiColor.GREEN} #####    #        #     #   #   ######${AnsiColor.RED}    #####    #  #  #  #  ####   #   #  #  #  #####
+  ${AnsiColor.GREEN} #        #        #######   #   #   #${AnsiColor.RED}     #        #   # #  #     #   #   #   # #  #
+  ${AnsiColor.GREEN} #        #        #     #   #   #    #${AnsiColor.RED}    #        #    ##  #     #   #   #    ##  #
+  ${AnsiColor.GREEN} #        #######  #     #  ###  #     #${AnsiColor.RED}   #######  #     #   #####   ###  #     #  #######
+
+${AnsiColor.BRIGHT_BLUE}:: Flair Engine 🤓  :: Running Spring Boot ${spring-boot.version} ::
+:: https://jhipster.github.io ::${AnsiColor.DEFAULT}

@@ -1,0 +1,6 @@
+spring:
+    application:
+        name: fbiengine
+eureka:
+    instance:
+        nonSecurePort: ${server.port}

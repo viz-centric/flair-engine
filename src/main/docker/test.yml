@@ -1,0 +1,26 @@
+version: '2'
+services:
+    flair-engine-pgsql:
+        container_name: "development-postgres-backend"
+        image: postgres:9.4
+        environment:
+        - POSTGRES_USER=postgres
+        - POSTGRES_PASSWORD=admin
+        - POSTGRES_DB=fbiengine
+        ports:
+        - 5432:5432
+
+    flair-registry-dev:
+        container_name: "development-flair-registry"
+        labels:
+            purpose: Flair config server and service discovery
+            environment: development
+        image: flairbi/flair-registry:latest
+        volumes:
+        - /Users/reddys/documents/dev/flair-github/flair-config:/flair-configuration
+        ports:
+        - 8762:8762
+        environment:
+        - JHIPSTER_SLEEP=0
+        - SPRING_PROFILES_ACTIVE=prod
+        - BITBUCKET_URI=https://github.com/viz-centric/flair-config.git

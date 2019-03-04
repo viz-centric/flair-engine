@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet id="20170825142500" author="jhipster">
+
+        <loadData tableName="connection_type" separator="|" file="config/liquibase/seed/connectionType.csv"
+        />
+
+        <loadData tableName="connection"
+                  file="config/liquibase/seed/connection.csv"/>
+
+    </changeSet>
+</databaseChangeLog>
