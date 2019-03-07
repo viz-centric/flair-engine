@@ -19,6 +19,7 @@ public interface SymmetricEncryptionFactory {
      *
      * @param passphrase password used for deriving key
      * @param salt       salt used for deriving key
+     * @param kdf kdf
      * @return instance of {@link BytesEncryptor}
      */
     BytesEncryptor getSymmetricEncryption(String passphrase, CharSequence salt, KeyDerivationFunction kdf);
@@ -36,6 +37,7 @@ public interface SymmetricEncryptionFactory {
      *
      * @param passphrase password used for deriving key
      * @param salt       salt used for deriving key
+     * @param kdf kdf
      * @return instance of {@link TextEncryptor}
      */
     TextEncryptor getSymmetricTextEncryption(String passphrase, CharSequence salt, KeyDerivationFunction kdf);
