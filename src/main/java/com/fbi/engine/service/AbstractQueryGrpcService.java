@@ -80,9 +80,7 @@ public abstract class AbstractQueryGrpcService extends QueryServiceGrpc.QuerySer
         } else {
             QueryDTO queryDTO = QueryGrpcUtils.mapToQueryDTO(request);
             log.info("Interpreted query {}", queryDTO.toString());
-            FlairQuery flairQuery = new FlairQuery();
-            flairQuery.setStatement(queryDTO.interpret(connection.getName()));
-            flairQuery.setPullMeta(queryDTO.isMetaRetrieved());
+            FlairQuery flairQuery = new FlairQuery(queryDTO.interpret(), queryDTO.isMetaRetrieved(), null, queryDTO.isEnableCaching());
             String retVal = queryService.executeQuery(connection, flairQuery);
             responseObserver.onNext(QueryResponse.newBuilder()
                 .setQueryId(request.getQueryId())
@@ -109,10 +107,8 @@ public abstract class AbstractQueryGrpcService extends QueryServiceGrpc.QuerySer
                 if (connection == null) {
                     responseObserver.onError(Status.INVALID_ARGUMENT.withDescription(CONNECTION_NOT_FOUND).asRuntimeException());
                 }
-                FlairQuery flairQuery = new FlairQuery();
-                log.debug("Query being executed {}", queryDTO.interpret(connection.getName()));
-                flairQuery.setStatement(queryDTO.interpret(connection.getName()));
-                flairQuery.setPullMeta(queryDTO.isMetaRetrieved());
+                FlairQuery flairQuery = new FlairQuery(queryDTO.interpret(), queryDTO.isMetaRetrieved(), null, queryDTO.isEnableCaching());
+                log.debug("Query being executed {}", queryDTO.interpret());
                 String retVal = queryService.executeQuery(connection, flairQuery);
                 responseObserver.onNext(QueryResponse.newBuilder()
                     .setQueryId(query.getQueryId())

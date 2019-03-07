@@ -23,6 +23,7 @@ import org.springframework.boot.autoconfigure.liquibase.LiquibaseProperties;
 import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
+import org.springframework.cloud.netflix.feign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
@@ -42,6 +43,7 @@ import java.util.Collection;
 @EnableConfigurationProperties({LiquibaseProperties.class,
     ApplicationProperties.class})
 @Slf4j
+@EnableFeignClients
 @RequiredArgsConstructor
 public class FbiengineApp {
 

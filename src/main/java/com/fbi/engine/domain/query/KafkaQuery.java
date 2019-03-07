@@ -7,7 +7,7 @@ public class KafkaQuery implements Query {
     private String query;
     private final boolean pullMeta;
     private final String source;
-    private final FlairQuery flairQuery;
+    private FlairQuery flairQuery;
 
     public KafkaQuery(String query, boolean pullMeta, String source, FlairQuery flairQuery) {
         this.query = query;
@@ -36,6 +36,7 @@ public class KafkaQuery implements Query {
 
     public void setQuery(String query) {
         this.query = query;
-        this.flairQuery.setStatement(query);
+        this.flairQuery = new FlairQuery(query, this.flairQuery.isPullMeta(),
+                this.flairQuery.getSource(), this.flairQuery.isCacheEnabled());
     }
 }

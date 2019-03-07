@@ -9,7 +9,8 @@ public class KafkaQueryTest {
 
     @Test
     public void setQuery() {
-        KafkaQuery query = new KafkaQuery("select 1", true, "tablename", new FlairQuery());
+        FlairQuery flairQuery = new FlairQuery("statement", false);
+        KafkaQuery query = new KafkaQuery("select 1", true, "tablename", flairQuery);
         query.setQuery("select * from table limit 1");
 
         assertEquals("select * from table limit 1", query.getQuery());

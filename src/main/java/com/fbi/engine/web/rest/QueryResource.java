@@ -32,19 +32,12 @@ public class QueryResource {
     @PostMapping(value = "/queries/{connectionLinkId}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> executeQuery(@PathVariable String connectionLinkId, @Valid @RequestBody QueryDTO queryDTO) throws JSONException, SQLException {
         log.info(" Connection name with out metadata : " + connectionLinkId);
-            Connection connection = connectionService.findByConnectionLinkId(connectionLinkId);
+        Connection connection = connectionService.findByConnectionLinkId(connectionLinkId);
         if (connection == null) {
             return ResponseEntity.badRequest().body(null);
         }
-
-        String retVal="";
-        FlairQuery query = new FlairQuery();
-        query.setStatement(queryDTO.interpret(connection.getName()));
-        query.setPullMeta(queryDTO.isMetaRetrieved());
-        
-       
-        retVal = queryService.executeQuery(connection, query);
-        return ResponseEntity.ok(retVal);
+        FlairQuery query = new FlairQuery(queryDTO.interpret(), queryDTO.isMetaRetrieved());
+        return ResponseEntity.ok(queryService.executeQuery(connection, query));
     }
 
 }

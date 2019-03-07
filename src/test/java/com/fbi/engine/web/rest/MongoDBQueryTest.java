@@ -11,8 +11,13 @@ import com.project.bi.query.FlairCompiler;
 import com.project.bi.query.FlairQuery;
 import com.project.bi.query.dto.ConditionExpressionDTO;
 import com.project.bi.query.dto.QueryDTO;
-import com.project.bi.query.expression.condition.impl.*;
+import com.project.bi.query.expression.condition.impl.AndConditionExpression;
+import com.project.bi.query.expression.condition.impl.BetweenConditionExpression;
+import com.project.bi.query.expression.condition.impl.CompareConditionExpression;
 import com.project.bi.query.expression.condition.impl.CompareConditionExpression.ComparatorType;
+import com.project.bi.query.expression.condition.impl.ContainsConditionExpression;
+import com.project.bi.query.expression.condition.impl.LikeConditionExpression;
+import com.project.bi.query.expression.condition.impl.OrConditionExpression;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -117,9 +122,7 @@ public class MongoDBQueryTest {
             queryDto.setSource("ecommerce");
 
 
-            FlairQuery query = new FlairQuery();
-            query.setStatement(queryDto.interpret(connection.getName()));
-            query.setPullMeta(queryDto.isMetaRetrieved());
+            FlairQuery query = new FlairQuery(queryDto.interpret(), queryDto.isMetaRetrieved());
 
             FlairFactory flairFactory = queryAbstractFactory.getQueryFactory(connection.getConnectionType().getBundleClass());
 
@@ -173,9 +176,7 @@ public class MongoDBQueryTest {
 
         queryDto.setSource("ecommerce");
 
-        FlairQuery query = new FlairQuery();
-        query.setStatement(queryDto.interpret(connection.getName()));
-        query.setPullMeta(queryDto.isMetaRetrieved());
+        FlairQuery query = new FlairQuery(queryDto.interpret(), queryDto.isMetaRetrieved());
 
 
         FlairFactory flairFactory = queryAbstractFactory.getQueryFactory(connection.getConnectionType().getBundleClass());
@@ -237,9 +238,7 @@ public class MongoDBQueryTest {
 
         expectedQuery = "ecommerce.aggregate([{$match:{$or:[{product_price:{$gte:500}},{product_name:'Team Golf New England Patriots Putter Grip'}]}}])";
 
-        FlairQuery query = new FlairQuery();
-        query.setStatement(queryDto.interpret(connection.getName()));
-        query.setPullMeta(queryDto.isMetaRetrieved());
+        FlairQuery query = new FlairQuery(queryDto.interpret(), queryDto.isMetaRetrieved());
 
         FlairFactory flairFactory = queryAbstractFactory.getQueryFactory(connection.getConnectionType().getBundleClass());
 
@@ -298,9 +297,7 @@ public class MongoDBQueryTest {
 
         expectedQuery = "ecommerce.aggregate([{$match:{$and:[{product_price:{$gte:500}},{product_name:'Team Golf New England Patriots Putter Grip'}]}}])";
 
-        FlairQuery query = new FlairQuery();
-        query.setStatement(queryDto.interpret(connection.getName()));
-        query.setPullMeta(queryDto.isMetaRetrieved());
+        FlairQuery query = new FlairQuery(queryDto.interpret(), queryDto.isMetaRetrieved());
 
         FlairFactory flairFactory = queryAbstractFactory.getQueryFactory(connection.getConnectionType().getBundleClass());
 
@@ -347,9 +344,7 @@ public class MongoDBQueryTest {
 
         expectedQuery = "ecommerce.aggregate([{$match:{product_price:{$gte:500,$lte:1000}}}])";
 
-        FlairQuery query = new FlairQuery();
-        query.setStatement(queryDto.interpret(connection.getName()));
-        query.setPullMeta(queryDto.isMetaRetrieved());
+        FlairQuery query = new FlairQuery(queryDto.interpret(), queryDto.isMetaRetrieved());
 
         FlairFactory flairFactory = queryAbstractFactory.getQueryFactory(connection.getConnectionType().getBundleClass());
 
@@ -395,9 +390,7 @@ public class MongoDBQueryTest {
 
         expectedQuery = "ecommerce.aggregate([{$match:{product_name:{$regex:'.*o.*'}}}])";
 
-        FlairQuery query = new FlairQuery();
-        query.setStatement(queryDto.interpret(connection.getName()));
-        query.setPullMeta(queryDto.isMetaRetrieved());
+        FlairQuery query = new FlairQuery(queryDto.interpret(), queryDto.isMetaRetrieved());
 
         FlairFactory flairFactory = queryAbstractFactory.getQueryFactory(connection.getConnectionType().getBundleClass());
 
@@ -437,9 +430,7 @@ public class MongoDBQueryTest {
 
         expectedQuery = "ecommerce.aggregate([{$project:{month:{$month:'$ORDER_DATE'},year:{$year:'$ORDER_DATE'},day:{$dayOfMonth:'$ORDER_DATE'},hour:{$hour:'$ORDER_DATE'},quarter:{$substr: [{$add: [{$divide: [{$subtract: [{$month:'$ORDER_DATE'}, 1]}, 3]}, 1]}, 0, 1]},yearmonth:{$dateToString: { format: '%Y-%m', date:'$order_date'}},yearweek:{$dateToString: { format: '%Y-%V', date:'$ORDER_DATE'}},yearquarter:{$concat: [{$toString:{$year:'$ORDER_DATE'}},'-',{$substr: [{$add: [{$divide: [{$subtract: [{$month:'$ORDER_DATE'}, 1]}, 3]}, 1]}, 0, 1]}]}}}])";
 
-        FlairQuery query = new FlairQuery();
-        query.setStatement(queryDto.interpret(connection.getName()));
-        query.setPullMeta(queryDto.isMetaRetrieved());
+        FlairQuery query = new FlairQuery(queryDto.interpret(), queryDto.isMetaRetrieved());
 
         FlairFactory flairFactory = queryAbstractFactory.getQueryFactory(connection.getConnectionType().getBundleClass());
 
@@ -480,9 +471,7 @@ public class MongoDBQueryTest {
 
         expectedQuery = "ecommerce.aggregate([{$project:{substr:{$substr: ['$product_name',0,2]}}}])";
 
-        FlairQuery query = new FlairQuery();
-        query.setStatement(queryDto.interpret(connection.getName()));
-        query.setPullMeta(queryDto.isMetaRetrieved());
+        FlairQuery query = new FlairQuery(queryDto.interpret(), queryDto.isMetaRetrieved());
 
         FlairFactory flairFactory = queryAbstractFactory.getQueryFactory(connection.getConnectionType().getBundleClass());
 

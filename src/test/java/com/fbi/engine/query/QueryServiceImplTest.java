@@ -5,6 +5,7 @@ import com.fbi.engine.domain.ConnectionType;
 import com.fbi.engine.domain.query.Query;
 import com.fbi.engine.query.abstractfactory.QueryAbstractFactory;
 import com.fbi.engine.query.factory.FlairFactory;
+import com.fbi.engine.service.cache.FlairCachingService;
 import com.project.bi.query.FlairCompiler;
 import com.project.bi.query.FlairQuery;
 import org.junit.Before;
@@ -24,11 +25,14 @@ public class QueryServiceImplTest {
     @Mock
     QueryAbstractFactory queryAbstractFactory;
 
+    @Mock
+    FlairCachingService flairCachingService;
+
     private QueryServiceImpl service;
 
     @Before
     public void setUp() throws Exception {
-        service = new QueryServiceImpl(queryAbstractFactory);
+        service = new QueryServiceImpl(queryAbstractFactory, flairCachingService);
     }
 
     @Test
@@ -38,7 +42,7 @@ public class QueryServiceImplTest {
         connectionType.setBundleClass("bundleClass");
         connection.setConnectionType(connectionType);
 
-        FlairQuery flairQuery = new FlairQuery();
+        FlairQuery flairQuery = new FlairQuery("statement", true);
 
         FlairFactory flairFactory = mock(FlairFactory.class);
         FlairCompiler flairCompiler = mock(FlairCompiler.class);

@@ -27,10 +27,8 @@ public class QueryRunnerService {
                 .setResultCode(RunQueryResultDTO.Result.DATASOURCE_NOT_FOUND);
         }
 
-        FlairQuery query = new FlairQuery();
-        query.setStatement(queryDTO.interpret(conn.getName()));
-        query.setPullMeta(queryDTO.isMetaRetrieved());
-        query.setSource(queryDTO.getSource());
+        FlairQuery query = new FlairQuery(queryDTO.interpret(),
+                queryDTO.isMetaRetrieved(), queryDTO.getSource(), queryDTO.isEnableCaching());
 
         String executeQuery = queryService.executeQuery(conn, query);
 
