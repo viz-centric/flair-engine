@@ -18,7 +18,7 @@ public class Base64EncodingTextEncryptor implements TextEncryptor {
     /**
      * Encrypt the raw text string.
      *
-     * @param text
+     * @param text text
      */
     @Override
     public String encrypt(String text) {
@@ -28,7 +28,7 @@ public class Base64EncodingTextEncryptor implements TextEncryptor {
     /**
      * Decrypt the encrypted text string.
      *
-     * @param encryptedText
+     * @param encryptedText text
      */
     @Override
     public String decrypt(String encryptedText) {
