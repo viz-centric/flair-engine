@@ -1,5 +1,6 @@
 package com.fbi.engine.query;
 
+import com.fbi.engine.config.FlairCachingConfig;
 import com.fbi.engine.domain.Connection;
 import com.fbi.engine.domain.query.Query;
 import com.fbi.engine.query.abstractfactory.QueryAbstractFactory;
@@ -24,12 +25,13 @@ public class QueryServiceImpl implements QueryService {
 
     private final QueryAbstractFactory queryAbstractFactory;
     private final FlairCachingService cachingService;
+    private final FlairCachingConfig flairCachingConfig;
 
     @Override
     public String executeQuery(final Connection connection, final FlairQuery flairQuery) {
         log.info("Executing query {}", flairQuery);
 
-        if (!flairQuery.isCacheEnabled()) {
+        if (!flairQuery.isCacheEnabled() || !flairCachingConfig.isEnabled()) {
             return queryDatasource(connection, flairQuery);
         }
 
@@ -45,13 +47,13 @@ public class QueryServiceImpl implements QueryService {
     }
 
     private void addToCache(Connection connection, FlairQuery flairQuery, String queryResult) {
-        if (flairQuery.isCacheEnabled()) {
-            cachingService.putResultGrpc(flairQuery, connection.getLinkId(), queryResult);
+        if (flairQuery.isCacheEnabled() && flairCachingConfig.isEnabled()) {
+            cachingService.putResult(flairQuery, connection.getLinkId(), queryResult);
         }
     }
 
     private Optional<CacheMetadata> getCachedResult(Connection connection, FlairQuery flairQuery) {
-        return cachingService.getResultGrpc(flairQuery, connection.getLinkId());
+        return cachingService.getResult(flairQuery, connection.getLinkId());
     }
 
     private String queryDatasource(Connection connection, FlairQuery flairQuery) {

@@ -1,5 +1,6 @@
 package com.fbi.engine.query;
 
+import com.fbi.engine.config.FlairCachingConfig;
 import com.fbi.engine.domain.Connection;
 import com.fbi.engine.domain.ConnectionType;
 import com.fbi.engine.domain.query.Query;
@@ -28,11 +29,14 @@ public class QueryServiceImplTest {
     @Mock
     FlairCachingService flairCachingService;
 
+    @Mock
+    FlairCachingConfig flairCachingConfig;
+
     private QueryServiceImpl service;
 
     @Before
     public void setUp() throws Exception {
-        service = new QueryServiceImpl(queryAbstractFactory, flairCachingService);
+        service = new QueryServiceImpl(queryAbstractFactory, flairCachingService, flairCachingConfig);
     }
 
     @Test

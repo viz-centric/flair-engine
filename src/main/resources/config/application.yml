@@ -1,2 +1,12 @@
 grpc:
   port: 6565
+
+flair-cache:
+  enabled: false
+
+---
+spring:
+  profiles: dev
+
+flair-cache:
+  enabled: true
