@@ -31,25 +31,29 @@ public class QueryServiceImpl implements QueryService {
     public String executeQuery(final Connection connection, final FlairQuery flairQuery) {
         log.info("Executing query {}", flairQuery);
 
-        if (!flairQuery.isCacheEnabled() || !flairCachingConfig.isEnabled()) {
-            return queryDatasource(connection, flairQuery);
+        boolean cachingEnabled = cachingEnabled(flairQuery);
+        if (!cachingEnabled) {
+            return queryAndPutToCache(connection, flairQuery);
         }
 
         Optional<CacheMetadata> result = getCachedResult(connection, flairQuery);
 
         return result
                 .map(cache -> cache.getResult())
-                .orElseGet(() -> {
-                    String queryResult = queryDatasource(connection, flairQuery);
-                    addToCache(connection, flairQuery, queryResult);
-                    return queryResult;
-                });
+                .orElseGet(() -> queryAndPutToCache(connection, flairQuery));
     }
 
-    private void addToCache(Connection connection, FlairQuery flairQuery, String queryResult) {
-        if (flairQuery.isCacheEnabled() && flairCachingConfig.isEnabled()) {
+    private String queryAndPutToCache(Connection connection, FlairQuery flairQuery) {
+        boolean cachingEnabled = cachingEnabled(flairQuery);
+        String queryResult = queryDatasource(connection, flairQuery);
+        if (cachingEnabled) {
             cachingService.putResult(flairQuery, connection.getLinkId(), queryResult);
         }
+        return queryResult;
+    }
+
+    private boolean cachingEnabled(FlairQuery flairQuery) {
+        return flairQuery.isCacheEnabled() && flairCachingConfig.isEnabled();
     }
 
     private Optional<CacheMetadata> getCachedResult(Connection connection, FlairQuery flairQuery) {
