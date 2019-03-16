@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fbi.engine.domain.Connection;
 import com.fbi.engine.query.QueryServiceImpl;
 import com.fbi.engine.service.cache.CacheMetadata;
+import com.fbi.engine.service.cache.CacheParams;
 import com.fbi.engine.service.constant.GrpcErrors;
 import com.fbi.engine.service.dto.RunQueryResultDTO;
 import com.fbi.engine.service.validators.QueryValidationResult;
@@ -141,7 +142,7 @@ public class QueryGrpcServiceTest {
             .thenReturn(new QueryValidationResult());
         when(connectionService.findByConnectionLinkId(eq("one")))
             .thenReturn(new Connection());
-        when(queryService.executeQuery(any(Connection.class), any(FlairQuery.class)))
+        when(queryService.executeQuery(any(Connection.class), any(FlairQuery.class), any(CacheParams.class)))
             .thenReturn(new CacheMetadata().setResult("test"));
 
         dataStream.onNext(Query.newBuilder().setSourceId("one").build());
