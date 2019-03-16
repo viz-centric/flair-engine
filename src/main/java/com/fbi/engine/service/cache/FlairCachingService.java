@@ -2,6 +2,7 @@ package com.fbi.engine.service.cache;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fbi.engine.service.ManagedGrpcFactoryService;
 import com.flair.bi.messages.CacheServiceGrpc;
 import com.flair.bi.messages.GetCacheResponse;
 import com.flair.bi.messages.PutCacheResponse;
@@ -12,6 +13,7 @@ import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
+import io.grpc.stub.AbstractStub;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
@@ -25,22 +27,16 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class FlairCachingService {
 
-    private final EurekaClient client;
+    private final ManagedGrpcFactoryService managedGrpcFactoryService;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     private CacheServiceGrpc.CacheServiceBlockingStub getCacheServiceStub() {
-        final InstanceInfo instanceInfo = client.getNextServerFromEureka("flair-cache", false);
-        final ManagedChannel channel = ManagedChannelBuilder.forAddress(instanceInfo.getIPAddr(), instanceInfo.getPort())
-                .usePlaintext()
-                .build();
-       return CacheServiceGrpc.newBlockingStub(channel);
+        ManagedChannel channel = managedGrpcFactoryService.getManagedChannel("flair-cache");
+        return CacheServiceGrpc.newBlockingStub(channel);
     }
 
     private CacheServiceGrpc.CacheServiceStub getCacheServiceAsyncStub() {
-        final InstanceInfo instanceInfo = client.getNextServerFromEureka("flair-cache", false);
-        final ManagedChannel channel = ManagedChannelBuilder.forAddress(instanceInfo.getIPAddr(), instanceInfo.getPort())
-                .usePlaintext()
-                .build();
+        ManagedChannel channel = managedGrpcFactoryService.getManagedChannel("flair-cache");
         return CacheServiceGrpc.newStub(channel);
     }
 
