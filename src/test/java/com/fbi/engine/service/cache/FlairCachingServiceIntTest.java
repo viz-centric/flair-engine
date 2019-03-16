@@ -6,6 +6,8 @@ import com.fbi.engine.service.ManagedGrpcFactoryService;
 import com.flair.bi.messages.CacheServiceGrpc;
 import com.flair.bi.messages.GetCacheRequest;
 import com.flair.bi.messages.GetCacheResponse;
+import com.flair.bi.messages.PutCacheRequest;
+import com.flair.bi.messages.PutCacheResponse;
 import com.netflix.discovery.EurekaClient;
 import com.project.bi.query.FlairQuery;
 import io.grpc.ManagedChannel;
@@ -27,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.junit.Assert.*;
 import static org.mockito.AdditionalAnswers.delegatesTo;
@@ -92,8 +95,6 @@ public class FlairCachingServiceIntTest extends AbstractGrpcTest {
 
     @Test
     public void getResultReturnsCacheNotFound() {
-        long dateCreated = Instant.now().getEpochSecond();
-
         doAnswer(invocationOnMock -> {
             GetCacheRequest getCacheRequest = invocationOnMock.getArgumentAt(0, GetCacheRequest.class);
             StreamObserver<GetCacheResponse> streamObserver = invocationOnMock.getArgumentAt(1, StreamObserver.class);
@@ -106,5 +107,23 @@ public class FlairCachingServiceIntTest extends AbstractGrpcTest {
 
         Optional<CacheMetadata> result = flairCachingService.getResult(new FlairQuery("select 1", false), "connectId");
         assertFalse(result.isPresent());
+    }
+
+    @Test
+    public void putResult() {
+        AtomicBoolean cacheSaved = new AtomicBoolean(false);
+        doAnswer(invocationOnMock -> {
+            cacheSaved.set(true);
+            PutCacheRequest getCacheRequest = invocationOnMock.getArgumentAt(0, PutCacheRequest.class);
+            StreamObserver<PutCacheResponse> streamObserver = invocationOnMock.getArgumentAt(1, StreamObserver.class);
+            assertEquals("result", getCacheRequest.getValue());
+            streamObserver.onNext(PutCacheResponse.newBuilder().build());
+            streamObserver.onCompleted();
+            return null;
+        }).when(cacheService).putCache(any(PutCacheRequest.class), any(StreamObserver.class));
+
+        flairCachingService.putResult(new FlairQuery("select 1", false), "connectId", "result");
+
+        assertTrue(cacheSaved.get());
     }
 }

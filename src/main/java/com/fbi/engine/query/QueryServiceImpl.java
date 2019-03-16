@@ -51,7 +51,7 @@ public class QueryServiceImpl implements QueryService {
         boolean cachingEnabled = flairCachingConfig.isEnabled() && cacheParams.isWriteToCache();
         CacheMetadata queryResult = queryDatasource(connection, flairQuery);
         if (cachingEnabled) {
-            cachingService.putResult(flairQuery, connection.getLinkId(), queryResult.getResult());
+            cachingService.putResultAsync(flairQuery, connection.getLinkId(), queryResult.getResult());
         }
         return queryResult;
     }
