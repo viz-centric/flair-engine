@@ -7,6 +7,3 @@ flair-cache:
 ---
 spring:
   profiles: dev
-
-flair-cache:
-  enabled: true
