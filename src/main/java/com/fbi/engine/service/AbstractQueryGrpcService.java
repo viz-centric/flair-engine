@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fbi.engine.domain.Connection;
 import com.fbi.engine.query.QueryServiceImpl;
+import com.fbi.engine.service.cache.CacheMetadata;
+import com.fbi.engine.service.cache.CacheParams;
 import com.fbi.engine.service.dto.RunQueryResultDTO;
 import com.fbi.engine.service.util.QueryGrpcUtils;
 import com.fbi.engine.service.validators.QueryValidationResult;
@@ -80,8 +82,8 @@ public abstract class AbstractQueryGrpcService extends QueryServiceGrpc.QuerySer
         } else {
             QueryDTO queryDTO = QueryGrpcUtils.mapToQueryDTO(request);
             log.info("Interpreted query {}", queryDTO.toString());
-            FlairQuery flairQuery = new FlairQuery(queryDTO.interpret(), queryDTO.isMetaRetrieved(), null, queryDTO.isEnableCaching());
-            String retVal = queryService.executeQuery(connection, flairQuery);
+            FlairQuery flairQuery = new FlairQuery(queryDTO.interpret(), queryDTO.isMetaRetrieved());
+            String retVal = queryService.executeQuery(connection, flairQuery).getResult();
             responseObserver.onNext(QueryResponse.newBuilder()
                 .setQueryId(request.getQueryId())
                 .setUserId(request.getUserId())
@@ -103,20 +105,39 @@ public abstract class AbstractQueryGrpcService extends QueryServiceGrpc.QuerySer
                 if (!validateQuery(queryDTO, responseObserver)) {
                     return;
                 }
+
                 Connection connection = connectionService.findByConnectionLinkId(query.getSourceId());
                 if (connection == null) {
                     responseObserver.onError(Status.INVALID_ARGUMENT.withDescription(CONNECTION_NOT_FOUND).asRuntimeException());
                 }
-                FlairQuery flairQuery = new FlairQuery(queryDTO.interpret(), queryDTO.isMetaRetrieved(), null, queryDTO.isEnableCaching());
-                log.debug("Query being executed {}", queryDTO.interpret());
-                String retVal = queryService.executeQuery(connection, flairQuery);
-                responseObserver.onNext(QueryResponse.newBuilder()
-                    .setQueryId(query.getQueryId())
-                    .setUserId(query.getUserId())
-                    .setData(retVal)
-                    .build()
-                );
-                log.debug("Stream sending Out: {}", retVal);
+
+                FlairQuery flairQuery = new FlairQuery(queryDTO.interpret(), queryDTO.isMetaRetrieved());
+
+                log.debug("Query being executed {}", flairQuery.getStatement());
+
+                CacheMetadata cacheMetadata = queryDataAndSendResult(query,
+                        flairQuery,
+                        connection,
+                        responseObserver,
+                        new CacheParams()
+                                .setReadFromCache(queryDTO.isEnableCaching())
+                                .setWriteToCache(queryDTO.isEnableCaching()));
+
+                log.debug("Query being executed result {}", cacheMetadata);
+
+                if (cacheMetadata.isStale()) {
+                    log.debug("Cache is stale, fetching new data {}", cacheMetadata);
+
+                    CacheMetadata cacheMetadata2 = queryDataAndSendResult(query,
+                            flairQuery,
+                            connection,
+                            responseObserver,
+                            new CacheParams()
+                                    .setReadFromCache(false)
+                                    .setWriteToCache(queryDTO.isEnableCaching()));
+
+                    log.debug("After cache update {}", cacheMetadata2);
+                }
             }
 
             @Override
@@ -129,6 +150,22 @@ public abstract class AbstractQueryGrpcService extends QueryServiceGrpc.QuerySer
                 responseObserver.onCompleted();
             }
         };
+    }
+
+    private CacheMetadata queryDataAndSendResult(Query query, FlairQuery flairQuery, Connection connection, StreamObserver<QueryResponse> responseObserver, CacheParams cacheParams) {
+        CacheMetadata cacheMetadata = queryService.executeQuery(connection, flairQuery, cacheParams);
+
+        responseObserver.onNext(QueryResponse.newBuilder()
+                .setQueryId(query.getQueryId())
+                .setUserId(query.getUserId())
+                .setData(cacheMetadata.getResult())
+                .setCacheMetadata(com.flair.bi.messages.CacheMetadata.newBuilder()
+                        .setStale(cacheMetadata.isStale())
+                        .setDateCreated(cacheMetadata.getDateCreated() != null ? cacheMetadata.getDateCreated().getEpochSecond() : 0)
+                        .build())
+                .build());
+
+        return cacheMetadata;
     }
 
     @Override

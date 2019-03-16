@@ -36,7 +36,6 @@ public class KafkaQuery implements Query {
 
     public void setQuery(String query) {
         this.query = query;
-        this.flairQuery = new FlairQuery(query, this.flairQuery.isPullMeta(),
-                this.flairQuery.getSource(), this.flairQuery.isCacheEnabled());
+        this.flairQuery = new FlairQuery(query, this.flairQuery.isPullMeta(), this.flairQuery.getSource());
     }
 }

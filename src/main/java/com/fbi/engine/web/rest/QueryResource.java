@@ -37,7 +37,7 @@ public class QueryResource {
             return ResponseEntity.badRequest().body(null);
         }
         FlairQuery query = new FlairQuery(queryDTO.interpret(), queryDTO.isMetaRetrieved());
-        return ResponseEntity.ok(queryService.executeQuery(connection, query));
+        return ResponseEntity.ok(queryService.executeQuery(connection, query).getResult());
     }
 
 }

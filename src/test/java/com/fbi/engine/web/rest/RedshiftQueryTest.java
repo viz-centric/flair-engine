@@ -87,7 +87,7 @@ public class RedshiftQueryTest {
 
             expectedQuery="select * from ecommerce where order_item_id "+opr+" 1";
 
-            FlairQuery query = new FlairQuery(queryDto.interpret(), queryDto.isMetaRetrieved(), null, false);
+            FlairQuery query = new FlairQuery(queryDto.interpret(), queryDto.isMetaRetrieved());
 
             FlairFactory flairFactory = queryAbstractFactory.getQueryFactory(connection.getConnectionType().getBundleClass());
 

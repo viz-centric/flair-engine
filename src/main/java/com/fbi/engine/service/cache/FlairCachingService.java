@@ -62,7 +62,7 @@ public class FlairCachingService {
                     .setTable(connectionLinkId)
                     .build());
         } catch(StatusRuntimeException e) {
-            if (e.getStatus() == Status.NOT_FOUND) {
+            if (e.getStatus().getCode() == Status.NOT_FOUND.getCode()) {
                 log.info("No cache found for {}", query);
                 return Optional.empty();
             }
@@ -76,6 +76,7 @@ public class FlairCachingService {
         CacheMetadata cacheMetadata = new CacheMetadata();
         cacheMetadata.setDateCreated(Instant.ofEpochSecond(cache.getMetadata().getDateCreated()));
         cacheMetadata.setResult(cache.getResult());
+        cacheMetadata.setStale(cache.getMetadata().getStale());
         return Optional.of(cacheMetadata);
     }
 

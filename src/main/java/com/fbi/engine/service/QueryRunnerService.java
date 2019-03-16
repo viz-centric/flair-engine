@@ -2,6 +2,7 @@ package com.fbi.engine.service;
 
 import com.fbi.engine.domain.Connection;
 import com.fbi.engine.query.QueryService;
+import com.fbi.engine.service.cache.CacheParams;
 import com.fbi.engine.service.dto.RunQueryResultDTO;
 import com.project.bi.query.FlairQuery;
 import com.project.bi.query.dto.QueryDTO;
@@ -28,9 +29,11 @@ public class QueryRunnerService {
         }
 
         FlairQuery query = new FlairQuery(queryDTO.interpret(),
-                queryDTO.isMetaRetrieved(), queryDTO.getSource(), queryDTO.isEnableCaching());
+                queryDTO.isMetaRetrieved(), queryDTO.getSource());
 
-        String executeQuery = queryService.executeQuery(conn, query);
+        String executeQuery = queryService.executeQuery(conn, query,
+                new CacheParams().setReadFromCache(queryDTO.isEnableCaching()).setWriteToCache(queryDTO.isEnableCaching()))
+                .getResult();
 
         log.debug("Run query executed {}", executeQuery);
 

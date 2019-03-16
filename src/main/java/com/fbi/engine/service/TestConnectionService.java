@@ -33,8 +33,8 @@ public class TestConnectionService {
         queryDTO.setSource(datasourceName);
         queryDTO.setLimit(1L);
 
-        FlairQuery query = new FlairQuery(queryDTO.interpret(), queryDTO.isMetaRetrieved(), datasourceName, false);
-        String executeQuery = queryService.executeQuery(conn, query);
+        FlairQuery query = new FlairQuery(queryDTO.interpret(), queryDTO.isMetaRetrieved(), datasourceName);
+        String executeQuery = queryService.executeQuery(conn, query).getResult();
 
         log.debug("Test query executed {}", executeQuery);
 

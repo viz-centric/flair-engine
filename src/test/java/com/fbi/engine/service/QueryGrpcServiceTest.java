@@ -3,11 +3,16 @@ package com.fbi.engine.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fbi.engine.domain.Connection;
 import com.fbi.engine.query.QueryServiceImpl;
+import com.fbi.engine.service.cache.CacheMetadata;
 import com.fbi.engine.service.constant.GrpcErrors;
 import com.fbi.engine.service.dto.RunQueryResultDTO;
 import com.fbi.engine.service.validators.QueryValidationResult;
 import com.fbi.engine.service.validators.QueryValidator;
-import com.flair.bi.messages.*;
+import com.flair.bi.messages.Query;
+import com.flair.bi.messages.QueryResponse;
+import com.flair.bi.messages.QueryValidationResponse;
+import com.flair.bi.messages.RunQueryRequest;
+import com.flair.bi.messages.RunQueryResponse;
 import com.project.bi.query.FlairQuery;
 import com.project.bi.query.dto.QueryDTO;
 import io.grpc.Status;
@@ -137,7 +142,7 @@ public class QueryGrpcServiceTest {
         when(connectionService.findByConnectionLinkId(eq("one")))
             .thenReturn(new Connection());
         when(queryService.executeQuery(any(Connection.class), any(FlairQuery.class)))
-            .thenReturn("test");
+            .thenReturn(new CacheMetadata().setResult("test"));
 
         dataStream.onNext(Query.newBuilder().setSourceId("one").build());
 
