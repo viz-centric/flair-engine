@@ -6,20 +6,17 @@ import com.fbi.engine.service.ManagedGrpcFactoryService;
 import com.flair.bi.messages.CacheServiceGrpc;
 import com.flair.bi.messages.GetCacheResponse;
 import com.flair.bi.messages.PutCacheResponse;
-import com.netflix.appinfo.InstanceInfo;
-import com.netflix.discovery.EurekaClient;
 import com.project.bi.query.FlairQuery;
 import io.grpc.ManagedChannel;
-import io.grpc.ManagedChannelBuilder;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
-import io.grpc.stub.AbstractStub;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
 @Service
@@ -85,13 +82,13 @@ public class FlairCachingService {
     }
 
     @Async
-    public void putResultAsync(FlairQuery query, String connectionLinkId, String result) {
-        putResult(query, connectionLinkId, result);
+    public void putResultAsync(FlairQuery query, String connectionLinkId, String result, CacheParams cacheParams) {
+        putResult(query, connectionLinkId, result, cacheParams);
     }
 
-    public void putResult(FlairQuery query, String connectionLinkId, String result) {
-        log.info("Putting grpc result into a cache request for connection {} query {} result {}",
-                connectionLinkId, query.getStatement(), result);
+    public void putResult(FlairQuery query, String connectionLinkId, String result, CacheParams cacheParams) {
+        log.info("Putting grpc result into a cache request for connection {} query {} result {} cacheParams {}",
+                connectionLinkId, query.getStatement(), result, cacheParams);
 
         Optional<String> cacheKey = getCacheKey(query);
 
@@ -105,6 +102,9 @@ public class FlairCachingService {
                     .setKey(cacheKey.get())
                     .setTable(connectionLinkId)
                     .setValue(result)
+                    .setRefreshAfterDate(Instant.now().plus(cacheParams.getRefreshAfterMinutes(), ChronoUnit.MINUTES).getEpochSecond())
+                    .setRefreshAfterCount(cacheParams.getRefreshAfterTimesRead())
+                    .setPurgeAfterDate(Instant.now().plus(cacheParams.getCachePurgeAfterMinutes(), ChronoUnit.MINUTES).getEpochSecond())
                     .build());
         } catch(StatusRuntimeException e) {
             log.error("Error saving data to cache " + e.getMessage() + " status " + e.getStatus() + " trailers " + e.getTrailers(), e);

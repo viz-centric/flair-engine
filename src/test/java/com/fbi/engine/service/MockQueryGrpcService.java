@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 @Service
 @Profile("test")
 public class MockQueryGrpcService extends AbstractQueryGrpcService {
-    public MockQueryGrpcService(ConnectionService connectionService, QueryServiceImpl queryService, QueryValidator queryValidator, ObjectMapper objectMapper, QueryRunnerService queryRunnerService) {
-        super(connectionService, queryService, queryValidator, objectMapper, queryRunnerService);
+    public MockQueryGrpcService(ConnectionService connectionService, QueryServiceImpl queryService, QueryValidator queryValidator, ObjectMapper objectMapper, QueryRunnerService queryRunnerService, ConnectionParameterService connectionParameterService) {
+        super(connectionService, queryService, queryValidator, objectMapper, queryRunnerService, connectionParameterService);
     }
 }

@@ -1,14 +1,12 @@
 package com.fbi.engine.service.cache;
 
 import com.fbi.engine.AbstractGrpcTest;
-import com.fbi.engine.FbiengineApp;
 import com.fbi.engine.service.ManagedGrpcFactoryService;
 import com.flair.bi.messages.CacheServiceGrpc;
 import com.flair.bi.messages.GetCacheRequest;
 import com.flair.bi.messages.GetCacheResponse;
 import com.flair.bi.messages.PutCacheRequest;
 import com.flair.bi.messages.PutCacheResponse;
-import com.netflix.discovery.EurekaClient;
 import com.project.bi.query.FlairQuery;
 import io.grpc.ManagedChannel;
 import io.grpc.Status;
@@ -17,25 +15,19 @@ import io.grpc.inprocess.InProcessServerBuilder;
 import io.grpc.stub.StreamObserver;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.junit.Assert.*;
-import static org.mockito.AdditionalAnswers.delegatesTo;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.when;
 
 public class FlairCachingServiceIntTest extends AbstractGrpcTest {
 
@@ -122,7 +114,7 @@ public class FlairCachingServiceIntTest extends AbstractGrpcTest {
             return null;
         }).when(cacheService).putCache(any(PutCacheRequest.class), any(StreamObserver.class));
 
-        flairCachingService.putResult(new FlairQuery("select 1", false), "connectId", "result");
+        flairCachingService.putResult(new FlairQuery("select 1", false), "connectId", "result", new CacheParams());
 
         assertTrue(cacheSaved.get());
     }

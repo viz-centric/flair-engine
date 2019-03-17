@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class MockConnectionGrpcService extends AbstractConnectionGrpcService {
 
-    public MockConnectionGrpcService(ConnectionService connectionService, ConnectionTypeService connectionTypeService, TestConnectionService connectionTestService, ConnectionDetailsMapper connectionDetailsMapper, ConnectionMapper connectionMapper, ListTablesService listTablesService) {
-        super(connectionService, connectionTypeService, connectionTestService, connectionDetailsMapper, connectionMapper, listTablesService);
+    public MockConnectionGrpcService(ConnectionService connectionService, ConnectionParameterService connectionParameterService, ConnectionTypeService connectionTypeService, TestConnectionService connectionTestService, ConnectionDetailsMapper connectionDetailsMapper, ConnectionMapper connectionMapper, ListTablesService listTablesService) {
+        super(connectionService, connectionParameterService, connectionTypeService, connectionTestService, connectionDetailsMapper, connectionMapper, listTablesService);
     }
 }

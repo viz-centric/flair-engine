@@ -50,6 +50,9 @@ public class QueryGrpcServiceTest {
 
     private AbstractQueryGrpcService service;
 
+    @Mock
+    private ConnectionParameterService connectionParameterService;
+
     @Before
     public void setUp() {
         objectMapper = new ObjectMapper();
@@ -57,7 +60,8 @@ public class QueryGrpcServiceTest {
             queryService,
             queryValidator,
             objectMapper,
-            queryRunService);
+            queryRunService,
+            connectionParameterService);
     }
 
     @Test

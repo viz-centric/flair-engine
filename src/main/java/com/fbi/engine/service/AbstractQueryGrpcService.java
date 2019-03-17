@@ -6,6 +6,7 @@ import com.fbi.engine.domain.Connection;
 import com.fbi.engine.query.QueryServiceImpl;
 import com.fbi.engine.service.cache.CacheMetadata;
 import com.fbi.engine.service.cache.CacheParams;
+import com.fbi.engine.service.dto.ConnectionParameters;
 import com.fbi.engine.service.dto.RunQueryResultDTO;
 import com.fbi.engine.service.util.QueryGrpcUtils;
 import com.fbi.engine.service.validators.QueryValidationResult;
@@ -41,6 +42,8 @@ public abstract class AbstractQueryGrpcService extends QueryServiceGrpc.QuerySer
     private final ObjectMapper objectMapper;
 
     private final QueryRunnerService queryRunnerService;
+
+    private final ConnectionParameterService connectionParameterService;
 
     @Override
     public void validate(Query query, StreamObserver<QueryValidationResponse> responseObserver) {
@@ -109,7 +112,14 @@ public abstract class AbstractQueryGrpcService extends QueryServiceGrpc.QuerySer
                 Connection connection = connectionService.findByConnectionLinkId(query.getSourceId());
                 if (connection == null) {
                     responseObserver.onError(Status.INVALID_ARGUMENT.withDescription(CONNECTION_NOT_FOUND).asRuntimeException());
+                    return;
                 }
+
+                ConnectionParameters connectionParameters = connectionParameterService.getParameters(connection.getLinkId());
+
+                int cachePurgeAfterMinutes = connectionParameters.getCachePurgeAfterMinutes();
+                int refreshAfterTimesRead = connectionParameters.getRefreshAfterTimesRead();
+                int refreshAfterMinutes = connectionParameters.getRefreshAfterMinutes();
 
                 FlairQuery flairQuery = new FlairQuery(queryDTO.interpret(), queryDTO.isMetaRetrieved());
 
@@ -120,8 +130,11 @@ public abstract class AbstractQueryGrpcService extends QueryServiceGrpc.QuerySer
                         connection,
                         responseObserver,
                         new CacheParams()
-                                .setReadFromCache(queryDTO.isEnableCaching())
-                                .setWriteToCache(queryDTO.isEnableCaching()));
+                                .setRefreshAfterTimesRead(refreshAfterTimesRead)
+                                .setRefreshAfterMinutes(refreshAfterMinutes)
+                                .setCachePurgeAfterMinutes(cachePurgeAfterMinutes)
+                                .setReadFromCache(connectionParameters.isEnabled())
+                                .setWriteToCache(connectionParameters.isEnabled()));
 
                 log.debug("Query being executed result {}", cacheMetadata);
 
@@ -133,8 +146,11 @@ public abstract class AbstractQueryGrpcService extends QueryServiceGrpc.QuerySer
                             connection,
                             responseObserver,
                             new CacheParams()
+                                    .setRefreshAfterTimesRead(refreshAfterTimesRead)
+                                    .setRefreshAfterMinutes(refreshAfterMinutes)
+                                    .setCachePurgeAfterMinutes(cachePurgeAfterMinutes)
                                     .setReadFromCache(false)
-                                    .setWriteToCache(queryDTO.isEnableCaching()));
+                                    .setWriteToCache(connectionParameters.isEnabled()));
 
                     log.debug("After cache update {}", cacheMetadata2);
                 }

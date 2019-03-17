@@ -17,4 +17,11 @@ public class CacheParams {
      * Read a value from cache and return it without going to the database
      */
     private boolean readFromCache;
+
+    private int cachePurgeAfterMinutes;
+
+    private int refreshAfterTimesRead;
+
+    private int refreshAfterMinutes;
+
 }
