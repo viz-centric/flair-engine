@@ -25,7 +25,7 @@ import java.util.Optional;
 public class QueryServiceImpl implements QueryService {
 
     private final QueryAbstractFactory queryAbstractFactory;
-    private final FlairCachingService cachingService;
+    private final FlairCachingService flairCachingService;
     private final FlairCachingConfig flairCachingConfig;
 
     @Override
@@ -51,13 +51,13 @@ public class QueryServiceImpl implements QueryService {
         boolean cachingEnabled = flairCachingConfig.isEnabled() && cacheParams.isWriteToCache();
         CacheMetadata queryResult = queryDatasource(connection, flairQuery);
         if (cachingEnabled) {
-            cachingService.putResultAsync(flairQuery, connection.getLinkId(), queryResult.getResult(), cacheParams);
+            flairCachingService.putResultAsync(flairQuery, connection.getLinkId(), queryResult.getResult(), cacheParams);
         }
         return queryResult;
     }
 
     private Optional<CacheMetadata> getCachedResult(Connection connection, FlairQuery flairQuery) {
-        return cachingService.getResult(flairQuery, connection.getLinkId());
+        return flairCachingService.getResult(flairQuery, connection.getLinkId());
     }
 
     private CacheMetadata queryDatasource(Connection connection, FlairQuery flairQuery) {

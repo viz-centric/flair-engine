@@ -38,6 +38,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import static com.fbi.engine.service.constant.GrpcConstants.CONNECTION_EXISTS;
 import static org.junit.Assert.*;
@@ -54,6 +55,9 @@ public class ConnectionGrpcServiceTest {
 
     @Autowired
     private AbstractConnectionGrpcService connectionGrpcService;
+
+    @Autowired
+    private ConnectionParameterService connectionParameterService;
 
     @MockBean
     private TestConnectionService connectionTestService;
@@ -178,6 +182,8 @@ public class ConnectionGrpcServiceTest {
             assertEquals("3412", argument.getConnection().getDetailsMap().get("serverPort"));
             assertEquals("Postgres", argument.getConnection().getDetailsMap().get("@type"));
             assertEquals("localhost", argument.getConnection().getDetailsMap().get("serverIp"));
+            assertEquals("value1", argument.getConnection().getConnectionParametersMap().get("param1"));
+            assertEquals("value2", argument.getConnection().getConnectionParametersMap().get("param2"));
             return null;
         }).when(streamObserver)
             .onNext(any(SaveConnectionResponse.class));
@@ -191,6 +197,8 @@ public class ConnectionGrpcServiceTest {
             .putAllDetails(ImmutableMap.of("serverPort", "3412",
                 "@type", "Postgres",
                 "serverIp", "localhost"))
+            .putAllConnectionParameters(ImmutableMap.of("param1", "value1",
+                "param2", "value2"))
             .build();
 
         connectionGrpcService.saveConnection(SaveConnectionRequest.newBuilder()
@@ -368,9 +376,12 @@ public class ConnectionGrpcServiceTest {
         dto.setConnectionPassword("pwd");
         dto.setConnectionUsername("usr");
         dto.setName("test db local");
+        dto.setLinkId("1234");
         dto.setDetails(new PostgresConnectionDetails("localhost", 1111, "dbname"));
 
         dto = connectionService.save(dto);
+
+        connectionParameterService.save(dto.getLinkId(), ImmutableMap.of("param1", "value1", "param2", "value2"));
 
         ConnectionDTO finalDto = dto;
 
@@ -390,6 +401,9 @@ public class ConnectionGrpcServiceTest {
         verify(streamObserver, times(1)).onCompleted();
 
         assertNull(connectionService.findOne(dto.getId()));
+
+        Map<String, String> parameters = connectionParameterService.getParametersByLinkId(dto.getLinkId());
+        assertEquals(0, parameters.size());
     }
 
     @Test
