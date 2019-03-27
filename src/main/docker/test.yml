@@ -16,8 +16,6 @@ services:
             purpose: Flair config server and service discovery
             environment: development
         image: flairbi/flair-registry:latest
-        volumes:
-        - /Users/reddys/documents/dev/flair-github/flair-config:/flair-configuration
         ports:
         - 8762:8762
         - 8761:8761
