@@ -1066,7 +1066,7 @@
                                             <tag>latest</tag>
                                             <tag>v${project.version}</tag>
                                         </tags>
-                                        <dockerFileDir>${project.build.directory}/fb-engine-pgsql</dockerFileDir>
+                                        <dockerFileDir>${project.build.directory}/flair-engine-pgsql</dockerFileDir>
                                     </build>
                                 </image>
                             </images>
