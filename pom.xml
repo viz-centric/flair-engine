@@ -601,6 +601,11 @@
                         <version>${maven-scm-provider-gitexe.version}</version>
                     </dependency>
                 </dependencies>
+                <configuration>
+                    <tagNameFormat>v@{project.version}</tagNameFormat>
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                    <releaseProfiles>prod</releaseProfiles>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>io.gatling</groupId>
