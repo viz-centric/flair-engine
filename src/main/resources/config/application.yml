@@ -1,5 +1,10 @@
 grpc:
   port: 6565
+  tls:
+    enabled: true
+    certificate: ${GRPC_CERT:src/main/resources/ssl/grpc/server.crt}
+    key: ${GRPC_KEY:src/main/resources/ssl/grpc/server.pem}
+
 
 flair-cache:
   enabled: false
