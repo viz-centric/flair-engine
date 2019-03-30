@@ -135,6 +135,7 @@ public class ConnectionResource {
     /**
      * GET  /connections/all : get all the connections.
      *
+     * @param predicate predicate
      * @return the ResponseEntity with status 200 (OK) and the list of connections in body
      */
     @GetMapping("/connections/all")

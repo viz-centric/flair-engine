@@ -16,7 +16,6 @@ public class MySqlConnectionDetails extends ConnectionDetails implements Seriali
 
     /**
      * @return connection of mysql jdbc
-     * <Pedro Pons> Created 11/01/2017
      */
     @Override
     public String getConnectionString() {
