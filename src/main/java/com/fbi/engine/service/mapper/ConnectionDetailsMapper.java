@@ -24,6 +24,7 @@ public class ConnectionDetailsMapper {
         switch (value.get("@type")) {
             case "Oracle":
                 connectionDetails = new OracleConnectionDetails();
+                ((OracleConnectionDetails) connectionDetails).setServiceName(value.get("serviceName"));
                 break;
             case "MySql":
                 connectionDetails = new MySqlConnectionDetails();
@@ -64,6 +65,7 @@ public class ConnectionDetailsMapper {
         HashMap<String, String> map = new HashMap<>();
         if (connectionDetails instanceof OracleConnectionDetails) {
             map.put("@type", "Oracle");
+            map.put("serviceName", ((OracleConnectionDetails) connectionDetails).getServiceName());
         } else if (connectionDetails instanceof MySqlConnectionDetails) {
             map.put("@type", "MySql");
         } else if (connectionDetails instanceof CockroachdbConnectionDetails) {
