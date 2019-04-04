@@ -46,9 +46,8 @@ public class ListTablesService {
 
         log.info("List tables for connection {}", conn.getName());
 
-        FlairQuery query = new FlairQuery();
-        query.setStatement("SHOW TABLES LIKE '%" + StringEscapeUtils.escapeSql(tableNameLike) + "%' LIMIT " + maxEntries);
-        String executeQuery = queryService.executeQuery(conn, query);
+        FlairQuery query = new FlairQuery("SHOW TABLES LIKE '%" + StringEscapeUtils.escapeSql(tableNameLike) + "%' LIMIT " + maxEntries, false);
+        String executeQuery = queryService.executeQuery(conn, query).getResult();
 
         log.debug("List tables query executed {}", executeQuery);
 

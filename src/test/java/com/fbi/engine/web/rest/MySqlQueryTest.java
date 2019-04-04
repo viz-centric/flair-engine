@@ -1,59 +1,16 @@
 package com.fbi.engine.web.rest;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.hasItem;
-import static org.junit.Assert.assertEquals;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.io.StringWriter;
-import java.util.Arrays;
-import java.util.List;
-
-import javax.persistence.EntityManager;
-
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.MockitoAnnotations;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.fbi.engine.FbiengineApp;
 import com.fbi.engine.domain.Connection;
-import com.fbi.engine.domain.details.MySqlConnectionDetails;
 import com.fbi.engine.query.QueryExecutor;
-import com.fbi.engine.query.QueryService;
 import com.fbi.engine.query.abstractfactory.QueryAbstractFactory;
 import com.fbi.engine.query.factory.FlairFactory;
 import com.fbi.engine.repository.ConnectionRepository;
-import com.fbi.engine.service.ConnectionService;
-import com.fbi.engine.service.dto.ConnectionDTO;
-import com.fbi.engine.service.mapper.ConnectionDTOTest;
-import com.fbi.engine.service.mapper.ConnectionMapper;
-import com.fbi.engine.web.rest.errors.ExceptionTranslator;
 import com.project.bi.exceptions.CompilationException;
 import com.project.bi.query.FlairCompiler;
 import com.project.bi.query.FlairQuery;
 import com.project.bi.query.dto.ConditionExpressionDTO;
 import com.project.bi.query.dto.QueryDTO;
-import com.project.bi.query.expression.condition.ConditionExpression;
 import com.project.bi.query.expression.condition.impl.AndConditionExpression;
 import com.project.bi.query.expression.condition.impl.BetweenConditionExpression;
 import com.project.bi.query.expression.condition.impl.CompareConditionExpression;
@@ -61,6 +18,22 @@ import com.project.bi.query.expression.condition.impl.CompareConditionExpression
 import com.project.bi.query.expression.condition.impl.ContainsConditionExpression;
 import com.project.bi.query.expression.condition.impl.LikeConditionExpression;
 import com.project.bi.query.expression.condition.impl.OrConditionExpression;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.MockitoAnnotations;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.io.StringWriter;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = FbiengineApp.class)
@@ -135,10 +108,9 @@ public class MySqlQueryTest {
 		       
 		       
 		        String retVal="";
-		        FlairQuery query = new FlairQuery();
-		        query.setStatement(queryDto.interpret(connection.getName()));
-		        query.setPullMeta(queryDto.isMetaRetrieved());
-		       
+
+				FlairQuery query = new FlairQuery(queryDto.interpret(), queryDto.isMetaRetrieved());
+
 		        FlairFactory flairFactory = queryAbstractFactory.getQueryFactory(connection.getConnectionType().getBundleClass());
 		        
 		        FlairCompiler compiler = flairFactory.getCompiler();
@@ -194,12 +166,10 @@ public class MySqlQueryTest {
 	        queryDto.setSource("ecommerce");
 	        
 	        Connection connection = connectionRepository.findByLinkId(MYSQL_ID);
-	       
-	        
-	        FlairQuery query = new FlairQuery();
-	        query.setStatement(queryDto.interpret(connection.getName()));
-	        query.setPullMeta(queryDto.isMetaRetrieved());
-	       
+
+
+			FlairQuery query = new FlairQuery(queryDto.interpret(), queryDto.isMetaRetrieved());
+
 	        FlairFactory flairFactory = queryAbstractFactory.getQueryFactory(connection.getConnectionType().getBundleClass());
 	        
 	        FlairCompiler compiler = flairFactory.getCompiler();
@@ -258,11 +228,9 @@ public class MySqlQueryTest {
 		    queryDto.setSource("ecommerce");
 	    		
 	    	expectedQuery="select * from ecommerce where product_price >= 500 or product_name = 'Team Golf New England Patriots Putter Grip'";
-	    	     
-		    FlairQuery query = new FlairQuery();
-		    query.setStatement(queryDto.interpret(connection.getName()));
-		    query.setPullMeta(queryDto.isMetaRetrieved());
-		       
+
+			FlairQuery query = new FlairQuery(queryDto.interpret(), queryDto.isMetaRetrieved());
+
 		    FlairFactory flairFactory = queryAbstractFactory.getQueryFactory(connection.getConnectionType().getBundleClass());
 	        
 	        FlairCompiler compiler = flairFactory.getCompiler();
@@ -319,11 +287,9 @@ public class MySqlQueryTest {
 		    queryDto.setSource("ecommerce");
 	    		
 	    	expectedQuery="select * from ecommerce where product_price >= 500 and product_name = 'Team Golf New England Patriots Putter Grip'";
-	    	     
-		    FlairQuery query = new FlairQuery();
-		    query.setStatement(queryDto.interpret(connection.getName()));
-		    query.setPullMeta(queryDto.isMetaRetrieved());
-		       
+
+			FlairQuery query = new FlairQuery(queryDto.interpret(), queryDto.isMetaRetrieved());
+
 		    FlairFactory flairFactory = queryAbstractFactory.getQueryFactory(connection.getConnectionType().getBundleClass());
 	        
 	        FlairCompiler compiler = flairFactory.getCompiler();
@@ -368,11 +334,9 @@ public class MySqlQueryTest {
 		    queryDto.setSource("ecommerce");
 	    		
 	    	expectedQuery="select * from ecommerce where product_price between 500 AND 1000";
-	    	     
-		    FlairQuery query = new FlairQuery();
-		    query.setStatement(queryDto.interpret(connection.getName()));
-		    query.setPullMeta(queryDto.isMetaRetrieved());
-		       
+
+			FlairQuery query = new FlairQuery(queryDto.interpret(), queryDto.isMetaRetrieved());
+
 	        FlairFactory flairFactory = queryAbstractFactory.getQueryFactory(connection.getConnectionType().getBundleClass());
 	        
 	        FlairCompiler compiler = flairFactory.getCompiler();
@@ -416,11 +380,9 @@ public class MySqlQueryTest {
 		    queryDto.setSource("ecommerce");
 	    		
 	    	expectedQuery="select * from ecommerce where product_name LIKE '%no%'";
-	    	     
-		    FlairQuery query = new FlairQuery();
-		    query.setStatement(queryDto.interpret(connection.getName()));
-		    query.setPullMeta(queryDto.isMetaRetrieved());
-		       
+
+			FlairQuery query = new FlairQuery(queryDto.interpret(), queryDto.isMetaRetrieved());
+
 	        FlairFactory flairFactory = queryAbstractFactory.getQueryFactory(connection.getConnectionType().getBundleClass());
 	        
 	        FlairCompiler compiler = flairFactory.getCompiler();
@@ -458,11 +420,9 @@ public class MySqlQueryTest {
 		    queryDto.setSource("ecommerce");
 	    		
 	    	expectedQuery="SELECT month(order_date) as month, year(order_date) as year, day(order_date) as day, hour(order_date) as hr, quarter(order_date) as qt, EXTRACT(YEAR_MONTH FROM order_date) as ym, yearWeek(order_date) as yw, CONCAT(YEAR(order_date),'-',QUARTER(order_date)) as yq FROM ecommerce";
-	    	     
-		    FlairQuery query = new FlairQuery();
-		    query.setStatement(queryDto.interpret(connection.getName()));
-		    query.setPullMeta(queryDto.isMetaRetrieved());
-		       
+
+			FlairQuery query = new FlairQuery(queryDto.interpret(), queryDto.isMetaRetrieved());
+
 	        FlairFactory flairFactory = queryAbstractFactory.getQueryFactory(connection.getConnectionType().getBundleClass());
 	        
 	        FlairCompiler compiler = flairFactory.getCompiler();
@@ -500,11 +460,9 @@ public class MySqlQueryTest {
 		    queryDto.setSource("ecommerce");
 	    		
 	    	expectedQuery="SELECT replace(product_name,'Men','Women') FROM ecommerce";
-	    	     
-		    FlairQuery query = new FlairQuery();
-		    query.setStatement(queryDto.interpret(connection.getName()));
-		    query.setPullMeta(queryDto.isMetaRetrieved());
-		       
+
+			FlairQuery query = new FlairQuery(queryDto.interpret(), queryDto.isMetaRetrieved());
+
 	        FlairFactory flairFactory = queryAbstractFactory.getQueryFactory(connection.getConnectionType().getBundleClass());
 	        
 	        FlairCompiler compiler = flairFactory.getCompiler();
@@ -542,11 +500,9 @@ public class MySqlQueryTest {
 		    queryDto.setSource("ecommerce");
 	    		
 	    	expectedQuery="SELECT substr(product_name,0,2) FROM ecommerce";
-	    	     
-		    FlairQuery query = new FlairQuery();
-		    query.setStatement(queryDto.interpret(connection.getName()));
-		    query.setPullMeta(queryDto.isMetaRetrieved());
-		       
+
+			FlairQuery query = new FlairQuery(queryDto.interpret(), queryDto.isMetaRetrieved());
+
 	        FlairFactory flairFactory = queryAbstractFactory.getQueryFactory(connection.getConnectionType().getBundleClass());
 	        
 	        FlairCompiler compiler = flairFactory.getCompiler();
@@ -586,11 +542,9 @@ public class MySqlQueryTest {
 		    queryDto.setSource("ecommerce");
 	    		
 	    	expectedQuery="SELECT count(*), min(order_item_product_price), max(order_item_product_price), sum(order_item_product_price) FROM ecommerce";
-	    	     
-		    FlairQuery query = new FlairQuery();
-		    query.setStatement(queryDto.interpret(connection.getName()));
-		    query.setPullMeta(queryDto.isMetaRetrieved());
-		       
+
+			FlairQuery query = new FlairQuery(queryDto.interpret(), queryDto.isMetaRetrieved());
+
 	        FlairFactory flairFactory = queryAbstractFactory.getQueryFactory(connection.getConnectionType().getBundleClass());
 	        
 	        FlairCompiler compiler = flairFactory.getCompiler();

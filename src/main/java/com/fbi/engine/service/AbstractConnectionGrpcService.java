@@ -33,6 +33,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -45,6 +46,7 @@ import static java.util.stream.Collectors.toList;
 public abstract class AbstractConnectionGrpcService extends ConnectionServiceGrpc.ConnectionServiceImplBase {
 
     private final ConnectionService connectionService;
+    private final ConnectionParameterService connectionParameterService;
     private final ConnectionTypeService connectionTypeService;
     private final TestConnectionService connectionTestService;
     private final ConnectionDetailsMapper connectionDetailsMapper;
@@ -64,8 +66,9 @@ public abstract class AbstractConnectionGrpcService extends ConnectionServiceGrp
         if (connection == null) {
             responseObserver.onError(Status.INVALID_ARGUMENT.withDescription(CONNECTION_NOT_FOUND).asRuntimeException());
         } else {
+            Map<String, String> connectionParameters = connectionParameterService.getParametersByLinkId(connection.getLinkId());
             responseObserver.onNext(GetConnectionResponse.newBuilder()
-                .setConnection(toConnectionProto(connection))
+                .setConnection(toConnectionProto(connection, connectionParameters))
                 .build());
             responseObserver.onCompleted();
         }
@@ -75,7 +78,10 @@ public abstract class AbstractConnectionGrpcService extends ConnectionServiceGrp
     public void deleteConnection(DeleteConnectionRequest request, StreamObserver<DeleteConnectionResponse> responseObserver) {
         log.info("Delete connection {}", request);
 
+        ConnectionDTO connectionDTO = connectionService.findById(request.getConnectionId());
+
         connectionService.delete(request.getConnectionId());
+        connectionParameterService.deleteByLinkId(connectionDTO.getLinkId());
 
         log.debug("Connection deleted {}", request.getConnectionId());
 
@@ -94,7 +100,10 @@ public abstract class AbstractConnectionGrpcService extends ConnectionServiceGrp
         ConnectionResponses responses = ConnectionResponses.newBuilder()
             .addAllConnection(connections
                 .stream()
-                .map(this::toConnectionProto)
+                .map(connection -> {
+                    Map<String, String> connectionParameters = connectionParameterService.getParametersByLinkId(connection.getLinkId());
+                    return toConnectionProto(connection, connectionParameters);
+                })
                 .collect(toList()))
             .build();
         responseObserver.onNext(responses);
@@ -119,7 +128,8 @@ public abstract class AbstractConnectionGrpcService extends ConnectionServiceGrp
         log.debug("Test connection link {} table {}", request.getConnectionLinkId(), request.getDatasourceName());
 
         String result = connectionTestService.testConnection(request.getConnectionLinkId(),
-            request.getDatasourceName(), toConnectionEntity(request.hasConnection() ? request.getConnection() : null));
+                request.getDatasourceName(),
+                toConnectionEntity(request.hasConnection() ? request.getConnection() : null));
 
         TestConnectionResponse.Builder builder = TestConnectionResponse.newBuilder();
 
@@ -153,8 +163,13 @@ public abstract class AbstractConnectionGrpcService extends ConnectionServiceGrp
 
         log.debug("Saved connection {}", createdConnection);
 
+        connectionParameterService.save(createdConnection.getLinkId(), request.getConnection().getConnectionParametersMap());
+        Map<String, String> connectionParameters = connectionParameterService.getParametersByLinkId(createdConnection.getLinkId());
+
+        log.debug("Saved connection parameters {}", connectionParameters);
+
         responseObserver.onNext(SaveConnectionResponse.newBuilder()
-            .setConnection(toConnectionProto(createdConnection))
+            .setConnection(toConnectionProto(createdConnection, connectionParameters))
             .build());
         responseObserver.onCompleted();
     }
@@ -176,14 +191,19 @@ public abstract class AbstractConnectionGrpcService extends ConnectionServiceGrp
         dto.setConnectionType(connectionTypeService.findOne(request.getConnection().getConnectionType()));
         dto.setDetails(connectionDetailsMapper.mapToEntity(request.getConnection().getDetailsMap()));
 
-        log.info("Saving connection {}", dto);
+        log.info("Updating connection {}", dto);
 
         ConnectionDTO createdConnection = connectionService.updateConnection(dto);
 
-        log.debug("Saved connection {}", createdConnection);
+        log.debug("Updated connection {}", createdConnection);
+
+        connectionParameterService.save(createdConnection.getLinkId(), request.getConnection().getConnectionParametersMap());
+        Map<String, String> connectionParameters = connectionParameterService.getParametersByLinkId(createdConnection.getLinkId());
+
+        log.debug("Updated connection parameters {}", connectionParameters);
 
         responseObserver.onNext(UpdateConnectionResponse.newBuilder()
-            .setConnection(toConnectionProto(createdConnection))
+            .setConnection(toConnectionProto(createdConnection, connectionParameters))
             .build());
         responseObserver.onCompleted();
     }
@@ -263,7 +283,7 @@ public abstract class AbstractConnectionGrpcService extends ConnectionServiceGrp
             .build();
     }
 
-    private com.flair.bi.messages.Connection toConnectionProto(ConnectionDTO connection) {
+    private com.flair.bi.messages.Connection toConnectionProto(ConnectionDTO connection, Map<String, String> connectionParameters) {
         return com.flair.bi.messages.Connection.newBuilder()
             .setId(connection.getId())
             .setName(connection.getName())
@@ -272,6 +292,7 @@ public abstract class AbstractConnectionGrpcService extends ConnectionServiceGrp
             .setConnectionType(connection.getConnectionType().getId())
             .setLinkId(connection.getLinkId())
             .putAllDetails(connectionDetailsMapper.entityToMap(connection.getDetails()))
+            .putAllConnectionParameters(connectionParameters)
             .build();
     }
 }

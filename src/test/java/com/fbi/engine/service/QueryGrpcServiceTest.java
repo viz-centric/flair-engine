@@ -3,11 +3,19 @@ package com.fbi.engine.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fbi.engine.domain.Connection;
 import com.fbi.engine.query.QueryServiceImpl;
+import com.fbi.engine.service.cache.CacheMetadata;
+import com.fbi.engine.service.cache.CacheParams;
 import com.fbi.engine.service.constant.GrpcErrors;
+import com.fbi.engine.service.dto.ConnectionParameters;
 import com.fbi.engine.service.dto.RunQueryResultDTO;
 import com.fbi.engine.service.validators.QueryValidationResult;
 import com.fbi.engine.service.validators.QueryValidator;
-import com.flair.bi.messages.*;
+import com.flair.bi.messages.Query;
+import com.flair.bi.messages.QueryResponse;
+import com.flair.bi.messages.QueryValidationResponse;
+import com.flair.bi.messages.RunQueryRequest;
+import com.flair.bi.messages.RunQueryResponse;
+import com.google.common.collect.ImmutableMap;
 import com.project.bi.query.FlairQuery;
 import com.project.bi.query.dto.QueryDTO;
 import io.grpc.Status;
@@ -44,6 +52,9 @@ public class QueryGrpcServiceTest {
 
     private AbstractQueryGrpcService service;
 
+    @Mock
+    private ConnectionParameterService connectionParameterService;
+
     @Before
     public void setUp() {
         objectMapper = new ObjectMapper();
@@ -51,7 +62,8 @@ public class QueryGrpcServiceTest {
             queryService,
             queryValidator,
             objectMapper,
-            queryRunService);
+            queryRunService,
+            connectionParameterService);
     }
 
     @Test
@@ -134,10 +146,14 @@ public class QueryGrpcServiceTest {
 
         when(queryValidator.validate(any(QueryDTO.class)))
             .thenReturn(new QueryValidationResult());
+        Connection connection = new Connection();
+        connection.setLinkId("1234");
         when(connectionService.findByConnectionLinkId(eq("one")))
-            .thenReturn(new Connection());
-        when(queryService.executeQuery(any(Connection.class), any(FlairQuery.class)))
-            .thenReturn("test");
+            .thenReturn(connection);
+        when(queryService.executeQuery(any(Connection.class), any(FlairQuery.class), any(CacheParams.class)))
+            .thenReturn(new CacheMetadata().setResult("test"));
+        when(connectionParameterService.getParameters(eq("1234")))
+                .thenReturn(new ConnectionParameters(ImmutableMap.of()));
 
         dataStream.onNext(Query.newBuilder().setSourceId("one").build());
 

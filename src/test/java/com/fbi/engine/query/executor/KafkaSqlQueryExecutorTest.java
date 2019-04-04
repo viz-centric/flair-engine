@@ -73,8 +73,7 @@ public class KafkaSqlQueryExecutorTest {
                                 + "\n"
                                 + "{\"row\":{\"columns\":[1524760769984,\"2\",1524760769748,\"alice2\",\"home2\"]},\"errorMessage\":null}"));
 
-        FlairQuery flairQuery = new FlairQuery();
-        flairQuery.setStatement(statement);
+        FlairQuery flairQuery = new FlairQuery(statement, false);
         executor.execute(new KafkaQuery(statement, false, "dbname", flairQuery), writer);
 
         assertEquals("{\n" + "  \"data\" : [ {\n" + "    \"width\" : \"1\",\n" + "    \"x\" : \"alice\",\n"
@@ -110,9 +109,7 @@ public class KafkaSqlQueryExecutorTest {
                                         new KafkaKsqlDescribeResponse.Field().setName("fifth").setSchema(
                                                 new KafkaKsqlDescribeResponse.Schema().setType("thirdType"))))) }));
 
-        FlairQuery flairQuery = new FlairQuery();
-        flairQuery.setStatement(statement);
-        flairQuery.setPullMeta(true);
+        FlairQuery flairQuery = new FlairQuery(statement, true);
         KafkaQuery kafkaQuery = new KafkaQuery(statement, true, "dbname", flairQuery);
         executor.execute(kafkaQuery, writer);
 
@@ -141,8 +138,7 @@ public class KafkaSqlQueryExecutorTest {
                                 .setStreams(Arrays.asList(new KafkaShowTablesResponse.Table().setName("table1"),
                                         new KafkaShowTablesResponse.Table().setName("stream2"))) }));
 
-        FlairQuery flairQuery = new FlairQuery();
-        flairQuery.setStatement(statement);
+        FlairQuery flairQuery = new FlairQuery(statement, false);
         executor.execute(new KafkaQuery(statement, false, "dbname", flairQuery), writer);
 
         assertEquals("{\n" + "  \"data\" : [ {\n" + "    \"tablename\" : \"table2\"\n" + "  }, {\n"

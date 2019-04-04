@@ -9,8 +9,8 @@ import org.springframework.context.annotation.Profile;
 @Profile("!test")
 public class ConnectionGrpcService extends AbstractConnectionGrpcService {
 
-    public ConnectionGrpcService(ConnectionService connectionService, ConnectionTypeService connectionTypeService, TestConnectionService connectionTestService, ConnectionDetailsMapper connectionDetailsMapper, ConnectionMapper connectionMapper, ListTablesService listTablesService) {
-        super(connectionService, connectionTypeService, connectionTestService, connectionDetailsMapper, connectionMapper, listTablesService);
+    public ConnectionGrpcService(ConnectionService connectionService, ConnectionParameterService connectionParameterService, ConnectionTypeService connectionTypeService, TestConnectionService connectionTestService, ConnectionDetailsMapper connectionDetailsMapper, ConnectionMapper connectionMapper, ListTablesService listTablesService) {
+        super(connectionService, connectionParameterService, connectionTypeService, connectionTestService, connectionDetailsMapper, connectionMapper, listTablesService);
     }
 
 }

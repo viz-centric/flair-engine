@@ -2,6 +2,8 @@ package com.fbi.engine.service;
 
 import com.fbi.engine.domain.Connection;
 import com.fbi.engine.query.QueryService;
+import com.fbi.engine.service.cache.CacheMetadata;
+import com.fbi.engine.service.cache.CacheParams;
 import com.fbi.engine.service.dto.RunQueryResultDTO;
 import com.project.bi.query.FlairQuery;
 import com.project.bi.query.dto.QueryDTO;
@@ -36,7 +38,7 @@ public class QueryRunnerServiceTest {
     @Test
     public void runQuerySucceeds() {
         when(connectionService.findByConnectionLinkId(eq("linkid"))).thenReturn(new Connection());
-        when(queryService.executeQuery(any(Connection.class), any(FlairQuery.class))).thenReturn("result");
+        when(queryService.executeQuery(any(Connection.class), any(FlairQuery.class), any(CacheParams.class))).thenReturn(new CacheMetadata().setResult("result"));
 
         RunQueryResultDTO result = service.runQuery(new QueryDTO(), "linkid");
 
@@ -55,7 +57,7 @@ public class QueryRunnerServiceTest {
     @Test
     public void runQueryFailsIfQueryReturnsEmptyString() {
         when(connectionService.findByConnectionLinkId(eq("linkid"))).thenReturn(new Connection());
-        when(queryService.executeQuery(any(Connection.class), any(FlairQuery.class))).thenReturn("");
+        when(queryService.executeQuery(any(Connection.class), any(FlairQuery.class), any(CacheParams.class))).thenReturn(new CacheMetadata().setResult(""));
 
         RunQueryResultDTO result = service.runQuery(new QueryDTO(), "linkid");
 

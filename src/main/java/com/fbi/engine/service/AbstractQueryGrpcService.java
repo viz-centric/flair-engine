@@ -4,6 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fbi.engine.domain.Connection;
 import com.fbi.engine.query.QueryServiceImpl;
+import com.fbi.engine.service.cache.CacheMetadata;
+import com.fbi.engine.service.cache.CacheParams;
+import com.fbi.engine.service.dto.ConnectionParameters;
 import com.fbi.engine.service.dto.RunQueryResultDTO;
 import com.fbi.engine.service.util.QueryGrpcUtils;
 import com.fbi.engine.service.validators.QueryValidationResult;
@@ -39,6 +42,8 @@ public abstract class AbstractQueryGrpcService extends QueryServiceGrpc.QuerySer
     private final ObjectMapper objectMapper;
 
     private final QueryRunnerService queryRunnerService;
+
+    private final ConnectionParameterService connectionParameterService;
 
     @Override
     public void validate(Query query, StreamObserver<QueryValidationResponse> responseObserver) {
@@ -80,10 +85,8 @@ public abstract class AbstractQueryGrpcService extends QueryServiceGrpc.QuerySer
         } else {
             QueryDTO queryDTO = QueryGrpcUtils.mapToQueryDTO(request);
             log.info("Interpreted query {}", queryDTO.toString());
-            FlairQuery flairQuery = new FlairQuery();
-            flairQuery.setStatement(queryDTO.interpret(connection.getName()));
-            flairQuery.setPullMeta(queryDTO.isMetaRetrieved());
-            String retVal = queryService.executeQuery(connection, flairQuery);
+            FlairQuery flairQuery = new FlairQuery(queryDTO.interpret(), queryDTO.isMetaRetrieved());
+            String retVal = queryService.executeQuery(connection, flairQuery).getResult();
             responseObserver.onNext(QueryResponse.newBuilder()
                 .setQueryId(request.getQueryId())
                 .setUserId(request.getUserId())
@@ -105,22 +108,52 @@ public abstract class AbstractQueryGrpcService extends QueryServiceGrpc.QuerySer
                 if (!validateQuery(queryDTO, responseObserver)) {
                     return;
                 }
+
                 Connection connection = connectionService.findByConnectionLinkId(query.getSourceId());
                 if (connection == null) {
                     responseObserver.onError(Status.INVALID_ARGUMENT.withDescription(CONNECTION_NOT_FOUND).asRuntimeException());
+                    return;
                 }
-                FlairQuery flairQuery = new FlairQuery();
-                log.debug("Query being executed {}", queryDTO.interpret(connection.getName()));
-                flairQuery.setStatement(queryDTO.interpret(connection.getName()));
-                flairQuery.setPullMeta(queryDTO.isMetaRetrieved());
-                String retVal = queryService.executeQuery(connection, flairQuery);
-                responseObserver.onNext(QueryResponse.newBuilder()
-                    .setQueryId(query.getQueryId())
-                    .setUserId(query.getUserId())
-                    .setData(retVal)
-                    .build()
-                );
-                log.debug("Stream sending Out: {}", retVal);
+
+                ConnectionParameters connectionParameters = connectionParameterService.getParameters(connection.getLinkId());
+
+                int cachePurgeAfterMinutes = connectionParameters.getCachePurgeAfterMinutes();
+                int refreshAfterTimesRead = connectionParameters.getRefreshAfterTimesRead();
+                int refreshAfterMinutes = connectionParameters.getRefreshAfterMinutes();
+
+                FlairQuery flairQuery = new FlairQuery(queryDTO.interpret(), queryDTO.isMetaRetrieved());
+
+                log.debug("Query being executed {}", flairQuery.getStatement());
+
+                CacheMetadata cacheMetadata = queryDataAndSendResult(query,
+                        flairQuery,
+                        connection,
+                        responseObserver,
+                        new CacheParams()
+                                .setRefreshAfterTimesRead(refreshAfterTimesRead)
+                                .setRefreshAfterMinutes(refreshAfterMinutes)
+                                .setCachePurgeAfterMinutes(cachePurgeAfterMinutes)
+                                .setReadFromCache(connectionParameters.isEnabled())
+                                .setWriteToCache(connectionParameters.isEnabled()));
+
+                log.debug("Query being executed result {}", cacheMetadata);
+
+                if (cacheMetadata.isStale()) {
+                    log.debug("Cache is stale, fetching new data {}", cacheMetadata);
+
+                    CacheMetadata cacheMetadata2 = queryDataAndSendResult(query,
+                            flairQuery,
+                            connection,
+                            responseObserver,
+                            new CacheParams()
+                                    .setRefreshAfterTimesRead(refreshAfterTimesRead)
+                                    .setRefreshAfterMinutes(refreshAfterMinutes)
+                                    .setCachePurgeAfterMinutes(cachePurgeAfterMinutes)
+                                    .setReadFromCache(false)
+                                    .setWriteToCache(connectionParameters.isEnabled()));
+
+                    log.debug("After cache update {}", cacheMetadata2);
+                }
             }
 
             @Override
@@ -133,6 +166,22 @@ public abstract class AbstractQueryGrpcService extends QueryServiceGrpc.QuerySer
                 responseObserver.onCompleted();
             }
         };
+    }
+
+    private CacheMetadata queryDataAndSendResult(Query query, FlairQuery flairQuery, Connection connection, StreamObserver<QueryResponse> responseObserver, CacheParams cacheParams) {
+        CacheMetadata cacheMetadata = queryService.executeQuery(connection, flairQuery, cacheParams);
+
+        responseObserver.onNext(QueryResponse.newBuilder()
+                .setQueryId(query.getQueryId())
+                .setUserId(query.getUserId())
+                .setData(cacheMetadata.getResult())
+                .setCacheMetadata(com.flair.bi.messages.CacheMetadata.newBuilder()
+                        .setStale(cacheMetadata.isStale())
+                        .setDateCreated(cacheMetadata.getDateCreated() != null ? cacheMetadata.getDateCreated().getEpochSecond() : 0)
+                        .build())
+                .build());
+
+        return cacheMetadata;
     }
 
     @Override

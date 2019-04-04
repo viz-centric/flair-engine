@@ -97,6 +97,11 @@ public class ConnectionServiceImpl implements ConnectionService {
     }
 
     @Override
+    public ConnectionDTO findById(Long id) {
+        return connectionMapper.toDto(connectionRepository.getOne(id));
+    }
+
+    @Override
     public ConnectionDTO findByConnectionLinkIdAsDto(String linkId) {
         log.debug("Request to find connection by link id : {}", linkId);
         return connectionMapper.toDto(connectionRepository.findByLinkId(linkId));

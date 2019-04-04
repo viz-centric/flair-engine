@@ -2,6 +2,7 @@ package com.fbi.engine.service;
 
 import com.fbi.engine.domain.Connection;
 import com.fbi.engine.query.QueryService;
+import com.fbi.engine.service.cache.CacheMetadata;
 import com.fbi.engine.service.dto.ConnectionDTO;
 import com.fbi.engine.service.mapper.ConnectionMapper;
 import com.project.bi.query.FlairQuery;
@@ -47,7 +48,7 @@ public class TestConnectionServiceTest {
 
         when(connectionService.findByConnectionLinkId(eq("1715917d-fff8-44a1-af02-ee2cd41a3609")))
             .thenReturn(connection);
-        when(queryService.executeQuery(eq(connection), any(FlairQuery.class))).thenReturn("[]");
+        when(queryService.executeQuery(eq(connection), any(FlairQuery.class))).thenReturn(new CacheMetadata().setResult("[]"));
         String result = service.testConnection("1715917d-fff8-44a1-af02-ee2cd41a3609", "sales", null);
 
         assertEquals("[]", result);
@@ -57,7 +58,7 @@ public class TestConnectionServiceTest {
     public void testConnectionWorksByConnection() {
         Connection connection = new Connection();
         connection.setName("connection name");
-        when(queryService.executeQuery(any(Connection.class), any(FlairQuery.class))).thenReturn("[]");
+        when(queryService.executeQuery(any(Connection.class), any(FlairQuery.class))).thenReturn(new CacheMetadata().setResult("[]"));
         when(connectionMapper.toEntity(any(ConnectionDTO.class))).thenReturn(connection);
         String result = service.testConnection("",
             "sales",

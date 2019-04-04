@@ -49,6 +49,8 @@ public interface ConnectionService {
 
     Connection findByConnectionLinkId(String linkId);
 
+    ConnectionDTO findById(Long id);
+
     ConnectionDTO findByConnectionLinkIdAsDto(String linkId);
 
     List<ConnectionDTO> findAll(Predicate predicate);
