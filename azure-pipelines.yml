@@ -41,11 +41,11 @@ steps:
       AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_ACCESS_KEY)
     displayName: 'Get Secrets'
 
-- script: |
-    docker-compose -f src/main/docker/test.yml up -d
-    sleep 15
-    docker ps -a
-  displayName: 'Bringing up dependencies'
+  - script: |
+      docker-compose -f src/main/docker/test.yml up -d
+      sleep 15
+      docker ps -a
+    displayName: 'Bringing up dependencies'
 
   - task: Maven@3
     inputs:
