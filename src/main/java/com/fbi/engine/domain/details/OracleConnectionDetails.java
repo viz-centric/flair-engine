@@ -28,13 +28,13 @@ public class OracleConnectionDetails extends ConnectionDetails implements Serial
         connectionString.append("jdbc:oracle:thin");
 
         if (getServerIp() != null) {
-            connectionString.append(":@//").append(getServerIp());
+            connectionString.append(":@").append(getServerIp());
 
             if (getServerPort() != null) {
                 connectionString.append(":").append(getServerPort());
             }
 
-            connectionString.append("/");
+            connectionString.append(":");
         }
 
         connectionString.append(getServiceName());

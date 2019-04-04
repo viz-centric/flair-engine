@@ -185,7 +185,7 @@
 
         <!-- our dependencies -->
         <flair-messages.version>0.0.3</flair-messages.version>
-        <flair-query-language.version>1.5.5</flair-query-language.version>
+        <flair-query-language.version>1.5.17</flair-query-language.version>
         <project-bi-common.version>1.3.1</project-bi-common.version>
 
 
