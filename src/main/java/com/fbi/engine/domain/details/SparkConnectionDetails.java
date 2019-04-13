@@ -9,21 +9,16 @@ import java.io.Serializable;
 @Setter
 public class SparkConnectionDetails extends ConnectionDetails implements Serializable {
 
-    private String serviceName;
-
     public SparkConnectionDetails() {
     }
 
     public SparkConnectionDetails(String serverIp, Integer serverPort, String serviceName, String databaseName) {
         super(serverIp, serverPort, databaseName);
-        this.serviceName = serviceName;
     }
 
     @Override
     public String getConnectionString() {
         StringBuilder connectionString = new StringBuilder();
-
-//        jdbc:hive2://localhost:10000/default
 
         connectionString.append("jdbc:hive2:");
         if (getServerIp() != null) {

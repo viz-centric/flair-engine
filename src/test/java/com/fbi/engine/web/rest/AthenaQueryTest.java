@@ -357,7 +357,7 @@ public class AthenaQueryTest {
         queryDto.setConditionExpressions(Arrays.asList(expDto));
         queryDto.setSource("ecommerce");
 
-        expectedQuery="select * from ecommerce where product_name LIKE '%no%'";
+        expectedQuery="select * from ecommerce where product_name LIKE '*no*'";
 
         FlairQuery query = new FlairQuery(queryDto.interpret(), queryDto.isMetaRetrieved());
 

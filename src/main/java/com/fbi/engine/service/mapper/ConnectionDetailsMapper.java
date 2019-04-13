@@ -44,7 +44,6 @@ public class ConnectionDetailsMapper {
                 break;
             case "Spark":
                 connectionDetails = new SparkConnectionDetails();
-                ((SparkConnectionDetails) connectionDetails).setServiceName(value.get("serviceName"));
                 break;
             case "MongoDB":
                 connectionDetails = new MongoDBConnectionDetails();
@@ -80,7 +79,6 @@ public class ConnectionDetailsMapper {
             map.put("@type", "Postgres");
         } else if (connectionDetails instanceof SparkConnectionDetails) {
             map.put("@type", "Spark");
-            map.put("serviceName", ((SparkConnectionDetails) connectionDetails).getServiceName());
         } else if (connectionDetails instanceof MongoDBConnectionDetails) {
             map.put("@type", "MongoDB");
         } else if (connectionDetails instanceof KafkaConnectionDetails) {

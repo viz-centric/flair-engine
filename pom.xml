@@ -185,7 +185,7 @@
 
         <!-- our dependencies -->
         <flair-messages.version>0.0.5</flair-messages.version>
-        <flair-query-language.version>1.5.18</flair-query-language.version>
+        <flair-query-language.version>1.5.20</flair-query-language.version>
         <project-bi-common.version>1.3.6</project-bi-common.version>
 
 
@@ -588,6 +588,23 @@
             <groupId>org.apache.hive</groupId>
             <artifactId>hive-jdbc</artifactId>
             <version>1.2.1</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>javax.servlet</groupId>
+                    <artifactId>servlet-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-common</artifactId>
+            <version>2.7.3</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>javax.servlet</groupId>
+                    <artifactId>servlet-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.syncron.amazonaws</groupId>
