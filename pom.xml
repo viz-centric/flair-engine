@@ -585,6 +585,11 @@
             <version>1.2.10.1009</version>
         </dependency>
         <dependency>
+            <groupId>org.apache.hive</groupId>
+            <artifactId>hive-jdbc</artifactId>
+            <version>1.2.1</version>
+        </dependency>
+        <dependency>
             <groupId>com.syncron.amazonaws</groupId>
             <artifactId>simba-athena-jdbc-driver</artifactId>
             <version>2.0.2</version>

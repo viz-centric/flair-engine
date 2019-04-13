@@ -23,18 +23,25 @@ public class SparkConnectionDetails extends ConnectionDetails implements Seriali
     public String getConnectionString() {
         StringBuilder connectionString = new StringBuilder();
 
-        connectionString.append("http:");
+//        jdbc:hive2://localhost:10000/default
+
+        connectionString.append("jdbc:hive2:");
         if (getServerIp() != null) {
-            connectionString.append("//").append(getServerIp());
+            connectionString
+                    .append("//")
+                    .append(getServerIp());
 
             if (getServerPort() != null) {
-                connectionString.append(":").append(getServerPort());
+                connectionString
+                        .append(":")
+                        .append(getServerPort());
             }
 
             connectionString.append("/");
         }
 
-        connectionString.append(getServiceName());
+        connectionString.append(getDatabaseName());
+
         return connectionString.toString();
     }
 }
