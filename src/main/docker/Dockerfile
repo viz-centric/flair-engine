@@ -1,4 +1,4 @@
-FROM openjdk:8
+FROM openjdk:8-jre-alpine
 
 ENV SPRING_OUTPUT_ANSI_ENABLED=ALWAYS \
     JAVA_OPTS="" \
