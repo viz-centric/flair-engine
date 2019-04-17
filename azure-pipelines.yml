@@ -60,6 +60,19 @@ steps:
     condition: ne(variables['Build.SourceBranch'], 'refs/heads/master')
     displayName: 'Build'
 
+  - task: Maven@3
+    inputs:
+      mavenPomFile: 'pom.xml'
+      mavenOptions: '-Xmx3072m'
+      javaHomeOption: 'JDKVersion'
+      jdkVersionOption: '1.8'
+      jdkArchitectureOption: 'x64'
+      publishJUnitResults: true
+      testResultsFiles: '**/TEST-*.xml'
+      goals: '-Pprod deploy'
+    condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
+    displayName: 'Build and upload'
+
   - script: |
       git checkout master
       git config user.name "Release Bot"
