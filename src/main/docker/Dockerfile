@@ -11,7 +11,6 @@ ENV SPRING_OUTPUT_ANSI_ENABLED=ALWAYS \
     JAVA_OPTS="" \
     JHIPSTER_SLEEP=0
 
-VOLUME /app/tmp
 EXPOSE 8080
 EXPOSE 8081
 EXPOSE 8082
@@ -26,7 +25,6 @@ COPY ssl/cert/fbiengine/fbiengine-pkcs8.key /app/server.key
 COPY *.war /app/app.war
 
 RUN chown -R flairuser:flairuser /app
-RUN chown -R flairuser:flairuser /app/*
 RUN chmod -R 755 /app
 
 USER flairuser
