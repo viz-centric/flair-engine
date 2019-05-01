@@ -6,5 +6,6 @@ spring:
             password: ${CONFIG_PASS:admin}
 eureka:
     client:
+        securePortEnabled: true
         serviceUrl:
             defaultZone: ${EUREKA_URL:http://admin:admin@localhost:8761/eureka/}
