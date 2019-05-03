@@ -30,3 +30,16 @@ To perform a release you need:
    ``` 
    mvn release:clean release:prepare release:perform -DreleaseVersion=${releaseVersion} -DdevelopmentVersion=${developmentVersion}
    ```
+
+## Enabling SSL
+To enable SSL, you should generate SSL certificates first. 
+To generate SSL certs, run this command:
+
+```$xslt
+cd src/main/resources/ssl/certsgen/generate.sh
+```
+
+After that, copy the whole contents from `src/main/resources/ssl/certsgen/*` to flair-bi projects to the same location
+```$xslt
+cp src/main/resources/ssl/certsgen/* ../flair-bi/src/main/resources/ssl/certsgen
+``` 
