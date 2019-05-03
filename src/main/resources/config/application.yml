@@ -1,5 +1,10 @@
 grpc:
   port: 6565
+  tls:
+    enabled: ${GRPC_SSL_ENABLED:false}
+    certChainFile: ${GRPC_CERT:/app/certChainFile.crt}
+    privateKeyFile: ${GRPC_KEY:/app/privateKeyFile.pem}
+    trustCertCollectionFile: ${GRPC_TRUST_CERT:/app/trustCertCollectionFile.crt}
 
 flair-cache:
   enabled: false

@@ -19,8 +19,9 @@ EXPOSE 6565
 COPY classes/config/ssl/ssl-prod.properties /app/pgsql.properties
 COPY ssl/keystore/fbiengine-keystore.p12 /app/keystore.p12
 COPY ssl/keystore/fbiengine-truststore.p12 /app/truststore.p12
-COPY ssl/cert/fbiengine/fbiengine.pem /app/server.crt
-COPY ssl/cert/fbiengine/fbiengine-pkcs8.key /app/server.key
+COPY ssl/certsgen/server.crt /app/certChainFile.crt
+COPY ssl/certsgen/server.pem /app/privateKeyFile.pem
+COPY ssl/certsgen/ca.crt /app/trustCertCollectionFile.crt
 
 COPY *.war /app/app.war
 
