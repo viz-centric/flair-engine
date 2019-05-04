@@ -22,6 +22,9 @@ COPY ssl/keystore/fbiengine-truststore.p12 /app/truststore.p12
 COPY ssl/certsgen/server.crt /app/certChainFile.crt
 COPY ssl/certsgen/server.pem /app/privateKeyFile.pem
 COPY ssl/certsgen/ca.crt /app/trustCertCollectionFile.crt
+COPY ssl/cachecertsgen/client.crt /app/cacheClientCertChainFile.crt
+COPY ssl/cachecertsgen/client.pem /app/cacheClientPrivateKeyFile.pem
+COPY ssl/cachecertsgen/ca.crt /app/cacheTrustCertCollectionFile.crt
 
 COPY *.war /app/app.war
 

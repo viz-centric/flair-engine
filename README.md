@@ -32,14 +32,34 @@ To perform a release you need:
    ```
 
 ## Enabling SSL
-To enable SSL, you should generate SSL certificates first. 
+To enable SSL between flair engine and flair bi, or between flair engine and flair cache, you should generate SSL certificates first.
+
+### Enable SSL between flair engine and flair bi 
 To generate SSL certs, run this command:
 
-```$xslt
-cd src/main/resources/ssl/certsgen/generate.sh
+```bash
+cd src/main/resources/ssl/certsgen
 ```
 
+Make sure you open that bash file and check `SERVER_CN` and `CLIENT_CN` variables there. If you plan to run in docker environment, then keep
+these values as is. If you plan to deploy to a real production environment, then change these values to contain real hostnames of the services.
+
 After that, copy the whole contents from `src/main/resources/ssl/certsgen/*` to flair-bi projects to the same location
-```$xslt
-cp src/main/resources/ssl/certsgen/* ../flair-bi/src/main/resources/ssl/certsgen
+```bash
+cp src/main/resources/ssl/certsgen ../../../../../../flair-bi/src/main/resources/ssl/certsgen
+``` 
+
+### Enable SSL between flair engine and flair cache 
+To generate SSL certs, run this command:
+
+```bash
+cd src/main/resources/ssl/cachecertsgen
+```
+
+Make sure you open that bash file and check `SERVER_CN` and `CLIENT_CN` variables there. If you plan to run in docker environment, then keep
+these values as is. If you plan to deploy to a real production environment, then change these values to contain real hostnames of the services.
+
+After that, copy the whole contents from `src/main/resources/ssl/cachecertsgen/*` to flair-bi projects to the same location
+```bash
+cp src/main/resources/ssl/cachecertsgen ../../../../../../flair-cache/src/main/resources/ssl/cachecertsgen
 ``` 

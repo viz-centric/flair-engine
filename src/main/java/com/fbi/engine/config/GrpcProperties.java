@@ -20,6 +20,9 @@ public class GrpcProperties {
         private String certChainFile;
         private String privateKeyFile;
         private String trustCertCollectionFile;
+        private String cacheTrustCertCollectionFile;
+        private String cacheClientCertChainFile;
+        private String cacheClientPrivateKeyFile;
     }
 
 }
