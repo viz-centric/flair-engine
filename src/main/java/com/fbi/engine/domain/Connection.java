@@ -4,17 +4,29 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fbi.engine.crypto.converter.ConnectionDetailsCryptoConverter;
 import com.fbi.engine.crypto.converter.StringCryptoConverter;
 import com.fbi.engine.domain.details.ConnectionDetails;
-import lombok.*;
-import lombok.experimental.Accessors;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.Type;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Convert;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.PrePersist;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
-import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -68,6 +80,8 @@ public class Connection implements Serializable {
     @Column(name = "details", nullable = false)
     private ConnectionDetails details;
 
+    @Enumerated(EnumType.STRING)
+    private ConnectionStatus status;
 
     @PrePersist
     public void prePersist() {

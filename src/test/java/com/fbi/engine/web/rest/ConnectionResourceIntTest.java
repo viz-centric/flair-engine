@@ -29,6 +29,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.not;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -93,24 +94,26 @@ public class ConnectionResourceIntTest {
      * <p>
      * This is a static method, as tests for other entities might also need it,
      * if they test an entity which requires the current entity.
+     * @param connName
+     * @param linkId
      */
-    public static Connection createEntity(EntityManager em) {
+    public static Connection createEntity(String connName, String linkId) {
         MySqlConnectionDetails mysqlDetail = new MySqlConnectionDetails();
         mysqlDetail.setDatabaseName("services");
         mysqlDetail.setServerIp("localhost");
         mysqlDetail.setServerPort(3306);
         Connection connection = new Connection()
-            .name(DEFAULT_NAME)
+            .name(connName)
             .connectionUsername(DEFAULT_CONNECTION_USERNAME)
             .connectionPassword(DEFAULT_CONNECTION_PASSWORD)
-            .linkId(DEFAULT_LINK_ID);
+            .linkId(linkId);
         connection.setDetails(mysqlDetail);
         return connection;
     }
 
     @Before
     public void initTest() {
-        connection = createEntity(em);
+        connection = createEntity(DEFAULT_NAME, DEFAULT_LINK_ID);
     }
 
     @Test
@@ -252,6 +255,21 @@ public class ConnectionResourceIntTest {
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
             .andExpect(jsonPath("$.[*].connectionUsername").value(hasItem(DEFAULT_CONNECTION_USERNAME.toString())))
             .andExpect(jsonPath("$.[*].linkId").value(hasItem(connection.getLinkId())));
+    }
+
+    @Test
+    @Transactional
+    public void getAllConnectionsDoesNotReturnDeleted() throws Exception {
+        // Initialize the database
+        Connection savedConnection = connectionRepository.saveAndFlush(createEntity("customName", "customLink"));
+
+        connectionRepository.delete(savedConnection);
+
+        // Get all the connectionList
+        restConnectionMockMvc.perform(get("/api/connections?sort=id,desc"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(jsonPath("$.[*].id").value(not(hasItem(savedConnection.getId().intValue()))));
     }
 
     @Test

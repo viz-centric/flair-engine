@@ -1,8 +1,8 @@
 package com.fbi.engine.service.dto;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fbi.engine.domain.ConnectionStatus;
 import com.fbi.engine.domain.details.ConnectionDetails;
 
 import javax.validation.constraints.NotNull;
@@ -36,6 +36,8 @@ public class ConnectionDTO implements Serializable {
 
     @NotNull
     private ConnectionDetails details;
+
+    private ConnectionStatus status;
 
     public Long getId() {
         return id;
@@ -93,6 +95,14 @@ public class ConnectionDTO implements Serializable {
         this.connectionType = connectionType;
     }
 
+    public ConnectionStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(ConnectionStatus status) {
+        this.status = status;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -124,4 +134,5 @@ public class ConnectionDTO implements Serializable {
             ", linkId='" + getLinkId() + "'" +
             "}";
     }
+
 }

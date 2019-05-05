@@ -40,6 +40,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import static com.fbi.engine.domain.ConnectionStatus.DELETED;
 import static com.fbi.engine.service.constant.GrpcConstants.CONNECTION_EXISTS;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
@@ -400,7 +401,7 @@ public class ConnectionGrpcServiceTest {
         verify(streamObserver, times(0)).onError(any(Throwable.class));
         verify(streamObserver, times(1)).onCompleted();
 
-        assertNull(connectionService.findOne(dto.getId()));
+        assertEquals(DELETED, connectionService.findOne(dto.getId()).getStatus());
 
         Map<String, String> parameters = connectionParameterService.getParametersByLinkId(dto.getLinkId());
         assertEquals(0, parameters.size());
