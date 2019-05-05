@@ -1,6 +1,7 @@
 package com.fbi.engine.service.impl;
 
 import com.fbi.engine.domain.Connection;
+import com.fbi.engine.domain.ConnectionStatus;
 import com.fbi.engine.repository.ConnectionRepository;
 import com.fbi.engine.service.ConnectionService;
 import com.fbi.engine.service.dto.ConnectionDTO;
@@ -81,7 +82,9 @@ public class ConnectionServiceImpl implements ConnectionService {
     @Override
     public void delete(Long id) {
         log.debug("Request to delete Connection : {}", id);
-        connectionRepository.delete(id);
+        Connection connection = connectionRepository.getOne(id);
+        connection.setStatus(ConnectionStatus.DELETED);
+        connectionRepository.save(connection);
     }
 
     @Override
@@ -111,9 +114,10 @@ public class ConnectionServiceImpl implements ConnectionService {
     public List<ConnectionDTO> findAll(Predicate predicate) {
         log.debug("Request to get all Connections");
         return ((List<Connection>) connectionRepository.findAll(predicate))
-            .stream()
-            .map(connectionMapper::toDto)
-            .collect(Collectors.toList());
+                .stream()
+                .filter(it -> it.getStatus() != ConnectionStatus.DELETED)
+                .map(connectionMapper::toDto)
+                .collect(Collectors.toList());
     }
 
     @Override
