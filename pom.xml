@@ -186,7 +186,7 @@
         <!-- our dependencies -->
         <flair-messages.version>0.0.5</flair-messages.version>
         <flair-query-language.version>1.5.20</flair-query-language.version>
-        <project-bi-common.version>1.3.6</project-bi-common.version>
+        <project-bi-common.version>1.3.7</project-bi-common.version>
         <all-grpc.version>1.20.0</all-grpc.version>
 
 
