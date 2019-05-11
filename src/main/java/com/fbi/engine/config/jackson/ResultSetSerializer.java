@@ -10,9 +10,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import java.io.IOException;
 import java.sql.Blob;
 import java.sql.Clob;
+import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Time;
 import java.sql.Types;
 
 public class ResultSetSerializer extends JsonSerializer<ResultSet> {
@@ -119,23 +121,41 @@ public class ResultSetSerializer extends JsonSerializer<ResultSet> {
                             break;
 
                         case Types.DATE:
-                            provider.defaultSerializeDateValue(rs.getDate(i + 1), jgen);
+                            Date date = rs.getDate(i + 1);
+                            if (rs.wasNull()) {
+                                jgen.writeNull();
+                            } else {
+                                provider.defaultSerializeDateValue(date, jgen);
+                            }
                             break;
 
                         case Types.TIMESTAMP:
-                            provider.defaultSerializeDateValue(rs.getTime(i + 1), jgen);
+                            Time time = rs.getTime(i + 1);
+                            if (rs.wasNull()) {
+                                jgen.writeNull();
+                            } else {
+                                provider.defaultSerializeDateValue(time, jgen);
+                            }
                             break;
 
                         case Types.BLOB:
                             Blob blob = rs.getBlob(i);
-                            provider.defaultSerializeValue(blob.getBinaryStream(), jgen);
-                            blob.free();
+                            if (rs.wasNull()) {
+                                jgen.writeNull();
+                            } else {
+                                provider.defaultSerializeValue(blob.getBinaryStream(), jgen);
+                                blob.free();
+                            }
                             break;
 
                         case Types.CLOB:
                             Clob clob = rs.getClob(i);
-                            provider.defaultSerializeValue(clob.getCharacterStream(), jgen);
-                            clob.free();
+                            if (rs.wasNull()) {
+                                jgen.writeNull();
+                            } else {
+                                provider.defaultSerializeValue(clob.getCharacterStream(), jgen);
+                                clob.free();
+                            }
                             break;
 
                         case Types.ARRAY:
@@ -152,7 +172,12 @@ public class ResultSetSerializer extends JsonSerializer<ResultSet> {
 
                         case Types.JAVA_OBJECT:
                         default:
-                            provider.defaultSerializeValue(rs.getObject(i + 1), jgen);
+                            Object object = rs.getObject(i + 1);
+                            if (rs.wasNull()) {
+                                jgen.writeNull();
+                            } else {
+                                provider.defaultSerializeValue(object, jgen);
+                            }
                             break;
                     }
                 }
