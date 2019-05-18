@@ -432,11 +432,11 @@ public class RedshiftQueryTest {
         // Create Query
         QueryDTO queryDto = new QueryDTO();
 
-        queryDto.setFields(Arrays.asList("replace(product_name,'Men','Women')"));
+        queryDto.setFields(Arrays.asList("Men", "Women"));
 
         queryDto.setSource("ecommerce");
 
-        expectedQuery="SELECT replace(product_name,'Men','Women') FROM ecommerce";
+        expectedQuery="SELECT Men, Women FROM ecommerce";
 
         FlairQuery query = new FlairQuery(queryDto.interpret(), queryDto.isMetaRetrieved());
 
