@@ -17,6 +17,7 @@ import com.project.bi.query.expression.condition.impl.CompareConditionExpression
 import com.project.bi.query.expression.condition.impl.ContainsConditionExpression;
 import com.project.bi.query.expression.condition.impl.LikeConditionExpression;
 import com.project.bi.query.expression.condition.impl.OrConditionExpression;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -432,11 +433,11 @@ public class AthenaQueryTest {
         // Create Query
         QueryDTO queryDto = new QueryDTO();
 
-        queryDto.setFields(Arrays.asList("replace(product_name,'Men','Women')"));
+        queryDto.setFields(Arrays.asList("Men", "Women"));
 
         queryDto.setSource("ecommerce");
 
-        expectedQuery="SELECT replace(product_name,'Men','Women') FROM ecommerce";
+        expectedQuery="SELECT Men, Women FROM ecommerce";
 
         FlairQuery query = new FlairQuery(queryDto.interpret(), queryDto.isMetaRetrieved());
 
@@ -457,8 +458,7 @@ public class AthenaQueryTest {
         log.info("Expected Query : {}",expectedQuery);
         log.info("Genrated Query : {}",writer.toString());
 
-        assertThat(expectedQuery).isEqualToIgnoringCase(writer.toString());
-
+        Assert.assertEquals(expectedQuery, writer.toString());
     }
 
     @Test
