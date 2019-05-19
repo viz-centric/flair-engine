@@ -32,7 +32,7 @@ public class IllegalCipherTextSizeException extends IllegalArgumentException {
      * @param message the detail message (which is saved for later retrieval
      *                by the {@link Throwable#getMessage()} method).
      * @param cause   the cause (which is saved for later retrieval by the
-     *                {@link Throwable#getCause()} method).  (A <tt>null</tt> value
+     *                {@link Throwable#getCause()} method).  (A null value
      *                is permitted, and indicates that the cause is nonexistent or
      *                unknown.)
      * @since 1.5
@@ -43,14 +43,14 @@ public class IllegalCipherTextSizeException extends IllegalArgumentException {
 
     /**
      * Constructs a new exception with the specified cause and a detail
-     * message of <tt>(cause==null ? null : cause.toString())</tt> (which
-     * typically contains the class and detail message of <tt>cause</tt>).
+     * message of (cause==null ? null : cause.toString()) (which
+     * typically contains the class and detail message of cause).
      * This constructor is useful for exceptions that are little more than
      * wrappers for other throwables (for example, {@link
      * PrivilegedActionException}).
      *
      * @param cause the cause (which is saved for later retrieval by the
-     *              {@link Throwable#getCause()} method).  (A <tt>null</tt> value is
+     *              {@link Throwable#getCause()} method).  (A null value is
      *              permitted, and indicates that the cause is nonexistent or
      *              unknown.)
      * @since 1.5
