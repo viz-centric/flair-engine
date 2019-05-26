@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Profile;
 @GRpcService
 @Profile("!test")
 public class QueryGrpcService extends AbstractQueryGrpcService {
-    public QueryGrpcService(ConnectionService connectionService, QueryServiceImpl queryService, QueryValidator queryValidator, ObjectMapper objectMapper, QueryRunnerService queryRunnerService, ConnectionParameterService connectionParameterService) {
-        super(connectionService, queryService, queryValidator, objectMapper, queryRunnerService, connectionParameterService);
+    public QueryGrpcService(ConnectionService connectionService, QueryServiceImpl queryService, QueryValidator queryValidator, ObjectMapper objectMapper, QueryRunnerService queryRunnerService, ConnectionParameterService connectionParameterService, ConnectionHelperService connectionHelperService) {
+        super(connectionService, queryService, queryValidator, objectMapper, queryRunnerService, connectionParameterService, connectionHelperService);
     }
 }

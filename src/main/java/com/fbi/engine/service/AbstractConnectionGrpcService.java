@@ -50,9 +50,8 @@ public abstract class AbstractConnectionGrpcService extends ConnectionServiceGrp
     private final ConnectionTypeService connectionTypeService;
     private final TestConnectionService connectionTestService;
     private final ConnectionDetailsMapper connectionDetailsMapper;
-    private final ConnectionMapper connectionMapper;
     private final ListTablesService listTablesService;
-
+    private final ConnectionHelperService connectionHelperService;
     @Override
     public void getConnection(GetConnectionRequest request, StreamObserver<GetConnectionResponse> responseObserver) {
         log.info("Get connection request: {}", request);
@@ -129,7 +128,7 @@ public abstract class AbstractConnectionGrpcService extends ConnectionServiceGrp
 
         String result = connectionTestService.testConnection(request.getConnectionLinkId(),
                 request.getDatasourceName(),
-                toConnectionEntity(request.hasConnection() ? request.getConnection() : null));
+                connectionHelperService.toConnectionEntity(request.hasConnection() ? request.getConnection() : null));
 
         TestConnectionResponse.Builder builder = TestConnectionResponse.newBuilder();
 
@@ -214,7 +213,7 @@ public abstract class AbstractConnectionGrpcService extends ConnectionServiceGrp
         Set<String> tables = listTablesService.listTables(request.getConnectionLinkId(),
             request.getTableNameLike(),
             request.getMaxEntries(),
-            toConnectionEntity(request.hasConnection() ? request.getConnection() : null));
+            connectionHelperService.toConnectionEntity(request.hasConnection() ? request.getConnection() : null));
 
         if (tables == null) {
             responseObserver.onError(Status.INVALID_ARGUMENT.withDescription(CONNECTION_NOT_FOUND).asRuntimeException());
@@ -229,25 +228,6 @@ public abstract class AbstractConnectionGrpcService extends ConnectionServiceGrp
                 .collect(Collectors.toList()))
             .build());
         responseObserver.onCompleted();
-    }
-
-    private com.fbi.engine.domain.Connection toConnectionEntity(com.flair.bi.messages.Connection connection) {
-        if (connection == null) {
-            return null;
-        }
-        ConnectionDTO c = new ConnectionDTO();
-        c.setId(connection.getId());
-        c.setConnectionPassword(connection.getConnectionPassword());
-        c.setConnectionUsername(connection.getConnectionUsername());
-        c.setName(connection.getName());
-        c.setLinkId(connection.getLinkId());
-
-        ConnectionTypeDTO connectionTypeDTO = connectionTypeService.findOne(connection.getConnectionType());
-        c.setConnectionType(connectionTypeDTO);
-
-        c.setDetails(connectionDetailsMapper.mapToEntity(connection.getDetailsMap()));
-
-        return connectionMapper.toEntity(c);
     }
 
     private ConnectionType toConnectionTypeProto(ConnectionTypeDTO connType) {

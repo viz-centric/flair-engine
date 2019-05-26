@@ -12,6 +12,8 @@ import com.fbi.engine.service.util.QueryGrpcUtils;
 import com.fbi.engine.service.validators.QueryValidationResult;
 import com.fbi.engine.service.validators.QueryValidator;
 import com.flair.bi.messages.Query;
+import com.flair.bi.messages.QueryAllRequest;
+import com.flair.bi.messages.QueryAllResponse;
 import com.flair.bi.messages.QueryResponse;
 import com.flair.bi.messages.QueryServiceGrpc;
 import com.flair.bi.messages.QueryValidationResponse;
@@ -23,6 +25,7 @@ import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.HashMap;
 
@@ -45,6 +48,42 @@ public abstract class AbstractQueryGrpcService extends QueryServiceGrpc.QuerySer
 
     private final ConnectionParameterService connectionParameterService;
 
+    private final ConnectionHelperService connectionHelperService;
+
+    @Override
+    public void queryAll(QueryAllRequest request, StreamObserver<QueryAllResponse> responseObserver) {
+        log.info("Query all {}", request);
+        if (!request.hasConnection() && StringUtils.isEmpty(request.getConnectionLinkId())) {
+            responseObserver.onError(Status.INVALID_ARGUMENT.withDescription(CONNECTION_NOT_FOUND).asRuntimeException());
+            return;
+        }
+
+        Connection connection;
+        if (request.hasConnection()) {
+            connection = connectionHelperService.toConnectionEntity(request.getConnection());
+        } else {
+            connection = connectionService.findByConnectionLinkId(request.getConnectionLinkId());
+        }
+
+        if (connection == null) {
+            responseObserver.onError(Status.INVALID_ARGUMENT.withDescription(CONNECTION_NOT_FOUND).asRuntimeException());
+            return;
+        }
+
+        QueryDTO queryDTO = QueryGrpcUtils.mapToQueryDTO(request.getQuery());
+        FlairQuery flairQuery = new FlairQuery(queryDTO.interpret(), queryDTO.isMetaRetrieved());
+        CacheMetadata result = queryService.executeQuery(connection, flairQuery);
+        log.info("Query all result request {}", flairQuery.getStatement());
+        log.info("Query all result result {}", result);
+
+        responseObserver.onNext(QueryAllResponse.newBuilder()
+                .setData(result.getResult())
+                .setUserId(request.getQuery().getUserId())
+                .setQueryId(request.getQuery().getQueryId())
+                .build());
+        responseObserver.onCompleted();
+    }
+
     @Override
     public void validate(Query query, StreamObserver<QueryValidationResponse> responseObserver) {
         log.info("Unary Validate Request received: {}", query);
@@ -60,7 +99,7 @@ public abstract class AbstractQueryGrpcService extends QueryServiceGrpc.QuerySer
         QueryValidationResponse queryValidationResponse = QueryValidationResponse.newBuilder()
             .setQueryId(query.getQueryId())
             .setUserId(query.getUserId())
-            .setRawQuery(queryDTO.interpret(connection.getName()))
+            .setRawQuery(queryDTO.interpret())
             .setValidationResult(QueryValidationResponse.ValidationResult.newBuilder()
                 .setType(queryValidationResult.isError() ?
                     QueryValidationResponse.ValidationResult.ValidationResultType.INVALID :
