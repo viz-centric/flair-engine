@@ -6,12 +6,13 @@ import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 @Slf4j
 public class FlyweightQueryAbstractFactory implements QueryAbstractFactory {
 
-    private Map<String, FlairFactory> queryFactoryMap = new HashMap<>();
+    private volatile Map<String, FlairFactory> queryFactoryMap = new ConcurrentHashMap<>();
 
 
     @Override
