@@ -55,6 +55,9 @@ public class QueryGrpcServiceTest {
     @Mock
     private ConnectionParameterService connectionParameterService;
 
+    @Mock
+    private ConnectionHelperService connectionHelperService;
+
     @Before
     public void setUp() {
         objectMapper = new ObjectMapper();
@@ -63,7 +66,8 @@ public class QueryGrpcServiceTest {
             queryValidator,
             objectMapper,
             queryRunService,
-            connectionParameterService);
+            connectionParameterService,
+            connectionHelperService);
     }
 
     @Test
