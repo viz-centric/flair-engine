@@ -14,7 +14,7 @@ import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.sql.Time;
+import java.sql.Timestamp;
 import java.sql.Types;
 
 public class ResultSetSerializer extends JsonSerializer<ResultSet> {
@@ -130,7 +130,7 @@ public class ResultSetSerializer extends JsonSerializer<ResultSet> {
                             break;
 
                         case Types.TIMESTAMP:
-                            Time time = rs.getTime(i + 1);
+                            Timestamp time = rs.getTimestamp(i + 1);
                             if (rs.wasNull()) {
                                 jgen.writeNull();
                             } else {
