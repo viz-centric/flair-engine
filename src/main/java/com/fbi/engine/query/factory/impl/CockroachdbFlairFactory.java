@@ -1,8 +1,6 @@
 package com.fbi.engine.query.factory.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fbi.engine.config.jackson.ResultSetSerializer;
 import com.fbi.engine.domain.Connection;
 import com.fbi.engine.query.QueryExecutor;
 import com.fbi.engine.query.executor.CockroachdbQueryExecutor;
@@ -19,10 +17,7 @@ public class CockroachdbFlairFactory implements FlairFactory {
 
     @Override
     public QueryExecutor getExecutor(Connection connection) {
-        ObjectMapper obj = new ObjectMapper();
-        SimpleModule module = new SimpleModule();
-        module.addSerializer(new ResultSetSerializer());
-        obj.registerModule(module);
+        ObjectMapper obj = createObjectMapper();
         return new CockroachdbQueryExecutor(connection, obj);
     }
 

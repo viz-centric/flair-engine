@@ -1,5 +1,9 @@
 package com.fbi.engine.query.factory;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fbi.engine.config.jackson.ResultSetSerializer;
 import com.fbi.engine.domain.Connection;
 import com.fbi.engine.domain.query.GenericQuery;
 import com.fbi.engine.domain.query.Query;
@@ -8,11 +12,15 @@ import com.project.bi.general.Factory;
 import com.project.bi.query.FlairCompiler;
 import com.project.bi.query.FlairQuery;
 
+import java.text.SimpleDateFormat;
+
 /**
  * Factory that instantiates all necessary components that are needed to communicate with external data sources.
  */
 public interface FlairFactory extends Factory {
 
+
+    String DATASOURCE_TIMESTAMP_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
     /**
      * Instantiate a compiler for given data source
@@ -36,5 +44,15 @@ public interface FlairFactory extends Factory {
 
     default Query getQuery(FlairQuery flairQuery, String statement) {
         return new GenericQuery(statement, flairQuery.isPullMeta());
+    }
+
+    default ObjectMapper createObjectMapper() {
+        ObjectMapper obj = new ObjectMapper();
+        obj.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        obj.setDateFormat(new SimpleDateFormat(DATASOURCE_TIMESTAMP_FORMAT));
+        SimpleModule module = new SimpleModule();
+        module.addSerializer(new ResultSetSerializer());
+        obj.registerModule(module);
+        return obj;
     }
 }
