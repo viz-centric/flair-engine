@@ -23,7 +23,6 @@ public final class QueryGrpcUtils {
         queryDTO.setFields(request.getFieldsList());
         queryDTO.setGroupBy(request.getGroupByList());
         queryDTO.setLimit(request.getLimit());
-        queryDTO.setEnableCaching(request.getEnableCaching());
         queryDTO.setDistinct(request.getDistinct());
         queryDTO.setOrders(getListSortDTO(request.getOrdersList()));
         queryDTO.setConditionExpressions(getListConditionExpressionDTO(request.getConditionExpressionsList()));
