@@ -32,7 +32,7 @@ public class QueryRunnerService {
                 queryDTO.isMetaRetrieved(), queryDTO.getSource());
 
         String executeQuery = queryService.executeQuery(conn, query,
-                new CacheParams().setReadFromCache(queryDTO.isEnableCaching()).setWriteToCache(queryDTO.isEnableCaching()))
+                new CacheParams())
                 .getResult();
 
         log.debug("Run query executed {}", executeQuery);

@@ -8,7 +8,6 @@ import com.project.bi.query.FlairQuery;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +19,8 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static com.project.bi.query.SQLUtil.sanitize;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -46,7 +47,7 @@ public class ListTablesService {
 
         log.info("List tables for connection {}", conn.getName());
 
-        FlairQuery query = new FlairQuery("SHOW TABLES LIKE '%" + StringEscapeUtils.escapeSql(tableNameLike) + "%' LIMIT " + maxEntries, false);
+        FlairQuery query = new FlairQuery("SHOW TABLES LIKE '%" + sanitize(tableNameLike) + "%' LIMIT " + maxEntries, false);
         String executeQuery = queryService.executeQuery(conn, query).getResult();
 
         log.debug("List tables query executed {}", executeQuery);
