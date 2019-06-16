@@ -3,7 +3,6 @@ package com.fbi.engine.query.executor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fbi.engine.domain.Connection;
 import com.fbi.engine.domain.details.AthenaConnectionDetails;
-import com.fbi.engine.domain.details.ConnectionDetails;
 import com.fbi.engine.domain.query.Query;
 import com.fbi.engine.query.convert.impl.ResultSetConverter;
 import com.project.bi.exceptions.ExecutionException;
@@ -54,7 +53,9 @@ public class AthenaQueryExecutor extends SqlQueryExecutor {
             if (connection != null) {
                 Statement statement = connection.createStatement();
 
-                statement.execute(query.getQuery());
+                String rawQuery = query.getQuery();
+                log.info("Executing raw query {}", rawQuery);
+                statement.execute(rawQuery);
                 ResultSet resultSet = statement.getResultSet();
 
                 writer.write(new ResultSetConverter(objectMapper, query.isMetadataRetrieved()).convert(resultSet));
