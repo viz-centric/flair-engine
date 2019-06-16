@@ -1,6 +1,7 @@
 package com.fbi.engine.service.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fbi.engine.domain.ConnectionStatus;
 import com.fbi.engine.domain.details.ConnectionDetails;
 
 import javax.validation.constraints.NotNull;
@@ -28,6 +29,16 @@ public class UpdateConnectionDTO {
 
     @NotNull
     private ConnectionDetails details;
+
+    private ConnectionStatus status;
+
+    public ConnectionStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(ConnectionStatus status) {
+        this.status = status;
+    }
 
     public Long getId() {
         return id;
