@@ -28,6 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.HashMap;
+import java.util.Optional;
 
 import static com.fbi.engine.service.constant.GrpcConstants.ABORTED_INTERNAL;
 import static com.fbi.engine.service.constant.GrpcConstants.CONNECTION_NOT_FOUND;
@@ -213,7 +214,7 @@ public abstract class AbstractQueryGrpcService extends QueryServiceGrpc.QuerySer
         responseObserver.onNext(QueryResponse.newBuilder()
                 .setQueryId(query.getQueryId())
                 .setUserId(query.getUserId())
-                .setData(cacheMetadata.getResult())
+                .setData(Optional.ofNullable(cacheMetadata.getResult()).orElse(""))
                 .setCacheMetadata(com.flair.bi.messages.CacheMetadata.newBuilder()
                         .setStale(cacheMetadata.isStale())
                         .setDateCreated(cacheMetadata.getDateCreated() != null ? cacheMetadata.getDateCreated().getEpochSecond() : 0)
