@@ -60,7 +60,7 @@ public class ListTablesService {
                 .flatMap((Function<Collection, Stream<String>>) collection -> collection.stream().map(item -> String.valueOf(item)))
                 .collect(Collectors.toSet())
                 .stream()
-                .filter(item -> item.contains(tableNameLike))
+                .filter(item -> item.toUpperCase().contains(tableNameLike.toUpperCase()))
                 .limit(maxEntries)
                 .collect(Collectors.toSet());
             log.info("List tables result {}", strings);
