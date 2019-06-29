@@ -5,7 +5,6 @@ import com.fbi.engine.service.dto.ConnectionDTO;
 import com.fbi.engine.service.dto.ConnectionTypeDTO;
 import com.fbi.engine.service.dto.UpdateConnectionDTO;
 import com.fbi.engine.service.mapper.ConnectionDetailsMapper;
-import com.fbi.engine.service.mapper.ConnectionMapper;
 import com.flair.bi.messages.ConnectionResponses;
 import com.flair.bi.messages.ConnectionServiceGrpc;
 import com.flair.bi.messages.ConnectionType;
@@ -124,11 +123,9 @@ public abstract class AbstractConnectionGrpcService extends ConnectionServiceGrp
 
     @Override
     public void testConnection(TestConnectionRequest request, StreamObserver<TestConnectionResponse> responseObserver) {
-        log.debug("Test connection link {} table {}", request.getConnectionLinkId(), request.getDatasourceName());
+        log.debug("Test connection connection {}", request.getConnection());
 
-        String result = connectionTestService.testConnection(request.getConnectionLinkId(),
-                request.getDatasourceName(),
-                connectionHelperService.toConnectionEntity(request.hasConnection() ? request.getConnection() : null));
+        String result = connectionTestService.testConnection(connectionHelperService.toConnectionEntity(request.getConnection()));
 
         TestConnectionResponse.Builder builder = TestConnectionResponse.newBuilder();
 
