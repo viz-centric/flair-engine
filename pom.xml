@@ -184,7 +184,7 @@
         <project.scm.id>github-credentials</project.scm.id>
 
         <!-- our dependencies -->
-        <flair-messages.version>0.0.6</flair-messages.version>
+        <flair-messages.version>0.0.7</flair-messages.version>
         <flair-query-language.version>1.5.28</flair-query-language.version>
         <project-bi-common.version>1.3.9</project-bi-common.version>
         <all-grpc.version>1.20.0</all-grpc.version>

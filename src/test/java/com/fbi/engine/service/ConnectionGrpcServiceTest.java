@@ -42,9 +42,17 @@ import java.util.Map;
 
 import static com.fbi.engine.domain.ConnectionStatus.DELETED;
 import static com.fbi.engine.service.constant.GrpcConstants.CONNECTION_EXISTS;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.isNull;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = FbiengineApp.class)
@@ -79,34 +87,21 @@ public class ConnectionGrpcServiceTest {
             return null;
         }).when(responseObserver).onNext(any(TestConnectionResponse.class));
 
-        when(connectionTestService.testConnection(eq("1715917d-fff8-44a1-af02-ee2cd41a3609"),
-            eq("sales"), any(com.fbi.engine.domain.Connection.class))).thenReturn("{\"data\":[]}");
+        when(connectionTestService.testConnection(
+                any(com.fbi.engine.domain.Connection.class))).thenReturn("{\"data\":[]}");
 
         connectionGrpcService.testConnection(TestConnectionRequest.newBuilder()
-                .setConnectionLinkId("1715917d-fff8-44a1-af02-ee2cd41a3609")
-                .setDatasourceName("sales")
-                .build(),
-            responseObserver);
-
-        verify(responseObserver, times(1)).onCompleted();
-    }
-
-    @Test
-    public void testConnectionUnsucccessfulIfDatasourceNameIsInvalid() {
-        StreamObserver<TestConnectionResponse> responseObserver = Mockito.mock(StreamObserver.class);
-
-        doAnswer(invocationOnMock -> {
-            TestConnectionResponse argument = invocationOnMock.getArgumentAt(0, TestConnectionResponse.class);
-            assertEquals("", argument.getResult());
-            return null;
-        }).when(responseObserver).onNext(any(TestConnectionResponse.class));
-
-        when(connectionTestService.testConnection(eq("1715917d-fff8-44a1-af02-ee2cd41a3609"),
-            eq("sales"), any(com.fbi.engine.domain.Connection.class))).thenReturn("");
-
-        connectionGrpcService.testConnection(TestConnectionRequest.newBuilder()
-                .setConnectionLinkId("1715917d-fff8-44a1-af02-ee2cd41a3609")
-                .setDatasourceName("sales")
+                .setConnection(Connection.newBuilder()
+                        .setConnectionPassword("pwd")
+                        .setConnectionUsername("usr")
+                        .setLinkId("lnkid")
+                        .setName("nm")
+                        .setConnectionType(1)
+                        .putDetails("@type", "MySql")
+                        .putDetails("serverPort", "1234")
+                        .putDetails("databaseName", "services")
+                        .putDetails("serverIp", "localhost")
+                        .build())
                 .build(),
             responseObserver);
 
