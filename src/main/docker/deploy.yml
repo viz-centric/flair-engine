@@ -48,6 +48,6 @@ services:
             - POSTGRES_DB=fbiengine
 
 networks:
-    default:
+    flair-network:
         external:
             name: flair-network
