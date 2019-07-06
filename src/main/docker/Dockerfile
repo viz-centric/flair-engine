@@ -16,9 +16,12 @@ EXPOSE 8081
 EXPOSE 8082
 EXPOSE 6565
 
+ADD https://github.com/grpc-ecosystem/grpc-health-probe/releases/download/v0.3.0/grpc_health_probe-linux-amd64 /bin/grpc_health_probe
 COPY classes/config/ssl/ssl-prod.properties /app/pgsql.properties
 COPY ssl/keystore/fbiengine-keystore.p12 /app/keystore.p12
 COPY ssl/keystore/fbiengine-truststore.p12 /app/truststore.p12
+COPY ssl/certsgen/client.crt /app/client.crt
+COPY ssl/certsgen/client.pem /app/client.pem
 COPY ssl/certsgen/server.crt /app/certChainFile.crt
 COPY ssl/certsgen/server.pem /app/privateKeyFile.pem
 COPY ssl/certsgen/ca.crt /app/trustCertCollectionFile.crt
@@ -30,6 +33,7 @@ COPY *.war /app/app.war
 
 RUN chown -R flairuser:flairuser /app
 RUN chmod -R 755 /app
+RUN chmod +x /bin/grpc_health_probe
 
 USER flairuser
 CMD echo "The application will start in ${JHIPSTER_SLEEP}s..." && \
