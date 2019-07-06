@@ -61,3 +61,14 @@ After that, copy the whole contents from `src/main/resources/ssl/cachecertsgen/*
 ```bash
 cp src/main/resources/ssl/cachecertsgen ../../../../../../flair-cache/src/main/resources/ssl/cachecertsgen
 ``` 
+
+### Run health check
+
+```bash
+grpc_health_probe -addr localhost:6565 \
+    -tls \
+    -tls-ca-cert=/app/trustCertCollectionFile.crt \
+    -tls-client-cert=/app/client.crt \
+    -tls-client-key=/app/client.pem \
+    -tls-server-name=flair-engine-grpc
+```
