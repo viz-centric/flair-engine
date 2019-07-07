@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.project.bi.query.dto.ConditionExpressionDTO;
+import com.project.bi.query.dto.HavingDTO;
 import com.project.bi.query.dto.QueryDTO;
 import com.project.bi.query.dto.SortDTO;
 import com.project.bi.query.expression.condition.ConditionExpression;
@@ -25,8 +26,20 @@ public final class QueryGrpcUtils {
         queryDTO.setLimit(request.getLimit());
         queryDTO.setDistinct(request.getDistinct());
         queryDTO.setOrders(getListSortDTO(request.getOrdersList()));
+        queryDTO.setHaving(getListHavingDTO(request.getHavingList()));
         queryDTO.setConditionExpressions(getListConditionExpressionDTO(request.getConditionExpressionsList()));
         return queryDTO;
+    }
+
+    private static List<HavingDTO> getListHavingDTO(List<Query.HavingHolder> havingList) {
+        return havingList.stream()
+                .map(h -> HavingDTO.builder()
+                        .featureName(h.getFeatureName())
+                        .value(h.getValue())
+                        .comparatorType(HavingDTO.ComparatorType.valueOf(h.getComparatorType().name()))
+                        .build()
+                )
+                .collect(Collectors.toList());
     }
 
     private static List<SortDTO> getListSortDTO(List<Query.SortHolder> orders){
