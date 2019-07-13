@@ -78,7 +78,9 @@ liquibase:
 # JHipster specific properties
 #
 # Full reference is available at: https://jhipster.github.io/common-application-properties/
-# ===================================================================
+# ==
+server:
+   port: 4444
 
 jhipster:
     http:
@@ -159,6 +161,6 @@ info:
     project:
         version: 1.0
 grpc:
-    port: 9996
+    port: 9999
     tls:
         enabled: false
