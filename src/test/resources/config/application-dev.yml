@@ -1,7 +1,0 @@
-spring:
-    datasource:
-        type: com.zaxxer.hikari.HikariDataSource
-        #    url: jdbc:postgresql://localhost:5432/fbiengine?ssl=true&sslfactory=com.fbi.engine.ssl.FBIEnginePgSQLSSLSocketFactory&sslfactoryarg=src/main/resources/config/ssl/ssl-dev.properties
-        url: jdbc:postgresql://localhost:5432/fbiengine?ssl=false
-        username: postgres
-        password: admin

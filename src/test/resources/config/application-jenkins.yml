@@ -1,0 +1,10 @@
+# ===================================================================
+# Spring boot configuration for integration tests when running on
+# Jenkins continuous integration
+# ===================================================================
+spring:
+    datasource:
+        type: com.zaxxer.hikari.HikariDataSource
+        url: jdbc:postgresql://flair-engine-pgsql:5432/fbiengine?ssl=false
+        username: postgres
+        password: admin

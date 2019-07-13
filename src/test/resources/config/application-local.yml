@@ -1,0 +1,10 @@
+# ===================================================================
+# Spring boot configuration for integration tests when running on
+# local machine.
+# ===================================================================
+spring:
+    datasource:
+        type: com.zaxxer.hikari.HikariDataSource
+        url: jdbc:postgresql://localhost:5432/fbiengine?ssl=false
+        username: postgres
+        password: admin
