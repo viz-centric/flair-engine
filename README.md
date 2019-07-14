@@ -68,7 +68,7 @@ cp src/main/resources/ssl/cachecertsgen ../../../../../../flair-cache/src/main/r
 grpc_health_probe -addr localhost:6565 \
     -tls \
     -tls-ca-cert=/app/trustCertCollectionFile.crt \
-    -tls-client-cert=/app/client.crt \
-    -tls-client-key=/app/client.pem \
+    -tls-client-cert=/app/clientCertChainFile.crt \
+    -tls-client-key=/app/clientPrivateKeyFile.pem \
     -tls-server-name=flair-engine-grpc
 ```
