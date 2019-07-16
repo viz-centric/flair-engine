@@ -1,9 +1,0 @@
-version: '2'
-
-services:
-    builder:
-      image: flairbi/flair-java-dev
-      volumes:
-        - ~/.m2/settings.xml:/root/.m2/settings.xml
-        - ./../../../:/app
-      command: ["mvn", "clean", "install", "-DskipTests"]
