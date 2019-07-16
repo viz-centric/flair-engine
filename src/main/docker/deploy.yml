@@ -1,7 +1,7 @@
 version: "2"
 services:
     flair-engine:
-        image: flairbi/flair-engine:${TAG}
+        image: flairbi/flair-engine
         labels:
             purpose: Bankend engine
             environment: staging
@@ -17,7 +17,7 @@ services:
         - flair-network
 
     flair-engine-grpc:
-        image: flairbi/flair-engine:${TAG}
+        image: flairbi/flair-engine
         labels:
             purpose: Bankend engine
             environment: staging
@@ -35,7 +35,7 @@ services:
             - POSTGRES_PASS=admin
 
     flair-engine-pgsql:
-        image: flairbi/flair-engine-pgsql:${TAG}
+        image: flairbi/flair-engine-pgsql
         labels:
             purpose: Flair engine store
             environment: staging
