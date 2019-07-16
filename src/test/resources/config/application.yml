@@ -81,10 +81,6 @@ liquibase:
 # ==
 server:
    port: 4444
-grpc:
-    port: 4445
-    tls:
-        enabled: false
 
 jhipster:
     http:
@@ -164,4 +160,7 @@ management:
 info:
     project:
         version: 1.0
-
+grpc:
+    port: 9999
+    tls:
+        enabled: false
