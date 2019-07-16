@@ -1297,7 +1297,8 @@
                                     <name>flairbi/${project.artifactId}</name>
                                     <build>
                                         <tags>
-                                            <tag>v${project.version}.${revision}</tag>
+                                            <tag>v${project.version}</tag>
+                                            <tag>${DOCKER_TAG:latest}</tag>
                                         </tags>
                                         <dockerFileDir>${project.build.directory}</dockerFileDir>
                                     </build>
@@ -1306,7 +1307,8 @@
                                     <name>flairbi/flair-engine-pgsql</name>
                                     <build>
                                         <tags>
-                                            <tag>v${project.version}.${revision}</tag>
+                                            <tag>v${project.version}</tag>
+                                            <tag>${DOCKER_TAG:latest}</tag>
                                         </tags>
                                         <dockerFileDir>${project.build.directory}/flair-engine-pgsql</dockerFileDir>
                                     </build>
