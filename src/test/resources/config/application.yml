@@ -18,10 +18,9 @@ spring:
         name: fbiengine
     profiles:
         include:
-        # this profile is used to run the integration tests on the jenkins machine.
-        # in case you want to run tests locally you can comment this, but DONT COMMIT.
-        - jenkins
-        # - local
+        - test
+        - dev
+        - swagger
     devtools:
         restart:
             enabled: true
@@ -29,6 +28,12 @@ spring:
             enabled: false # we use gulp + BrowserSync for livereload
     jackson:
         serialization.indent_output: true
+    datasource:
+        type: com.zaxxer.hikari.HikariDataSource
+        #    url: jdbc:postgresql://localhost:5432/fbiengine?ssl=true&sslfactory=com.fbi.engine.ssl.FBIEnginePgSQLSSLSocketFactory&sslfactoryarg=src/main/resources/config/ssl/ssl-dev.properties
+        url: jdbc:postgresql://localhost:5432/fbiengine?ssl=false
+        username: postgres
+        password: admin
     jpa:
         database-platform: io.github.jhipster.domain.util.FixedPostgreSQL82Dialect
         database: POSTGRESQL

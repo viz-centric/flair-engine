@@ -9,10 +9,17 @@ services:
         - POSTGRES_DB=fbiengine
         ports:
         - 5432:5432
-        networks:
-        - traefik
 
-networks:
-  traefik:
-    external:
-      name: traefik
+    flair-registry-dev:
+        container_name: "test-flair-registry"
+        labels:
+            purpose: Flair config server and service discovery
+            environment: development
+        image: flairbi/flair-registry:latest
+        ports:
+        - 8762:8762
+        - 8761:8761
+        environment:
+        - JHIPSTER_SLEEP=0
+        - SPRING_PROFILES_ACTIVE=prod
+        - BITBUCKET_URI=https://github.com/viz-centric/flair-config.git
