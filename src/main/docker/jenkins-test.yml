@@ -1,0 +1,21 @@
+version: '2'
+services:
+    flair-engine-pgsql-test:
+        image: flairbi/flair-engine-pgsql
+        networks:
+        - flair-network
+        environment:
+            - POSTGRES_USER=postgres
+            - POSTGRES_PASSWORD=admin
+            - POSTGRES_DB=fbiengine
+    flair-registry-test:
+        image: flairbi/flair-registry:latest
+        environment:
+        - JHIPSTER_SLEEP=0
+        - SPRING_PROFILES_ACTIVE=prod
+        - BITBUCKET_URI=https://github.com/viz-centric/flair-config.git
+
+networks:
+    flair-network:
+        external:
+            name: flair-network
