@@ -20,8 +20,8 @@ ADD https://github.com/grpc-ecosystem/grpc-health-probe/releases/download/v0.3.0
 COPY classes/config/ssl/ssl-prod.properties /app/pgsql.properties
 COPY ssl/keystore/fbiengine-keystore.p12 /app/keystore.p12
 COPY ssl/keystore/fbiengine-truststore.p12 /app/truststore.p12
-COPY ssl/certsgen/client.crt /app/client.crt
-COPY ssl/certsgen/client.pem /app/client.pem
+COPY ssl/certsgen/client.crt /app/clientCertChainFile.crt
+COPY ssl/certsgen/client.pem /app/clientPrivateKeyFile.pem
 COPY ssl/certsgen/server.crt /app/certChainFile.crt
 COPY ssl/certsgen/server.pem /app/privateKeyFile.pem
 COPY ssl/certsgen/ca.crt /app/trustCertCollectionFile.crt
