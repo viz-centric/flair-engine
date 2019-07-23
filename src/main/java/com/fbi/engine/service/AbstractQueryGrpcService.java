@@ -143,8 +143,9 @@ public abstract class AbstractQueryGrpcService extends QueryServiceGrpc.QuerySer
         return new StreamObserver<Query>() {
             @Override
             public void onNext(Query query) {
-                log.debug("Streaming Request received: {}", query.toString());
+                log.debug("Streaming Request received: {}", query);
                 QueryDTO queryDTO = QueryGrpcUtils.mapToQueryDTO(query);
+                log.debug("Streaming Request DTO  received: {}", queryDTO);
                 if (!validateQuery(queryDTO, responseObserver)) {
                     return;
                 }
