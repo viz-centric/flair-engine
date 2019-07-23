@@ -37,6 +37,8 @@ To generate SSL certs, run this command:
 
 ```bash
 cd src/main/resources/ssl/certsgen
+./generate.sh
+
 ```
 
 Make sure you open that bash file and check `SERVER_CN` and `CLIENT_CN` variables there. If you plan to run in docker environment, then keep
@@ -52,6 +54,8 @@ To generate SSL certs, run this command:
 
 ```bash
 cd src/main/resources/ssl/cachecertsgen
+./generate.sh
+
 ```
 
 Make sure you open that bash file and check `SERVER_CN` and `CLIENT_CN` variables there. If you plan to run in docker environment, then keep
