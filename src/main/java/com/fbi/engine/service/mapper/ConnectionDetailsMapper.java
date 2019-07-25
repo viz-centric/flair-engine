@@ -41,6 +41,7 @@ public class ConnectionDetailsMapper {
             case "Athena":
                 connectionDetails = new AthenaConnectionDetails();
                 ((AthenaConnectionDetails) connectionDetails).setS3OutputLocation(value.get("s3OutputLocation"));
+                ((AthenaConnectionDetails) connectionDetails).setWorkgroup(value.get("workgroup"));
                 break;
             case "Spark":
                 connectionDetails = new SparkConnectionDetails();
@@ -75,6 +76,7 @@ public class ConnectionDetailsMapper {
         } else if (connectionDetails instanceof AthenaConnectionDetails) {
             map.put("@type", "Athena");
             map.put("s3OutputLocation", ((AthenaConnectionDetails) connectionDetails).getS3OutputLocation());
+            map.put("workgroup", ((AthenaConnectionDetails) connectionDetails).getWorkgroup());
         } else if (connectionDetails instanceof PostgresConnectionDetails) {
             map.put("@type", "Postgres");
         } else if (connectionDetails instanceof SparkConnectionDetails) {

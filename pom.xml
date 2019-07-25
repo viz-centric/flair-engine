@@ -9,7 +9,7 @@
     </parent>
     <groupId>com.fbi.engine</groupId>
     <artifactId>flair-engine</artifactId>
-    <version>1.1.7-SNAPSHOT</version>
+    <version>1.1.8-SNAPSHOT</version>
     <packaging>war</packaging>
     <name>flair-engine</name>
     <scm>
@@ -777,9 +777,11 @@
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>com.syncron.amazonaws</groupId>
-            <artifactId>simba-athena-jdbc-driver</artifactId>
-            <version>2.0.2</version>
+            <groupId>local</groupId>
+            <artifactId>AthenaJDBC42</artifactId>
+            <version>2.0.7</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/AthenaJDBC42-2.0.7.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>com.oracle</groupId>
