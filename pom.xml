@@ -85,6 +85,16 @@
             <id>redshift</id>
             <url>http://redshift-maven-repository.s3-website-us-east-1.amazonaws.com/release</url>
         </repository>
+        <repository>
+            <id>local-maven-repo</id>
+            <url>file:///${project.basedir}/libs</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
     </repositories>
     <properties>
         <docker-maven-plugin.version>0.27.2</docker-maven-plugin.version>
@@ -780,8 +790,6 @@
             <groupId>local</groupId>
             <artifactId>AthenaJDBC42</artifactId>
             <version>2.0.7</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/libs/AthenaJDBC42-2.0.7.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>com.oracle</groupId>
