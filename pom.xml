@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <artifactId>spring-boot-starter-parent</artifactId>
@@ -1326,6 +1327,55 @@
                 <!-- default Spring profiles -->
                 <spring.profiles.active>prod${profile.swagger}${profile.no-liquibase}${profile.jenkins}</spring.profiles.active>
             </properties>
+        </profile>
+        <profile>
+            <id>jenkins</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>io.fabric8</groupId>
+                        <artifactId>docker-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>build-dockerfile</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>build</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>push-images</id>
+                                <phase>deploy</phase>
+                                <goals>
+                                    <goal>push</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <images>
+                                <image>
+                                    <name>flairbi/${project.artifactId}</name>
+                                    <build>
+                                        <tags>
+                                            <tag>v${project.version}.${revision}</tag>
+                                        </tags>
+                                        <dockerFileDir>${project.build.directory}</dockerFileDir>
+                                    </build>
+                                </image>
+                                <image>
+                                    <name>flairbi/flair-engine-pgsql</name>
+                                    <build>
+                                        <tags>
+                                            <tag>v${project.version}.${revision}</tag>
+                                        </tags>
+                                        <dockerFileDir>${project.build.directory}/flair-engine-pgsql</dockerFileDir>
+                                    </build>
+                                </image>
+                            </images>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
         <profile>
             <!--
