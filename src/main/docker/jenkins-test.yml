@@ -1,7 +1,7 @@
 version: '2'
 services:
     flair-engine-pgsql-test:
-        image: flairbi/flair-engine-pgsql
+        image: flairbi/flair-engine-pgsql:${TAG}
         networks:
         - jenkins
         environment:
