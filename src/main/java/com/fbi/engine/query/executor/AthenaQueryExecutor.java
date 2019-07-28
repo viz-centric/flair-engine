@@ -25,7 +25,7 @@ public class AthenaQueryExecutor extends SqlQueryExecutor {
 
     @Override
     protected void loadDrivers() throws ClassNotFoundException {
-        Class.forName("com.simba.athena.jdbc42.Driver");
+        Class.forName("com.simba.athena.jdbc.Driver");
     }
 
     @Override
@@ -47,6 +47,7 @@ public class AthenaQueryExecutor extends SqlQueryExecutor {
 
         AthenaConnectionDetails details = (AthenaConnectionDetails) this.connection.getDetails();
         info.put("S3OutputLocation", details.getS3OutputLocation());
+        info.put("Workgroup", details.getWorkgroup());
         info.put("Schema", details.getDatabaseName());
 
         try (java.sql.Connection connection = DriverManager.getConnection(details.getConnectionString(), info)) {
