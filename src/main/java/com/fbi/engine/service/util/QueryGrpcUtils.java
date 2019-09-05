@@ -1,8 +1,8 @@
 package com.fbi.engine.service.util;
 
+import com.fbi.engine.config.jackson.JacksonUtil;
 import com.fbi.engine.service.constant.GrpcConstants;
 import com.flair.bi.messages.Query;
-import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.project.bi.query.dto.ConditionExpressionDTO;
@@ -74,7 +74,7 @@ public final class QueryGrpcUtils {
     }
 
     private static ConditionExpression createConditionExpression(String conditionExpressionString, Integer expressionType) {
-        return new Gson().fromJson(
+        return JacksonUtil.fromString(
             conditionExpressionString,
             getConditionExpressionInstance(expressionType).getClass()
         );
@@ -84,12 +84,12 @@ public final class QueryGrpcUtils {
         JsonParser parser = new JsonParser();
         JsonElement jsonTree = parser.parse(conditionExpressionString);
         if(jsonTree.isJsonObject()) {
-            ConditionExpression firstExpression = new Gson().fromJson(
+            ConditionExpression firstExpression = JacksonUtil.fromString(
                 jsonTree.getAsJsonObject().get(GrpcConstants.FIRST_EXPRESSION).toString(),
                 getConditionExpressionInstance(andOrExpressionType.getFirstExpressionTypeValue()).getClass()
             );
 
-            ConditionExpression secondExpression = new Gson().fromJson(
+            ConditionExpression secondExpression = JacksonUtil.fromString(
                 jsonTree.getAsJsonObject().get(GrpcConstants.SECOND_EXPRESSION).toString(),
                 getConditionExpressionInstance(andOrExpressionType.getSecondExpressionTypeValue()).getClass()
             );
