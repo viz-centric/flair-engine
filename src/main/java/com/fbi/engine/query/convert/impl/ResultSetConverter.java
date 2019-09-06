@@ -44,16 +44,20 @@ public class ResultSetConverter implements Converter<ResultSet, String> {
                 objectNode.putPOJO("metadata", map);
             }
 
-            try {
-                objectMapper.writeValue(stringWriter, objectNode);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            writeValue(stringWriter, objectNode);
 
             return stringWriter.toString();
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    private void writeValue(StringWriter stringWriter, ObjectNode objectNode) {
+        try {
+            objectMapper.writeValue(stringWriter, objectNode);
+        } catch (IOException e) {
+            log.error("Error writing json value", e);
         }
     }
 }

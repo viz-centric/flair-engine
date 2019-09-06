@@ -10,7 +10,9 @@ import com.project.bi.query.expression.condition.SimpleConditionExpression;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
@@ -36,7 +38,7 @@ public class QueryValidator {
                 .collect(Collectors.toSet());
 
         return new QueryValidationResult()
-            .setErrors(duplicatedFeatureNames.size() > 0 ? GrpcErrors.DUPLICATE_FEATURES : null)
+            .setErrors(duplicatedFeatureNames.isEmpty() ? null : GrpcErrors.DUPLICATE_FEATURES)
             .setFeatureNames(duplicatedFeatureNames);
     }
 

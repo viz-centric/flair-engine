@@ -9,9 +9,4 @@ public class PostgresSqlQueryExecutor extends SqlQueryExecutor {
         super(connection, objectMapper);
     }
 
-    @Override
-    protected void loadDrivers() throws ClassNotFoundException {
-        Class.forName("org.postgresql.Driver");
-    }
-
 }

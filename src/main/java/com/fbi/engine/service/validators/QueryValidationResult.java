@@ -4,7 +4,6 @@ import com.fbi.engine.service.constant.GrpcErrors;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
-import java.util.List;
 import java.util.Set;
 
 @Data

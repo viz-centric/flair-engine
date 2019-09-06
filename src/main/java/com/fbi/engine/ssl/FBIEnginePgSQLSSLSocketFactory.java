@@ -63,11 +63,7 @@ public class FBIEnginePgSQLSSLSocketFactory extends SSLSocketFactory {
         checkFileRequirements(confFile);
 
         Properties prop = new Properties();
-        InputStream input = null;
-
-        try {
-
-            input = new FileInputStream(confFile);
+        try (InputStream input = new FileInputStream(confFile)) {
 
             // load a properties file
             prop.load(input);
@@ -104,15 +100,7 @@ public class FBIEnginePgSQLSSLSocketFactory extends SSLSocketFactory {
 
             return sslContext.getSocketFactory();
         } catch (IOException | KeyManagementException | KeyStoreException | UnrecoverableKeyException | NoSuchAlgorithmException | CertificateException ex) {
-            ex.printStackTrace();
-        } finally {
-            if (input != null) {
-                try {
-                    input.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+            log.error("Error creating socket", ex);
         }
         return null;
     }

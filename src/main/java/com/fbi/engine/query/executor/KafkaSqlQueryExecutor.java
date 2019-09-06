@@ -55,11 +55,6 @@ public class KafkaSqlQueryExecutor extends SqlQueryExecutor {
     }
 
     @Override
-    protected void loadDrivers() {
-        throw new RuntimeException("Load drives not supported for kafka");
-    }
-
-    @Override
     public void execute(Query query, Writer writer) throws ExecutionException {
         KafkaQuery kafkaQuery = (KafkaQuery) query;
         executeKafkaQuery(writer, kafkaQuery);
@@ -80,7 +75,7 @@ public class KafkaSqlQueryExecutor extends SqlQueryExecutor {
 
         List<Map<String, Object>> data;
         if (Objects.equals(kafkaQuery.getQuery(), KafkaListener.QUERY__SHOW_TABLES_AND_STREAMS)) {
-            data = getShowTablesResult(kafkaQuery, kafkaQuery.getQuery());
+            data = getShowTablesResult();
         } else  {
             data = getQueryResult(kafkaQuery, kafkaQuery.getQuery());
         }
@@ -129,7 +124,7 @@ public class KafkaSqlQueryExecutor extends SqlQueryExecutor {
             .collect(Collectors.toList());
     }
 
-    private List<Map<String, Object>> getShowTablesResult(KafkaQuery query, String statement) throws ExecutionException {
+    private List<Map<String, Object>> getShowTablesResult() throws ExecutionException {
         KafkaShowTablesResponse[] tableResults = makeKafkaRequest(ENDPOINT_KSQL, "show tables", KafkaShowTablesResponse[].class);
         KafkaShowTablesResponse[] streamResults = makeKafkaRequest(ENDPOINT_KSQL, "show streams", KafkaShowTablesResponse[].class);
 
@@ -171,13 +166,12 @@ public class KafkaSqlQueryExecutor extends SqlQueryExecutor {
     private Map<String, String> getQueryMetadata(KafkaQuery kafkaQuery) throws ExecutionException {
         String statement = DESCRIBE_STMT + kafkaQuery.getSource();
         KafkaKsqlDescribeResponse[] result = makeKafkaRequest(ENDPOINT_KSQL, statement, KafkaKsqlDescribeResponse[].class);
-        Map<String, String> map = Arrays.asList(result)
+        return Arrays.asList(result)
             .get(0)
             .getSourceDescription()
             .getFields()
             .stream()
             .collect(Collectors.toMap(f -> f.getName(), f -> f.getSchema().getType()));
-        return map;
     }
 
     private <T> T makeKafkaRequest(String endpoint, String statement, Class<T> responseClass) throws ExecutionException {

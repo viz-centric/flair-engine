@@ -132,7 +132,7 @@ public final class QueryGrpcUtils {
             case 6:
                 return GrpcConstants.likeConditionExpression;
             default:
-                return null;
+                throw new IllegalArgumentException("No conditional expression found for type " + type);
         }
     }
 }

@@ -55,11 +55,6 @@ public class KafkaSqlQueryExecutorTest {
         executor = new KafkaSqlQueryExecutor(connection, objectMapper, restTemplate, new KafkaFlairFactory());
     }
 
-    @Test(expected = RuntimeException.class)
-    public void loadDrivers() {
-        executor.loadDrivers();
-    }
-
     @Ignore
     @Test
     public void executeSelectQuery() throws Exception {

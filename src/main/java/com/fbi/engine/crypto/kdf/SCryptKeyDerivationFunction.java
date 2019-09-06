@@ -1,9 +1,8 @@
 package com.fbi.engine.crypto.kdf;
 
 import org.bouncycastle.crypto.generators.SCrypt;
-import org.springframework.stereotype.Component;
 
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Implementation of {@link KeyDerivationFunction}
@@ -22,6 +21,6 @@ public class SCryptKeyDerivationFunction implements KeyDerivationFunction {
      */
     @Override
     public byte[] derive(String passphrase, byte[] salt, int len) {
-        return SCrypt.generate(passphrase.getBytes(Charset.forName("UTF-8")), salt, 16384, 8, 8, len);
+        return SCrypt.generate(passphrase.getBytes(StandardCharsets.UTF_8), salt, 16384, 8, 8, len);
     }
 }

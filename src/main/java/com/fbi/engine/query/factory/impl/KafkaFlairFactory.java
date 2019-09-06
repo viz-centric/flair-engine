@@ -8,6 +8,7 @@ import com.fbi.engine.domain.query.Query;
 import com.fbi.engine.query.QueryExecutor;
 import com.fbi.engine.query.executor.KafkaSqlQueryExecutor;
 import com.fbi.engine.query.factory.FlairFactory;
+import com.fbi.engine.query.factory.FlairFactoryConst;
 import com.flair.bi.compiler.kafka.KafkaFlairCompiler;
 import com.project.bi.query.FlairCompiler;
 import com.project.bi.query.FlairQuery;
@@ -32,7 +33,7 @@ public class KafkaFlairFactory implements FlairFactory {
     public QueryExecutor getExecutor(Connection connection) {
         ObjectMapper obj = new ObjectMapper();
         obj.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-        obj.setDateFormat(new SimpleDateFormat(DATASOURCE_TIMESTAMP_FORMAT));
+        obj.setDateFormat(new SimpleDateFormat(FlairFactoryConst.DATASOURCE_TIMESTAMP_FORMAT));
         return new KafkaSqlQueryExecutor(connection, obj, new RestTemplate(), this);
     }
 

@@ -28,37 +28,19 @@ public abstract class SqlQueryExecutor implements QueryExecutor {
 
     protected final ObjectMapper objectMapper;
 
-
-    /**
-     * Load drivers for specific database management system
-     *
-     * @throws ClassNotFoundException if driver is not found
-     */
-    protected abstract void loadDrivers() throws ClassNotFoundException;
-
     @Override
     public void execute(Query query, Writer writer) throws ExecutionException {
-        try {
-            loadDrivers();
-        } catch (ClassNotFoundException e) {
-            log.error("Driver is not supported: {}", e.getMessage());
-            throw new ExecutionException("Driver not supported");
-        }
-
-
-        try (java.sql.Connection connection = DriverManager.getConnection(
+        try (java.sql.Connection c = DriverManager.getConnection(
             this.connection.getDetails().getConnectionString(),
             this.connection.getConnectionUsername(),
             this.connection.getConnectionPassword())) {
-            if (connection != null) {
-                Statement statement = connection.createStatement();
-
-                statement.execute(query.getQuery());
-                ResultSet resultSet = statement.getResultSet();
-
-                writer.write(new ResultSetConverter(objectMapper, query.isMetadataRetrieved()).convert(resultSet));
-
-                statement.close();
+            if (c != null) {
+                try (Statement statement = c.createStatement()) {
+                    statement.execute(query.getQuery());
+                    try (ResultSet resultSet = statement.getResultSet()) {
+                        writer.write(new ResultSetConverter(objectMapper, query.isMetadataRetrieved()).convert(resultSet));
+                    }
+                }
                 log.debug("Connection closed");
             } else {
                 log.error("Failed to make connection!");
