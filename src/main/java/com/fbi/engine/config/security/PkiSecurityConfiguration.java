@@ -39,6 +39,7 @@ public class PkiSecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
+    @Override
     public UserDetailsService userDetailsService() {
         return (username -> {
             if (properties.getAuthentication().getFlairBi().getPki().getSubjects().contains(username)) {

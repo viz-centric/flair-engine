@@ -9,9 +9,4 @@ public class SparkSqlQueryExecutor extends SqlQueryExecutor {
         super(connection, objectMapper);
     }
 
-    @Override
-    protected void loadDrivers() throws ClassNotFoundException {
-        Class.forName("org.apache.hive.jdbc.HiveDriver");
-    }
-
 }

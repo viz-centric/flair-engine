@@ -4,7 +4,6 @@ import com.fbi.engine.query.factory.FlairFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -12,7 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 public class FlyweightQueryAbstractFactory implements QueryAbstractFactory {
 
-    private volatile Map<String, FlairFactory> queryFactoryMap = new ConcurrentHashMap<>();
+    private final Map<String, FlairFactory> queryFactoryMap = new ConcurrentHashMap<>();
 
 
     @Override

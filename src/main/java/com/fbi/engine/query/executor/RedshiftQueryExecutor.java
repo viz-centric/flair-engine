@@ -9,9 +9,4 @@ public class RedshiftQueryExecutor extends SqlQueryExecutor {
         super(connection, objectMapper);
     }
 
-    @Override
-    protected void loadDrivers() throws ClassNotFoundException {
-        Class.forName("com.amazon.redshift.jdbc4.Driver");
-    }
-
 }

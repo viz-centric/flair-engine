@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fbi.engine.service.ManagedGrpcFactoryService;
 import com.flair.bi.messages.CacheServiceGrpc;
 import com.flair.bi.messages.GetCacheResponse;
-import com.flair.bi.messages.PutCacheResponse;
 import com.project.bi.query.FlairQuery;
 import io.grpc.ManagedChannel;
 import io.grpc.Status;
@@ -30,11 +29,6 @@ public class FlairCachingService {
     private CacheServiceGrpc.CacheServiceBlockingStub getCacheServiceStub() {
         ManagedChannel channel = managedGrpcFactoryService.getManagedChannel("flair-cache");
         return CacheServiceGrpc.newBlockingStub(channel);
-    }
-
-    private CacheServiceGrpc.CacheServiceStub getCacheServiceAsyncStub() {
-        ManagedChannel channel = managedGrpcFactoryService.getManagedChannel("flair-cache");
-        return CacheServiceGrpc.newStub(channel);
     }
 
     public Optional<CacheMetadata> getResult(FlairQuery query, String connectionLinkId) {
@@ -98,7 +92,7 @@ public class FlairCachingService {
         }
 
         try {
-            PutCacheResponse putCache = getCacheServiceStub().putCache(com.flair.bi.messages.PutCacheRequest.newBuilder()
+            getCacheServiceStub().putCache(com.flair.bi.messages.PutCacheRequest.newBuilder()
                     .setKey(cacheKey.get())
                     .setTable(connectionLinkId)
                     .setValue(result)

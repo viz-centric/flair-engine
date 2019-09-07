@@ -9,12 +9,4 @@ public class OracleSqlQueryExecutor extends SqlQueryExecutor {
         super(connection, objectMapper);
     }
 
-    /**
-     * Loads the JDBC driver required for Oracle
-     */
-    @Override
-    protected void loadDrivers() throws ClassNotFoundException {
-        Class.forName("oracle.jdbc.driver.OracleDriver");
-    }
-
 }

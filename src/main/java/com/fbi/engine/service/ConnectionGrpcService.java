@@ -1,7 +1,6 @@
 package com.fbi.engine.service;
 
 import com.fbi.engine.service.mapper.ConnectionDetailsMapper;
-import com.fbi.engine.service.mapper.ConnectionMapper;
 import org.lognet.springboot.grpc.GRpcService;
 import org.springframework.context.annotation.Profile;
 

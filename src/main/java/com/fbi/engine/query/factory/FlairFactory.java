@@ -20,8 +20,6 @@ import java.text.SimpleDateFormat;
 public interface FlairFactory extends Factory {
 
 
-    String DATASOURCE_TIMESTAMP_FORMAT = "yyyy-MM-dd HH:mm:ss";
-
     /**
      * Instantiate a compiler for given data source
      *
@@ -49,7 +47,7 @@ public interface FlairFactory extends Factory {
     default ObjectMapper createObjectMapper() {
         ObjectMapper obj = new ObjectMapper();
         obj.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-        obj.setDateFormat(new SimpleDateFormat(DATASOURCE_TIMESTAMP_FORMAT));
+        obj.setDateFormat(new SimpleDateFormat(FlairFactoryConst.DATASOURCE_TIMESTAMP_FORMAT));
         SimpleModule module = new SimpleModule();
         module.addSerializer(new ResultSetSerializer());
         obj.registerModule(module);

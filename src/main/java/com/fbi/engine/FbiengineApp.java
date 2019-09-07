@@ -1,19 +1,9 @@
 package com.fbi.engine;
 
 import com.fbi.engine.config.DefaultProfileUtil;
-import com.fbi.engine.crypto.converter.ConnectionDetailsCryptoConverter;
-import com.fbi.engine.crypto.converter.StringCryptoConverter;
-import com.fbi.engine.domain.details.AthenaConnectionDetails;
-import com.fbi.engine.domain.details.CockroachdbConnectionDetails;
-import com.fbi.engine.domain.details.KafkaConnectionDetails;
-import com.fbi.engine.domain.details.MongoDBConnectionDetails;
-import com.fbi.engine.domain.details.OracleConnectionDetails;
-import com.fbi.engine.domain.details.PostgresConnectionDetails;
-import com.fbi.engine.domain.details.RedshiftConnectionDetails;
 import io.github.jhipster.config.JHipsterConstants;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.actuate.autoconfigure.MetricFilterAutoConfiguration;
 import org.springframework.boot.actuate.autoconfigure.MetricRepositoryAutoConfiguration;
@@ -23,8 +13,6 @@ import org.springframework.boot.autoconfigure.liquibase.LiquibaseProperties;
 import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
 
 import javax.annotation.PostConstruct;

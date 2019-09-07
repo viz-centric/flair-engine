@@ -35,7 +35,7 @@ public class GrpcConfig extends GRpcServerBuilderConfigurer {
             NettyServerBuilder nsb = (NettyServerBuilder) serverBuilder;
             try {
                 nsb.sslContext(getSslContextBuilder().build());
-            } catch (Throwable e) {
+            } catch (Exception e) {
                 log.error("Grpc config: Error configuring ssl", e);
             }
         }

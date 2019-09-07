@@ -24,19 +24,7 @@ public class AthenaQueryExecutor extends SqlQueryExecutor {
     }
 
     @Override
-    protected void loadDrivers() throws ClassNotFoundException {
-        Class.forName("com.simba.athena.jdbc.Driver");
-    }
-
-    @Override
     public void execute(Query query, Writer writer) throws ExecutionException {
-        try {
-            loadDrivers();
-        } catch (ClassNotFoundException e) {
-            log.error("Driver is not supported: {}", e.getMessage());
-            throw new ExecutionException("Driver not supported", e);
-        }
-
         Properties info = new Properties();
         if (this.connection.getConnectionUsername() != null) {
             info.put("user", this.connection.getConnectionUsername());
@@ -50,18 +38,16 @@ public class AthenaQueryExecutor extends SqlQueryExecutor {
         info.put("Workgroup", details.getWorkgroup());
         info.put("Schema", details.getDatabaseName());
 
-        try (java.sql.Connection connection = DriverManager.getConnection(details.getConnectionString(), info)) {
-            if (connection != null) {
-                Statement statement = connection.createStatement();
-
-                String rawQuery = query.getQuery();
-                log.info("Executing raw query {}", rawQuery);
-                statement.execute(rawQuery);
-                ResultSet resultSet = statement.getResultSet();
-
-                writer.write(new ResultSetConverter(objectMapper, query.isMetadataRetrieved()).convert(resultSet));
-
-                statement.close();
+        try (java.sql.Connection c = DriverManager.getConnection(details.getConnectionString(), info)) {
+            if (c != null) {
+                try (Statement statement = c.createStatement()) {
+                    String rawQuery = query.getQuery();
+                    log.info("Executing raw query {}", rawQuery);
+                    statement.execute(rawQuery);
+                    try (ResultSet resultSet = statement.getResultSet()) {
+                        writer.write(new ResultSetConverter(objectMapper, query.isMetadataRetrieved()).convert(resultSet));
+                    }
+                }
                 log.debug("Connection closed");
             } else {
                 log.error("Failed to make connection!");
