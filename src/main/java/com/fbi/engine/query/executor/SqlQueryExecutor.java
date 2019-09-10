@@ -28,8 +28,23 @@ public abstract class SqlQueryExecutor implements QueryExecutor {
 
     protected final ObjectMapper objectMapper;
 
+
+    /**
+     * Load drivers for specific database management system
+     *
+     * @throws ClassNotFoundException if driver is not found
+     */
+    protected abstract void loadDrivers() throws ClassNotFoundException;
+
     @Override
     public void execute(Query query, Writer writer) throws ExecutionException {
+        try {
+            loadDrivers();
+        } catch (ClassNotFoundException e) {
+            log.error("Driver is not supported: {}", e.getMessage());
+            throw new ExecutionException("Driver not supported");
+        }
+
         try (java.sql.Connection c = DriverManager.getConnection(
             this.connection.getDetails().getConnectionString(),
             this.connection.getConnectionUsername(),

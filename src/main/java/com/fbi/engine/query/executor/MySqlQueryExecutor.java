@@ -12,4 +12,13 @@ public class MySqlQueryExecutor extends SqlQueryExecutor {
         super(connection, objectMapper);
     }
 
+    /**
+     * Loads the JDBC driver required for MySQL
+     */
+    @Override
+    protected void loadDrivers() throws ClassNotFoundException {
+        Class.forName("com.mysql.jdbc.Driver");
+    }
+
+
 }

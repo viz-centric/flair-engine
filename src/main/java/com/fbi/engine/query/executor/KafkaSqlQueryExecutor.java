@@ -55,6 +55,11 @@ public class KafkaSqlQueryExecutor extends SqlQueryExecutor {
     }
 
     @Override
+    protected void loadDrivers() {
+        throw new RuntimeException("Load drives not supported for kafka");
+    }
+
+    @Override
     public void execute(Query query, Writer writer) throws ExecutionException {
         KafkaQuery kafkaQuery = (KafkaQuery) query;
         executeKafkaQuery(writer, kafkaQuery);
