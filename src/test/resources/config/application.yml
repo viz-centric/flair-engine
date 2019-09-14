@@ -167,3 +167,6 @@ grpc:
     port: 9996
     tls:
         enabled: false
+
+drivers:
+    path: libs/dbdrivers

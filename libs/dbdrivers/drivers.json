@@ -1,0 +1,7 @@
+{
+  "oracle": "oracle.jdbc.driver.OracleDriver",
+  "athena": "com.simba.athena.jdbc.Driver",
+  "mysql": "com.mysql.cj.jdbc.Driver",
+  "redshift": "com.amazon.redshift.jdbc4.Driver",
+  "spark": "org.apache.hive.jdbc.HiveDriver"
+}

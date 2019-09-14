@@ -12,6 +12,13 @@ grpc:
 flair-cache:
   enabled: false
 
+drivers:
+  path: ${DB_DRIVERS:/usr/flair/share/drivers}
+
 ---
 spring:
   profiles: dev
+
+drivers:
+  path: libs/dbdrivers
+
