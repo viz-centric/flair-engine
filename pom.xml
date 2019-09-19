@@ -10,7 +10,7 @@
     <groupId>com.fbi.engine</groupId>
     <artifactId>flair-engine</artifactId>
     <version>1.1.17-SNAPSHOT</version>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
     <name>flair-engine</name>
     <scm>
         <connection>scm:git:https://github.com/viz-centric/flair-engine.git</connection>
@@ -101,7 +101,6 @@
         <maven-release-plugin.version>2.5.3</maven-release-plugin.version>
         <maven-scm-provider-gitexe.version>1.9.5</maven-scm-provider-gitexe.version>
         <maven-source-plugin.version>3.0.1</maven-source-plugin.version>
-        <maven-javadoc-plugin.version>3.0.1</maven-javadoc-plugin.version>
         <apache-httpclient.version>4.5</apache-httpclient.version>
         <argLine>-Djava.security.egd=file:/dev/./urandom -Xmx256m</argLine>
         <assertj.version>3.6.2</assertj.version>
@@ -982,7 +981,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <executable>true</executable>
+                    <executable>false</executable>
                     <fork>true</fork>
                     <!--
                     Enable the line below to have remote debugging of your application on port 5005
@@ -1085,11 +1084,8 @@
                 <plugins>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-war-plugin</artifactId>
-                        <version>3.2.2</version>
-                        <configuration>
-                            <warSourceDirectory>src/main/webapp/</warSourceDirectory>
-                        </configuration>
+                        <artifactId>maven-jar-plugin</artifactId>
+                        <version>3.1.2</version>
                     </plugin>
                 </plugins>
             </build>
@@ -1120,22 +1116,6 @@
                         </configuration>
                     </plugin>
                     <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-javadoc-plugin</artifactId>
-                        <version>${maven-javadoc-plugin.version}</version>
-                        <configuration>
-                            <source>8</source>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <id>attach-javadocs</id>
-                                <goals>
-                                    <goal>jar</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
                         <artifactId>maven-clean-plugin</artifactId>
                         <configuration>
                             <filesets>
@@ -1147,17 +1127,31 @@
                     </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-war-plugin</artifactId>
-                        <version>3.2.2</version>
+                        <artifactId>maven-jar-plugin</artifactId>
+                        <version>3.1.2</version>
                         <configuration>
-                            <warSourceDirectory>target/www/</warSourceDirectory>
+                            <archive>
+                                <manifest>
+                                    <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                                    <addClasspath>true</addClasspath>
+                                </manifest>
+                                <manifestEntries>
+                                    <version>${project.version}</version>
+                                    <Main-Class></Main-Class>
+<!--                                    <Launcher-Agent-Class>agent.Agent</Launcher-Agent-Class>-->
+<!--                                    <Agent-Class>agent.Agent</Agent-Class>-->
+<!--                                    <Premain-Class>agent.Agent</Premain-Class>-->
+<!--                                    <Class-Path>classes/</Class-Path>-->
+<!--                                    <Boot-Class-Path>/app/app.war</Boot-Class-Path>-->
+                                </manifestEntries>
+                            </archive>
                         </configuration>
                     </plugin>
                     <plugin>
                         <groupId>org.springframework.boot</groupId>
                         <artifactId>spring-boot-maven-plugin</artifactId>
                         <configuration>
-                            <executable>true</executable>
+                            <executable>false</executable>
                         </configuration>
                         <executions>
                             <execution>
@@ -1295,17 +1289,14 @@
                 <plugins>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-war-plugin</artifactId>
-                        <version>3.2.2</version>
-                        <configuration>
-                            <warSourceDirectory>src/main/webapp/</warSourceDirectory>
-                        </configuration>
+                        <artifactId>maven-jar-plugin</artifactId>
+                        <version>3.1.2</version>
                     </plugin>
                     <plugin>
                         <groupId>org.springframework.boot</groupId>
                         <artifactId>spring-boot-maven-plugin</artifactId>
                         <configuration>
-                            <executable>true</executable>
+                            <executable>false</executable>
                             <fork>true</fork>
                             <addResources>true</addResources>
                             <!--

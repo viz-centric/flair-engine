@@ -28,8 +28,10 @@ COPY ssl/certsgen/ca.crt /app/trustCertCollectionFile.crt
 COPY ssl/cachecertsgen/client.crt /app/cacheClientCertChainFile.crt
 COPY ssl/cachecertsgen/client.pem /app/cacheClientPrivateKeyFile.pem
 COPY ssl/cachecertsgen/ca.crt /app/cacheTrustCertCollectionFile.crt
+COPY dbdrivers /usr/flair/share/drivers
 
-COPY *.war /app/app.war
+COPY *.jar /app/app.jar
+COPY classes/agent /app/classes/agent
 
 RUN chown -R flairuser:flairuser /app
 RUN chmod -R 755 /app
@@ -38,4 +40,4 @@ RUN chmod +x /bin/grpc_health_probe
 USER flairuser
 CMD echo "The application will start in ${JHIPSTER_SLEEP}s..." && \
     sleep ${JHIPSTER_SLEEP} && \
-    java ${JAVA_OPTS} -Djava.security.egd=file:/dev/./urandom -jar /app/app.war
+    java ${JAVA_OPTS} -Djava.security.egd=file:/dev/./urandom -jar /app/app.jar
