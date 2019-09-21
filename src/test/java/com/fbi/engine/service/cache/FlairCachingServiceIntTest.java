@@ -1,7 +1,7 @@
 package com.fbi.engine.service.cache;
 
 import com.fbi.engine.AbstractGrpcTest;
-import com.fbi.engine.config.ClientGrpcConfig;
+import com.fbi.engine.service.grpc.ManagedChannelFactory;
 import com.flair.bi.messages.CacheServiceGrpc;
 import com.flair.bi.messages.GetCacheRequest;
 import com.flair.bi.messages.GetCacheResponse;
@@ -28,6 +28,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.when;
 
 public class FlairCachingServiceIntTest extends AbstractGrpcTest {
 
@@ -35,7 +36,7 @@ public class FlairCachingServiceIntTest extends AbstractGrpcTest {
     private FlairCachingService flairCachingService;
 
     @MockBean
-    private ClientGrpcConfig managedGrpcFactoryService;
+    private ManagedChannelFactory managedChannelFactory;
 
     @Mock
     private CacheServiceGrpc.CacheServiceImplBase cacheService;
@@ -58,6 +59,7 @@ public class FlairCachingServiceIntTest extends AbstractGrpcTest {
                 .directExecutor()
                 .build());
 
+        when(managedChannelFactory.getInstance()).thenReturn(channel);
     }
 
     @Test

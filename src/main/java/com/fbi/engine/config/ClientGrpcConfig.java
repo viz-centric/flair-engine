@@ -1,5 +1,6 @@
 package com.fbi.engine.config;
 
+import com.fbi.engine.service.grpc.ManagedChannelFactory;
 import com.netflix.appinfo.InstanceInfo;
 import com.netflix.discovery.EurekaClient;
 import io.grpc.ManagedChannel;

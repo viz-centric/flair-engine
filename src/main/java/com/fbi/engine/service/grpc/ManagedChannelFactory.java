@@ -1,4 +1,4 @@
-package com.fbi.engine.config;
+package com.fbi.engine.service.grpc;
 
 import io.grpc.ManagedChannel;
 import lombok.RequiredArgsConstructor;

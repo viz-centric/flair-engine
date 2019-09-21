@@ -2,7 +2,7 @@ package com.fbi.engine.service.cache;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fbi.engine.config.ManagedChannelFactory;
+import com.fbi.engine.service.grpc.ManagedChannelFactory;
 import com.flair.bi.messages.CacheServiceGrpc;
 import com.flair.bi.messages.GetCacheResponse;
 import com.project.bi.query.FlairQuery;
@@ -29,9 +29,9 @@ public class FlairCachingService {
     private volatile ManagedChannel channel;
 
     private CacheServiceGrpc.CacheServiceBlockingStub getCacheServiceStub() {
-        if (cacheServiceBlockingStub == null) {
+        if (cacheServiceBlockingStub == null || (channel != null && channel.isShutdown())) {
             synchronized (this) {
-                if (cacheServiceBlockingStub == null) {
+                if (cacheServiceBlockingStub == null || (channel != null && channel.isShutdown())) {
                     cacheServiceBlockingStub = CacheServiceGrpc.newBlockingStub(getChannel());
                 }
             }
