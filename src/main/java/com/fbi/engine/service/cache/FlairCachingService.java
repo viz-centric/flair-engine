@@ -2,7 +2,7 @@ package com.fbi.engine.service.cache;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fbi.engine.service.ManagedGrpcFactoryService;
+import com.fbi.engine.service.grpc.ManagedChannelFactory;
 import com.flair.bi.messages.CacheServiceGrpc;
 import com.flair.bi.messages.GetCacheResponse;
 import com.project.bi.query.FlairQuery;
@@ -23,12 +23,31 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class FlairCachingService {
 
-    private final ManagedGrpcFactoryService managedGrpcFactoryService;
+    private final ManagedChannelFactory cacheChannelFactory;
     private final ObjectMapper objectMapper = new ObjectMapper();
+    private volatile CacheServiceGrpc.CacheServiceBlockingStub cacheServiceBlockingStub;
+    private volatile ManagedChannel channel;
 
     private CacheServiceGrpc.CacheServiceBlockingStub getCacheServiceStub() {
-        ManagedChannel channel = managedGrpcFactoryService.getManagedChannel("flair-cache");
-        return CacheServiceGrpc.newBlockingStub(channel);
+        if (cacheServiceBlockingStub == null || (channel != null && channel.isShutdown())) {
+            synchronized (this) {
+                if (cacheServiceBlockingStub == null || (channel != null && channel.isShutdown())) {
+                    cacheServiceBlockingStub = CacheServiceGrpc.newBlockingStub(getChannel());
+                }
+            }
+        }
+        return cacheServiceBlockingStub;
+    }
+
+    private ManagedChannel getChannel() {
+        if (channel == null || channel.isShutdown()) {
+            synchronized (this) {
+                if (channel == null || channel.isShutdown()) {
+                    channel = cacheChannelFactory.getInstance();
+                }
+            }
+        }
+        return channel;
     }
 
     public Optional<CacheMetadata> getResult(FlairQuery query, String connectionLinkId) {
