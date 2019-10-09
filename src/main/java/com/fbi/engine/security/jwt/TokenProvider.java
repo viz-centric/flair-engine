@@ -1,6 +1,6 @@
 package com.fbi.engine.security.jwt;
 
-import io.github.jhipster.config.JHipsterProperties;
+import com.fbi.engine.config.JHipsterProperties;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;

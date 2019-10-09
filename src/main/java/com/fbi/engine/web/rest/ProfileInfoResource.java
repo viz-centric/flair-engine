@@ -1,7 +1,7 @@
 package com.fbi.engine.web.rest;
 
 import com.fbi.engine.config.DefaultProfileUtil;
-import io.github.jhipster.config.JHipsterProperties;
+import com.fbi.engine.config.JHipsterProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.env.Environment;
 import org.springframework.web.bind.annotation.GetMapping;

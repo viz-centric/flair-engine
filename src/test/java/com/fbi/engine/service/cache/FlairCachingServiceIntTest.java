@@ -67,8 +67,8 @@ public class FlairCachingServiceIntTest extends AbstractGrpcTest {
         long dateCreated = Instant.now().getEpochSecond();
 
         doAnswer(invocationOnMock -> {
-            GetCacheRequest getCacheRequest = invocationOnMock.getArgumentAt(0, GetCacheRequest.class);
-            StreamObserver<GetCacheResponse> streamObserver = invocationOnMock.getArgumentAt(1, StreamObserver.class);
+            GetCacheRequest getCacheRequest = invocationOnMock.getArgument(0);
+            StreamObserver<GetCacheResponse> streamObserver = invocationOnMock.getArgument(1);
             streamObserver.onNext(GetCacheResponse.newBuilder()
                     .setResult("test")
                     .setMetadata(com.flair.bi.messages.CacheMetadata.newBuilder()
@@ -89,8 +89,8 @@ public class FlairCachingServiceIntTest extends AbstractGrpcTest {
     @Test
     public void getResultReturnsCacheNotFound() {
         doAnswer(invocationOnMock -> {
-            GetCacheRequest getCacheRequest = invocationOnMock.getArgumentAt(0, GetCacheRequest.class);
-            StreamObserver<GetCacheResponse> streamObserver = invocationOnMock.getArgumentAt(1, StreamObserver.class);
+            GetCacheRequest getCacheRequest = invocationOnMock.getArgument(0);
+            StreamObserver<GetCacheResponse> streamObserver = invocationOnMock.getArgument(1);
             streamObserver.onError(Status.NOT_FOUND
                     .withDescription("errors.cache.not_found")
                     .asRuntimeException());
@@ -107,8 +107,8 @@ public class FlairCachingServiceIntTest extends AbstractGrpcTest {
         AtomicBoolean cacheSaved = new AtomicBoolean(false);
         doAnswer(invocationOnMock -> {
             cacheSaved.set(true);
-            PutCacheRequest getCacheRequest = invocationOnMock.getArgumentAt(0, PutCacheRequest.class);
-            StreamObserver<PutCacheResponse> streamObserver = invocationOnMock.getArgumentAt(1, StreamObserver.class);
+            PutCacheRequest getCacheRequest = invocationOnMock.getArgument(0);
+            StreamObserver<PutCacheResponse> streamObserver = invocationOnMock.getArgument(1);
             assertEquals("result", getCacheRequest.getValue());
             streamObserver.onNext(PutCacheResponse.newBuilder().build());
             streamObserver.onCompleted();

@@ -1,8 +1,8 @@
 package com.fbi.engine.web.rest;
 
 import com.fbi.engine.service.AuditEventService;
+import com.fbi.engine.util.ResponseUtil;
 import com.fbi.engine.web.rest.util.PaginationUtil;
-import io.github.jhipster.web.util.ResponseUtil;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.actuate.audit.AuditEvent;

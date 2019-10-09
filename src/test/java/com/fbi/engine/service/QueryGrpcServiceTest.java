@@ -93,7 +93,7 @@ public class QueryGrpcServiceTest {
             .thenReturn(new QueryValidationResult());
 
         doAnswer(invocationOnMock -> {
-            QueryValidationResponse queryValidationResponse = invocationOnMock.getArgumentAt(0, QueryValidationResponse.class);
+            QueryValidationResponse queryValidationResponse = invocationOnMock.getArgument(0);
             assertEquals(QueryValidationResponse.ValidationResult.ValidationResultType.SUCCESS, queryValidationResponse.getValidationResult().getType());
             assertEquals("{}", queryValidationResponse.getValidationResult().getData());
             return queryValidationResponse;
@@ -189,7 +189,7 @@ public class QueryGrpcServiceTest {
             .build();
 
         doAnswer(invocationOnMock -> {
-            RunQueryResponse response = invocationOnMock.getArgumentAt(0, RunQueryResponse.class);
+            RunQueryResponse response = invocationOnMock.getArgument(0);
             assertEquals("result", response.getResult());
             return response;
         }).when(streamObserver)
@@ -224,7 +224,7 @@ public class QueryGrpcServiceTest {
             .build();
 
         doAnswer(invocationOnMock -> {
-            StatusRuntimeException response = invocationOnMock.getArgumentAt(0, StatusRuntimeException.class);
+            StatusRuntimeException response = invocationOnMock.getArgument(0);
             assertEquals(Status.Code.INTERNAL, response.getStatus().getCode());
             assertEquals("{\"errorCode\":\"DATASOURCE_NOT_FOUND\"}", response.getStatus().getDescription());
             return response;

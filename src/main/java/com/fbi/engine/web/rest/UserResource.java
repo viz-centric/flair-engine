@@ -5,13 +5,12 @@ import com.fbi.engine.config.Constants;
 import com.fbi.engine.domain.User;
 import com.fbi.engine.repository.UserRepository;
 import com.fbi.engine.security.AuthoritiesConstants;
-import com.fbi.engine.service.MailService;
 import com.fbi.engine.service.UserService;
 import com.fbi.engine.service.dto.UserDTO;
+import com.fbi.engine.util.ResponseUtil;
 import com.fbi.engine.web.rest.util.HeaderUtil;
 import com.fbi.engine.web.rest.util.PaginationUtil;
 import com.fbi.engine.web.rest.vm.ManagedUserVM;
-import io.github.jhipster.web.util.ResponseUtil;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -70,8 +69,6 @@ public class UserResource {
 
     private final UserRepository userRepository;
 
-    private final MailService mailService;
-
     private final UserService userService;
 
     /**
@@ -106,7 +103,6 @@ public class UserResource {
                 .body(null);
         } else {
             User newUser = userService.createUser(managedUserVM);
-            mailService.sendCreationEmail(newUser);
             return ResponseEntity.created(new URI("/api/users/" + newUser.getLogin()))
                 .headers(HeaderUtil.createAlert( "A user is created with identifier " + newUser.getLogin(), newUser.getLogin()))
                 .body(newUser);

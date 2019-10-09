@@ -30,8 +30,13 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.not;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
  * Test class for the ConnectionResource REST controller.
@@ -304,7 +309,7 @@ public class ConnectionResourceIntTest {
         int databaseSizeBeforeUpdate = connectionRepository.findAll().size();
 
         // Update the connection
-        Connection updatedConnection = connectionRepository.findOne(connection.getId());
+        Connection updatedConnection = connectionRepository.getOne(connection.getId());
         updatedConnection
             .name(UPDATED_NAME)
             .connectionUsername(UPDATED_CONNECTION_USERNAME)

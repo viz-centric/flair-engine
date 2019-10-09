@@ -70,7 +70,7 @@ public class ConnectionServiceImpl implements ConnectionService {
     @Transactional(readOnly = true)
     public ConnectionDTO findOne(Long id) {
         log.debug("Request to get Connection : {}", id);
-        Connection connection = connectionRepository.findOne(id);
+        Connection connection = connectionRepository.getOne(id);
         return connectionMapper.toDto(connection);
     }
 
@@ -137,7 +137,7 @@ public class ConnectionServiceImpl implements ConnectionService {
 
     @Override
     public ConnectionDTO updateConnection(UpdateConnectionDTO updateConnectionDTO) {
-        final Connection connection = connectionRepository.findOne(updateConnectionDTO.getId());
+        final Connection connection = connectionRepository.getOne(updateConnectionDTO.getId());
 
         if (updateConnectionDTO.getConnectionPassword() != null) {
             connection.setConnectionPassword(updateConnectionDTO.getConnectionPassword());

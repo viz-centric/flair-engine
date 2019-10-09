@@ -4,7 +4,6 @@ import com.codahale.metrics.annotation.Timed;
 import com.fbi.engine.domain.User;
 import com.fbi.engine.repository.UserRepository;
 import com.fbi.engine.security.SecurityUtils;
-import com.fbi.engine.service.MailService;
 import com.fbi.engine.service.UserService;
 import com.fbi.engine.service.dto.UserDTO;
 import com.fbi.engine.web.rest.util.HeaderUtil;
@@ -41,8 +40,6 @@ public class AccountResource {
 
     private final UserService userService;
 
-    private final MailService mailService;
-
     private static final String CHECK_ERROR_MESSAGE = "Incorrect password";
 
     /**
@@ -72,7 +69,6 @@ public class AccountResource {
                             managedUserVM.getEmail().toLowerCase(), managedUserVM.getImageUrl(),
                             managedUserVM.getLangKey());
 
-                    mailService.sendActivationEmail(user);
                     return new ResponseEntity<>(HttpStatus.CREATED);
                 })
         );
@@ -171,7 +167,6 @@ public class AccountResource {
     public ResponseEntity requestPasswordReset(@RequestBody String mail) {
         return userService.requestPasswordReset(mail)
             .map(user -> {
-                mailService.sendPasswordResetMail(user);
                 return new ResponseEntity<>("email was sent", HttpStatus.OK);
             }).orElse(new ResponseEntity<>("email address not registered", HttpStatus.BAD_REQUEST));
     }

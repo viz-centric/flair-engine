@@ -64,7 +64,7 @@ public class ConnectionTypeServiceImpl implements ConnectionTypeService{
     @Transactional(readOnly = true)
     public ConnectionTypeDTO findOne(Long id) {
         log.debug("Request to get ConnectionType : {}", id);
-        ConnectionType connectionType = connectionTypeRepository.findOne(id);
+        ConnectionType connectionType = connectionTypeRepository.getOne(id);
         return connectionTypeMapper.toDto(connectionType);
     }
 
@@ -76,6 +76,6 @@ public class ConnectionTypeServiceImpl implements ConnectionTypeService{
     @Override
     public void delete(Long id) {
         log.debug("Request to delete ConnectionType : {}", id);
-        connectionTypeRepository.delete(id);
+        connectionTypeRepository.deleteById(id);
     }
 }

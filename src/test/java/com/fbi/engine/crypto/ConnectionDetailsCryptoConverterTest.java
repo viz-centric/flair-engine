@@ -6,12 +6,10 @@ import com.fbi.engine.crypto.converter.ConnectionDetailsCryptoConverter;
 import com.fbi.engine.crypto.exceptions.IllegalCipherTextSizeException;
 import com.fbi.engine.domain.details.ConnectionDetails;
 import com.fbi.engine.domain.details.OracleConnectionDetails;
-import io.github.jhipster.config.JHipsterConstants;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.Base64Utils;
 

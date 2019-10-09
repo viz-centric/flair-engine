@@ -1,12 +1,10 @@
 package com.fbi.engine;
 
 import com.fbi.engine.config.DefaultProfileUtil;
-import io.github.jhipster.config.JHipsterConstants;
+import com.fbi.engine.config.JHipsterConstants;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.actuate.autoconfigure.MetricFilterAutoConfiguration;
-import org.springframework.boot.actuate.autoconfigure.MetricRepositoryAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration;
 import org.springframework.boot.autoconfigure.liquibase.LiquibaseProperties;
@@ -23,10 +21,10 @@ import java.util.Collection;
 
 @EnableEurekaClient
 @SpringBootApplication(exclude =
-    {MetricFilterAutoConfiguration.class,
-        MetricRepositoryAutoConfiguration.class,
-        MongoAutoConfiguration.class,
-        MongoDataAutoConfiguration.class})
+    {
+            MongoAutoConfiguration.class,
+            MongoDataAutoConfiguration.class
+    })
 @EnableConfigurationProperties({LiquibaseProperties.class,
     ApplicationProperties.class})
 @Slf4j
