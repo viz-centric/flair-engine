@@ -31,7 +31,10 @@ import org.mockito.runners.MockitoJUnitRunner;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class QueryGrpcServiceTest {
@@ -177,6 +180,7 @@ public class QueryGrpcServiceTest {
             .setSource("src")
             .setDistinct(true)
             .setLimit(100L)
+            .setOffset(53L)
             .build();
 
         RunQueryRequest queryRequest = RunQueryRequest.newBuilder()
@@ -211,6 +215,7 @@ public class QueryGrpcServiceTest {
             .setSource("src")
             .setDistinct(true)
             .setLimit(100L)
+            .setOffset(53L)
             .build();
 
         RunQueryRequest queryRequest = RunQueryRequest.newBuilder()
