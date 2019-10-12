@@ -24,6 +24,7 @@ public final class QueryGrpcUtils {
         queryDTO.setFields(request.getFieldsList());
         queryDTO.setGroupBy(request.getGroupByList());
         queryDTO.setLimit(request.getLimit());
+        queryDTO.setOffset(request.getOffset());
         queryDTO.setDistinct(request.getDistinct());
         queryDTO.setOrders(getListSortDTO(request.getOrdersList()));
         queryDTO.setHaving(getListHavingDTO(request.getHavingList()));

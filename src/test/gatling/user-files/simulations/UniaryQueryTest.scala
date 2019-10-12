@@ -1,27 +1,10 @@
-import _root_.io.gatling.core.scenario.Simulation
-import ch.qos.logback.classic.{Level, LoggerContext}
-import io.gatling.core.Predef._
-import io.gatling.http.Predef._
-import org.slf4j.LoggerFactory
-import com.github.phisgr.gatling.grpc.Predef._
-import com.github.phisgr.gatling.pb._
-import com.github.phisgr.gatling.util._
+
 // stringToExpression is hidden because we have $ in GrpcDsl
-import io.gatling.core.Predef.{stringToExpression => _, _}
-import io.gatling.core.session.Expression
-import io.grpc.{ManagedChannelBuilder, Status}
-import io.grpc.ManagedChannel
+import java.io.File
 
-import javax.net.ssl.SSLException;
-import java.io.File;
-import com.flair.bi.messages.QueryServiceGrpc;
-
-import io.grpc.netty.shaded.io.grpc.netty.GrpcSslContexts;
-import io.grpc.netty.shaded.io.grpc.netty.NettyChannelBuilder;
-import com.flair.bi.messages.Query;
-import com.flair.bi.messages.QueryResponse;
-
-import scala.concurrent.duration._
+import com.flair.bi.messages.{Query, QueryServiceGrpc}
+import io.gatling.core.Predef.{stringToExpression => _}
+import io.grpc.netty.shaded.io.grpc.netty.{GrpcSslContexts, NettyChannelBuilder}
 /**
  * Performance test for the Connection entity.
  */
@@ -38,6 +21,7 @@ class UniaryQueryTest extends Simulation {
                 .addFields("state")
                 .addFields("city")
                 .setLimit(10)
+                .setOffset(53)
                 .build();
    
   
