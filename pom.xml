@@ -298,11 +298,6 @@
             <artifactId>grpc-services</artifactId>
             <version>${all-grpc.version}</version>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>io.github.jhipster</groupId>-->
-<!--            <artifactId>jhipster</artifactId>-->
-<!--            <version>${jhipster.server.version}</version>-->
-<!--        </dependency>-->
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-hppc</artifactId>
@@ -345,6 +340,10 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-ehcache</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-envers</artifactId>
         </dependency>
         <dependency>
             <groupId>com.hazelcast</groupId>
