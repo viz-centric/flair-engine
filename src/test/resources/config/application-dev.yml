@@ -1,6 +1,0 @@
-spring:
-    datasource:
-        type: com.zaxxer.hikari.HikariDataSource
-        url: ${TEST_DATASOURCE_URL:jdbc:postgresql://localhost:5432/fbiengine?ssl=false}
-        username: postgres
-        password: admin

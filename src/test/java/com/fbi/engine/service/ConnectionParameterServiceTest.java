@@ -87,7 +87,7 @@ public class ConnectionParameterServiceTest {
         p3.setName("param2");
         p3.setValue("val2");
         p3.setLinkId("1234");
-        connectionParameterRepository.save(Arrays.asList(p1, p2, p3));
+        connectionParameterRepository.saveAll(Arrays.asList(p1, p2, p3));
 
         Map<String, String> params = connectionParameterService.getParametersByLinkId("1234");
         assertEquals(2, params.size());
@@ -121,7 +121,7 @@ public class ConnectionParameterServiceTest {
         p5.setName("refreshAfterMinutes");
         p5.setValue("4");
         p5.setLinkId("1234");
-        connectionParameterRepository.save(Arrays.asList(p1, p2, p3, p4, p5));
+        connectionParameterRepository.saveAll(Arrays.asList(p1, p2, p3, p4, p5));
 
         ConnectionParameters parameters = connectionParameterService.getParameters("1234");
         assertTrue(parameters.isEnabled());
@@ -157,7 +157,7 @@ public class ConnectionParameterServiceTest {
         p5.setName("refreshAfterMinutes");
         p5.setValue("4");
         p5.setLinkId("1234");
-        connectionParameterRepository.save(Arrays.asList(p1, p2, p3, p4, p5));
+        connectionParameterRepository.saveAll(Arrays.asList(p1, p2, p3, p4, p5));
 
         connectionParameterService.deleteByLinkId("1234");
 

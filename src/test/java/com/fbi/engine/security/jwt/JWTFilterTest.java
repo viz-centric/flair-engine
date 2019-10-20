@@ -1,7 +1,7 @@
 package com.fbi.engine.security.jwt;
 
+import com.fbi.engine.config.JHipsterProperties;
 import com.fbi.engine.security.AuthoritiesConstants;
-import io.github.jhipster.config.JHipsterProperties;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.http.HttpStatus;

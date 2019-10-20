@@ -1,6 +1,6 @@
 package com.fbi.engine.aop.logging;
 
-import io.github.jhipster.config.JHipsterConstants;
+import com.fbi.engine.config.JHipsterConstants;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;

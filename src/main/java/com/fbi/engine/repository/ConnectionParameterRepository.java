@@ -5,7 +5,7 @@ import com.fbi.engine.domain.QConnectionParameter;
 import com.querydsl.core.types.dsl.SimpleExpression;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.querydsl.QueryDslPredicateExecutor;
+import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.querydsl.binding.QuerydslBinderCustomizer;
 import org.springframework.data.querydsl.binding.QuerydslBindings;
 import org.springframework.stereotype.Repository;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface ConnectionParameterRepository extends JpaRepository<ConnectionParameter, Long>, QueryDslPredicateExecutor<ConnectionParameter>,
+public interface ConnectionParameterRepository extends JpaRepository<ConnectionParameter, Long>, QuerydslPredicateExecutor<ConnectionParameter>,
         QuerydslBinderCustomizer<QConnectionParameter> {
 
     List<ConnectionParameter> findAllByLinkId(String linkId);

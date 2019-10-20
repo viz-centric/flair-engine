@@ -27,7 +27,7 @@ public class ConnectionParameterService {
                 .filter(ep -> !parameters.containsKey(ep.getName()))
                 .collect(Collectors.toList());
 
-        connectionParameterRepository.delete(removeParameters);
+        connectionParameterRepository.deleteAll(removeParameters);
 
         List<ConnectionParameter> newAndModifiedParameters = parameters.keySet()
                 .stream()
@@ -42,7 +42,7 @@ public class ConnectionParameterService {
                                 .linkId(linkId)))
                 .collect(Collectors.toList());
 
-        connectionParameterRepository.save(newAndModifiedParameters);
+        connectionParameterRepository.saveAll(newAndModifiedParameters);
     }
 
     @Transactional(readOnly = true)

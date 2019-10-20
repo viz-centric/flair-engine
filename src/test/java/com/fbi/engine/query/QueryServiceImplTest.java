@@ -24,7 +24,12 @@ import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class QueryServiceImplTest {
@@ -87,11 +92,6 @@ public class QueryServiceImplTest {
         QueryExecutor queryExecutor = mock(QueryExecutor.class);
         Query query = mock(Query.class);
 
-        when(flairFactory.getCompiler()).thenReturn(flairCompiler);
-        when(flairFactory.getExecutor(eq(connection))).thenReturn(queryExecutor);
-        when(flairFactory.getQuery(eq(flairQuery), eq(""))).thenReturn(query);
-
-        when(queryAbstractFactory.getQueryFactory(eq("bundleClass"))).thenReturn(flairFactory);
         when(flairCachingService.getResult(eq(flairQuery), eq(connection.getLinkId())))
                 .thenReturn(Optional.of(new CacheMetadata().setResult("result")));
 
@@ -121,15 +121,13 @@ public class QueryServiceImplTest {
         doAnswer(new Answer() {
             @Override
             public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
-                Writer writer = invocationOnMock.getArgumentAt(1, Writer.class);
+                Writer writer = invocationOnMock.getArgument(1);
                 writer.write("some result");
                 return null;
             }
         }).when(queryExecutor).execute(eq(query), any(Writer.class));
 
         when(queryAbstractFactory.getQueryFactory(eq("bundleClass"))).thenReturn(flairFactory);
-        when(flairCachingService.getResult(eq(flairQuery), eq(connection.getLinkId())))
-                .thenReturn(Optional.of(new CacheMetadata().setResult("result")));
 
         CacheMetadata cacheMetadata = service.executeQuery(connection, flairQuery, new CacheParams().setReadFromCache(false).setWriteToCache(true));
 
@@ -159,7 +157,7 @@ public class QueryServiceImplTest {
         doAnswer(new Answer() {
             @Override
             public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
-                Writer writer = invocationOnMock.getArgumentAt(1, Writer.class);
+                Writer writer = invocationOnMock.getArgument(1);
                 writer.write("some result");
                 return null;
             }
