@@ -92,11 +92,6 @@ public class QueryServiceImplTest {
         QueryExecutor queryExecutor = mock(QueryExecutor.class);
         Query query = mock(Query.class);
 
-        when(flairFactory.getCompiler()).thenReturn(flairCompiler);
-        when(flairFactory.getExecutor(eq(connection))).thenReturn(queryExecutor);
-        when(flairFactory.getQuery(eq(flairQuery), eq(""))).thenReturn(query);
-
-        when(queryAbstractFactory.getQueryFactory(eq("bundleClass"))).thenReturn(flairFactory);
         when(flairCachingService.getResult(eq(flairQuery), eq(connection.getLinkId())))
                 .thenReturn(Optional.of(new CacheMetadata().setResult("result")));
 
@@ -133,8 +128,6 @@ public class QueryServiceImplTest {
         }).when(queryExecutor).execute(eq(query), any(Writer.class));
 
         when(queryAbstractFactory.getQueryFactory(eq("bundleClass"))).thenReturn(flairFactory);
-        when(flairCachingService.getResult(eq(flairQuery), eq(connection.getLinkId())))
-                .thenReturn(Optional.of(new CacheMetadata().setResult("result")));
 
         CacheMetadata cacheMetadata = service.executeQuery(connection, flairQuery, new CacheParams().setReadFromCache(false).setWriteToCache(true));
 

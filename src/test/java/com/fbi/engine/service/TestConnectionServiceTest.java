@@ -3,7 +3,6 @@ package com.fbi.engine.service;
 import com.fbi.engine.domain.Connection;
 import com.fbi.engine.query.QueryService;
 import com.fbi.engine.service.cache.CacheMetadata;
-import com.fbi.engine.service.dto.ConnectionDTO;
 import com.fbi.engine.service.mapper.ConnectionMapper;
 import com.project.bi.query.FlairQuery;
 import org.junit.Before;
@@ -36,7 +35,6 @@ public class TestConnectionServiceTest {
         Connection connection = new Connection();
         connection.setName("connection name");
         when(queryService.executeQuery(any(Connection.class), any(FlairQuery.class))).thenReturn(new CacheMetadata().setResult("[]"));
-        when(connectionMapper.toEntity(any(ConnectionDTO.class))).thenReturn(connection);
         String result = service.testConnection(
                 connection);
 
