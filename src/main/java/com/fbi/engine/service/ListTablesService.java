@@ -63,7 +63,7 @@ public class ListTablesService {
                 .filter(item -> item.toUpperCase().contains(tableNameLike.toUpperCase()))
                 .limit(maxEntries)
                 .collect(Collectors.toSet());
-            log.info("List tables result {}", strings);
+            log.debug("List tables result {}", strings);
             return strings;
         } catch (IOException e) {
             log.error("Error converting result into json for " + tableNameLike, e);
