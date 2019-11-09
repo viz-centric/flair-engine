@@ -53,7 +53,7 @@ public abstract class AbstractQueryGrpcService extends QueryServiceGrpc.QuerySer
 
     @Override
     public void queryAll(QueryAllRequest request, StreamObserver<QueryAllResponse> responseObserver) {
-        log.info("Query all {}", request);
+        log.debug("Query all {}", request);
         if (!request.hasConnection() && StringUtils.isEmpty(request.getConnectionLinkId())) {
             responseObserver.onError(Status.INVALID_ARGUMENT.withDescription(CONNECTION_NOT_FOUND).asRuntimeException());
             return;
@@ -227,7 +227,7 @@ public abstract class AbstractQueryGrpcService extends QueryServiceGrpc.QuerySer
 
     @Override
     public void runQuery(RunQueryRequest request, StreamObserver<RunQueryResponse> responseObserver) {
-        log.info("Run query invoked {}", request);
+        log.debug("Run query invoked {}", request);
 
         QueryDTO queryDTO = QueryGrpcUtils.mapToQueryDTO(request.getQuery());
         queryDTO.setMetaRetrieved(request.getRetrieveMeta());
