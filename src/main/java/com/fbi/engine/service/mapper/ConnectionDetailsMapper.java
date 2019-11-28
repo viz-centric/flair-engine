@@ -9,6 +9,7 @@ import com.fbi.engine.domain.details.MySqlConnectionDetails;
 import com.fbi.engine.domain.details.OracleConnectionDetails;
 import com.fbi.engine.domain.details.PostgresConnectionDetails;
 import com.fbi.engine.domain.details.RedshiftConnectionDetails;
+import com.fbi.engine.domain.details.SnowflakeConnectionDetails;
 import com.fbi.engine.domain.details.SparkConnectionDetails;
 import org.apache.commons.lang.BooleanUtils;
 import org.springframework.stereotype.Service;
@@ -53,12 +54,26 @@ public class ConnectionDetailsMapper {
                 connectionDetails = new KafkaConnectionDetails();
                 ((KafkaConnectionDetails) connectionDetails).setIsSecure(BooleanUtils.toBoolean(value.get("isSecure")));
                 break;
+            case "Snowflake":
+                connectionDetails = new SnowflakeConnectionDetails();
+                ((SnowflakeConnectionDetails) connectionDetails).setAccount(value.get("account"));
+                if (value.get("additionalParameters") != null) {
+                    ((SnowflakeConnectionDetails) connectionDetails).setAdditionalParameters(value.get("additionalParameters"));
+                }
+                ((SnowflakeConnectionDetails) connectionDetails).setSchemaName(value.get("schemaName"));
+                break;
             default:
                 throw new RuntimeException("Cannot find a mapper for " + value);
         }
-        connectionDetails.setDatabaseName(value.get("databaseName"));
-        connectionDetails.setServerIp(value.get("serverIp"));
-        connectionDetails.setServerPort(Integer.parseInt(value.get("serverPort")));
+        if (value.get("databaseName") != null) {
+            connectionDetails.setDatabaseName(value.get("databaseName"));
+        }
+        if (value.get("serverIp") != null) {
+            connectionDetails.setServerIp(value.get("serverIp"));
+        }
+        if (value.get("serverPort") != null) {
+            connectionDetails.setServerPort(Integer.parseInt(value.get("serverPort")));
+        }
         return connectionDetails;
     }
 
@@ -86,6 +101,13 @@ public class ConnectionDetailsMapper {
         } else if (connectionDetails instanceof KafkaConnectionDetails) {
             map.put("@type", "Kafka");
             map.put("isSecure", BooleanUtils.toString(((KafkaConnectionDetails) connectionDetails).getIsSecure(), "true", "false", "false"));
+        } else if (connectionDetails instanceof SnowflakeConnectionDetails) {
+            map.put("@type", "Snowflake");
+            map.put("account", ((SnowflakeConnectionDetails) connectionDetails).getAccount());
+            if (((SnowflakeConnectionDetails) connectionDetails).getAdditionalParameters() != null) {
+                map.put("additionalParameters", ((SnowflakeConnectionDetails) connectionDetails).getAdditionalParameters());
+            }
+            map.put("schemaName", ((SnowflakeConnectionDetails) connectionDetails).getSchemaName());
         } else {
             throw new RuntimeException("Cannot find a mapper for " + connectionDetails.getClass().getSimpleName());
         }
