@@ -1,0 +1,15 @@
+version: '2'
+services:
+    flair-engine-pgsql-test:
+        image: flairbi/flair-engine-pgsql:${TAG}
+        networks:
+        - jenkins
+        environment:
+            - POSTGRES_USER=postgres
+            - POSTGRES_PASSWORD=admin
+            - POSTGRES_DB=fbiengine
+
+networks:
+    jenkins:
+        external:
+            name: jenkins

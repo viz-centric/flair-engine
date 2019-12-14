@@ -1,0 +1,97 @@
+grpc:
+  port: 6565
+  tls:
+    enabled: ${GRPC_SSL_ENABLED:false}
+    certChainFile: ${GRPC_CERT:/app/certChainFile.crt}
+    privateKeyFile: ${GRPC_KEY:/app/privateKeyFile.pem}
+    trustCertCollectionFile: ${GRPC_TRUST_CERT:/app/trustCertCollectionFile.crt}
+    cacheTrustCertCollectionFile: ${GRPC_CACHE_TRUST_CERT:/app/cacheTrustCertCollectionFile.crt}
+    cacheClientCertChainFile: ${GRPC_CACHE_CERT:/app/cacheClientCertChainFile.crt}
+    cacheClientPrivateKeyFile: ${GRPC_CACHE_KEY:/app/cacheClientPrivateKeyFile.pem}
+
+flair-cache:
+  enabled: false
+
+---
+
+
+management:
+  security:
+    roles: ADMIN
+  context-path: /
+  health:
+    mail:
+      enabled: false # When using the MailService, configure an SMTP server and set this to true
+
+spring:
+  profiles:
+    # The commented value for `active` can be replaced with valid Spring profiles to load.
+    # Otherwise, it will be filled in by maven when building the WAR file
+    # Either way, it can be overridden by `--spring.profiles.active` value passed in the commandline or `-Dspring.profiles.active` set in `JAVA_OPTS`
+    active: dev
+  jackson:
+    serialization.write_dates_as_timestamps: false
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: none
+      naming:
+        physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
+        implicit-strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
+  messages:
+    basename: i18n/messages
+  mvc:
+    favicon:
+      enabled: false
+  thymeleaf:
+    mode: XHTML
+security:
+  basic:
+    enabled: false
+
+server:
+  port: 8080
+  session:
+    cookie:
+      http-only: true
+
+
+info:
+  project:
+    version: #project.version#
+
+
+# ===================================================================
+# JHipster specific properties
+#
+# Full reference is available at: https://jhipster.github.io/common-application-properties/
+# ===================================================================
+
+jhipster:
+  async:
+    core-pool-size: 2
+    max-pool-size: 50
+    queue-capacity: 10000
+    # By default CORS is disabled. Uncomment to enable.
+    #cors:
+    #allowed-origins: "*"
+    #allowed-methods: GET, PUT, POST, DELETE, OPTIONS
+    #allowed-headers: "*"
+    #exposed-headers:
+    #allow-credentials: true
+    #max-age: 1800
+  mail:
+    from: fbiengine@localhost
+  swagger:
+    default-include-pattern: /api/.*
+    title: fbiengine API
+    description: fbiengine API documentation
+    version: 0.0.1
+    terms-of-service-url:
+    contact-name:
+    contact-url:
+    contact-email:
+    license:
+    license-url:
+  ribbon:
+    display-on-active-profiles: dev
