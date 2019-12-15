@@ -5,29 +5,25 @@ import org.hibernate.usertype.DynamicParameterizedType;
 
 import java.util.Properties;
 
-public class JsonStringType
-    extends AbstractSingleColumnStandardBasicType<Object>
-    implements DynamicParameterizedType {
+public class JsonStringType extends AbstractSingleColumnStandardBasicType<Object> implements DynamicParameterizedType {
 
-    public JsonStringType() {
-        super(
-            JsonStringSqlTypeDescriptor.INSTANCE,
-            new JsonTypeDescriptor()
-        );
-    }
+	private static final long serialVersionUID = -1867681697186447500L;
 
-    public String getName() {
-        return "json";
-    }
+	public JsonStringType() {
+		super(JsonStringSqlTypeDescriptor.INSTANCE, new JsonTypeDescriptor());
+	}
 
-    @Override
-    protected boolean registerUnderJavaType() {
-        return true;
-    }
+	public String getName() {
+		return "json";
+	}
 
-    @Override
-    public void setParameterValues(Properties parameters) {
-        ((JsonTypeDescriptor) getJavaTypeDescriptor())
-            .setParameterValues(parameters);
-    }
+	@Override
+	protected boolean registerUnderJavaType() {
+		return true;
+	}
+
+	@Override
+	public void setParameterValues(Properties parameters) {
+		((JsonTypeDescriptor) getJavaTypeDescriptor()).setParameterValues(parameters);
+	}
 }

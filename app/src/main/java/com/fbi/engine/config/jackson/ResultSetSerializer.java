@@ -19,184 +19,183 @@ import java.sql.Types;
 
 public class ResultSetSerializer extends JsonSerializer<ResultSet> {
 
+	@Override
+	public Class<ResultSet> handledType() {
+		return ResultSet.class;
+	}
 
-    @Override
-    public Class<ResultSet> handledType() {
-        return ResultSet.class;
-    }
+	@Override
+	public void serialize(ResultSet rs, JsonGenerator jgen, SerializerProvider provider) throws IOException {
+		try {
+			ResultSetMetaData rsmd = rs.getMetaData();
+			int numColumns = rsmd.getColumnCount();
+			String[] columnNames = new String[numColumns];
+			int[] columnTypes = new int[numColumns];
 
-    @Override
-    public void serialize(ResultSet rs, JsonGenerator jgen, SerializerProvider provider) throws IOException {
-        try {
-            ResultSetMetaData rsmd = rs.getMetaData();
-            int numColumns = rsmd.getColumnCount();
-            String[] columnNames = new String[numColumns];
-            int[] columnTypes = new int[numColumns];
+			for (int i = 0; i < columnNames.length; i++) {
+				columnNames[i] = rsmd.getColumnLabel(i + 1);
+				columnTypes[i] = rsmd.getColumnType(i + 1);
+			}
 
-            for (int i = 0; i < columnNames.length; i++) {
-                columnNames[i] = rsmd.getColumnLabel(i + 1);
-                columnTypes[i] = rsmd.getColumnType(i + 1);
-            }
+			jgen.writeStartArray();
 
-            jgen.writeStartArray();
+			while (rs.next()) {
 
-            while (rs.next()) {
+				boolean b;
+				long l;
+				double d;
 
-                boolean b;
-                long l;
-                double d;
+				jgen.writeStartObject();
 
-                jgen.writeStartObject();
+				for (int i = 0; i < columnNames.length; i++) {
 
-                for (int i = 0; i < columnNames.length; i++) {
+					jgen.writeFieldName(columnNames[i]);
+					switch (columnTypes[i]) {
 
-                    jgen.writeFieldName(columnNames[i]);
-                    switch (columnTypes[i]) {
+					case Types.INTEGER:
+						l = rs.getInt(i + 1);
+						if (rs.wasNull()) {
+							jgen.writeNull();
+						} else {
+							jgen.writeNumber(l);
+						}
+						break;
 
-                        case Types.INTEGER:
-                            l = rs.getInt(i + 1);
-                            if (rs.wasNull()) {
-                                jgen.writeNull();
-                            } else {
-                                jgen.writeNumber(l);
-                            }
-                            break;
+					case Types.BIGINT:
+						l = rs.getLong(i + 1);
+						if (rs.wasNull()) {
+							jgen.writeNull();
+						} else {
+							jgen.writeNumber(l);
+						}
+						break;
 
-                        case Types.BIGINT:
-                            l = rs.getLong(i + 1);
-                            if (rs.wasNull()) {
-                                jgen.writeNull();
-                            } else {
-                                jgen.writeNumber(l);
-                            }
-                            break;
+					case Types.DECIMAL:
+					case Types.NUMERIC:
+						jgen.writeNumber(rs.getBigDecimal(i + 1));
+						break;
 
-                        case Types.DECIMAL:
-                        case Types.NUMERIC:
-                            jgen.writeNumber(rs.getBigDecimal(i + 1));
-                            break;
+					case Types.FLOAT:
+					case Types.REAL:
+					case Types.DOUBLE:
+						d = rs.getDouble(i + 1);
+						if (rs.wasNull()) {
+							jgen.writeNull();
+						} else {
+							jgen.writeNumber(d);
+						}
+						break;
 
-                        case Types.FLOAT:
-                        case Types.REAL:
-                        case Types.DOUBLE:
-                            d = rs.getDouble(i + 1);
-                            if (rs.wasNull()) {
-                                jgen.writeNull();
-                            } else {
-                                jgen.writeNumber(d);
-                            }
-                            break;
+					case Types.NVARCHAR:
+					case Types.VARCHAR:
+					case Types.LONGNVARCHAR:
+					case Types.LONGVARCHAR:
+						jgen.writeString(rs.getString(i + 1));
+						break;
 
-                        case Types.NVARCHAR:
-                        case Types.VARCHAR:
-                        case Types.LONGNVARCHAR:
-                        case Types.LONGVARCHAR:
-                            jgen.writeString(rs.getString(i + 1));
-                            break;
+					case Types.BOOLEAN:
+					case Types.BIT:
+						b = rs.getBoolean(i + 1);
+						if (rs.wasNull()) {
+							jgen.writeNull();
+						} else {
+							jgen.writeBoolean(b);
+						}
+						break;
 
-                        case Types.BOOLEAN:
-                        case Types.BIT:
-                            b = rs.getBoolean(i + 1);
-                            if (rs.wasNull()) {
-                                jgen.writeNull();
-                            } else {
-                                jgen.writeBoolean(b);
-                            }
-                            break;
+					case Types.BINARY:
+					case Types.VARBINARY:
+					case Types.LONGVARBINARY:
+						jgen.writeBinary(rs.getBytes(i + 1));
+						break;
 
-                        case Types.BINARY:
-                        case Types.VARBINARY:
-                        case Types.LONGVARBINARY:
-                            jgen.writeBinary(rs.getBytes(i + 1));
-                            break;
+					case Types.TINYINT:
+					case Types.SMALLINT:
+						l = rs.getShort(i + 1);
+						if (rs.wasNull()) {
+							jgen.writeNull();
+						} else {
+							jgen.writeNumber(l);
+						}
+						break;
 
-                        case Types.TINYINT:
-                        case Types.SMALLINT:
-                            l = rs.getShort(i + 1);
-                            if (rs.wasNull()) {
-                                jgen.writeNull();
-                            } else {
-                                jgen.writeNumber(l);
-                            }
-                            break;
+					case Types.DATE:
+						Date date = rs.getDate(i + 1);
+						if (rs.wasNull()) {
+							jgen.writeNull();
+						} else {
+							provider.defaultSerializeDateValue(date, jgen);
+						}
+						break;
 
-                        case Types.DATE:
-                            Date date = rs.getDate(i + 1);
-                            if (rs.wasNull()) {
-                                jgen.writeNull();
-                            } else {
-                                provider.defaultSerializeDateValue(date, jgen);
-                            }
-                            break;
+					case Types.TIMESTAMP:
+						Timestamp time = rs.getTimestamp(i + 1);
+						if (rs.wasNull()) {
+							jgen.writeNull();
+						} else {
+							provider.defaultSerializeDateValue(time, jgen);
+						}
+						break;
 
-                        case Types.TIMESTAMP:
-                            Timestamp time = rs.getTimestamp(i + 1);
-                            if (rs.wasNull()) {
-                                jgen.writeNull();
-                            } else {
-                                provider.defaultSerializeDateValue(time, jgen);
-                            }
-                            break;
+					case Types.BLOB:
+						Blob blob = rs.getBlob(i);
+						if (rs.wasNull()) {
+							jgen.writeNull();
+						} else {
+							provider.defaultSerializeValue(blob.getBinaryStream(), jgen);
+							blob.free();
+						}
+						break;
 
-                        case Types.BLOB:
-                            Blob blob = rs.getBlob(i);
-                            if (rs.wasNull()) {
-                                jgen.writeNull();
-                            } else {
-                                provider.defaultSerializeValue(blob.getBinaryStream(), jgen);
-                                blob.free();
-                            }
-                            break;
+					case Types.CLOB:
+						Clob clob = rs.getClob(i);
+						if (rs.wasNull()) {
+							jgen.writeNull();
+						} else {
+							provider.defaultSerializeValue(clob.getCharacterStream(), jgen);
+							clob.free();
+						}
+						break;
 
-                        case Types.CLOB:
-                            Clob clob = rs.getClob(i);
-                            if (rs.wasNull()) {
-                                jgen.writeNull();
-                            } else {
-                                provider.defaultSerializeValue(clob.getCharacterStream(), jgen);
-                                clob.free();
-                            }
-                            break;
+					case Types.ARRAY:
+						throw new RuntimeException("ResultSetSerializer not yet implemented for SQL type ARRAY");
 
-                        case Types.ARRAY:
-                            throw new RuntimeException("ResultSetSerializer not yet implemented for SQL type ARRAY");
+					case Types.STRUCT:
+						throw new RuntimeException("ResultSetSerializer not yet implemented for SQL type STRUCT");
 
-                        case Types.STRUCT:
-                            throw new RuntimeException("ResultSetSerializer not yet implemented for SQL type STRUCT");
+					case Types.DISTINCT:
+						throw new RuntimeException("ResultSetSerializer not yet implemented for SQL type DISTINCT");
 
-                        case Types.DISTINCT:
-                            throw new RuntimeException("ResultSetSerializer not yet implemented for SQL type DISTINCT");
+					case Types.REF:
+						throw new RuntimeException("ResultSetSerializer not yet implemented for SQL type REF");
 
-                        case Types.REF:
-                            throw new RuntimeException("ResultSetSerializer not yet implemented for SQL type REF");
+					case Types.JAVA_OBJECT:
+					default:
+						Object object = rs.getObject(i + 1);
+						if (rs.wasNull()) {
+							jgen.writeNull();
+						} else {
+							provider.defaultSerializeValue(object, jgen);
+						}
+						break;
+					}
+				}
 
-                        case Types.JAVA_OBJECT:
-                        default:
-                            Object object = rs.getObject(i + 1);
-                            if (rs.wasNull()) {
-                                jgen.writeNull();
-                            } else {
-                                provider.defaultSerializeValue(object, jgen);
-                            }
-                            break;
-                    }
-                }
+				jgen.writeEndObject();
+			}
 
-                jgen.writeEndObject();
-            }
+			jgen.writeEndArray();
 
-            jgen.writeEndArray();
+		} catch (SQLException e) {
+			throw new ResultSetSerializerException(e);
+		}
+	}
 
-        } catch (SQLException e) {
-            throw new ResultSetSerializerException(e);
-        }
-    }
-
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    private class ResultSetSerializerException extends JsonProcessingException {
-        public ResultSetSerializerException(Throwable e) {
-            super(e);
-        }
-    }
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	private class ResultSetSerializerException extends JsonProcessingException {
+		public ResultSetSerializerException(Throwable e) {
+			super(e);
+		}
+	}
 
 }

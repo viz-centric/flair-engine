@@ -1,4 +1,4 @@
-grpc:
+appgrpc:
   port: 6565
   tls:
     enabled: ${GRPC_SSL_ENABLED:false}
