@@ -18,7 +18,6 @@ import java.util.List;
 /**
  * Spring Data JPA repository for the Connection entity.
  */
-@SuppressWarnings("unused")
 @Repository
 public interface ConnectionRepository extends JpaRepository<Connection, Long>, QueryDslPredicateExecutor<Connection>,
     QuerydslBinderCustomizer<QConnection> {

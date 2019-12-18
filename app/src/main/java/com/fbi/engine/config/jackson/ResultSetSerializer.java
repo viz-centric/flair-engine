@@ -193,6 +193,9 @@ public class ResultSetSerializer extends JsonSerializer<ResultSet> {
 
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	private class ResultSetSerializerException extends JsonProcessingException {
+
+		private static final long serialVersionUID = 4232071426036370774L;
+
 		public ResultSetSerializerException(Throwable e) {
 			super(e);
 		}

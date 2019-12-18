@@ -20,10 +20,7 @@
 		<javassist.version>3.21.0-GA</javassist.version>
 
 		<docker-maven-plugin.version>0.27.2</docker-maven-plugin.version>
-		<maven-release-plugin.version>2.5.3</maven-release-plugin.version>
-		<maven-scm-provider-gitexe.version>1.9.5</maven-scm-provider-gitexe.version>
-		<maven-source-plugin.version>3.0.1</maven-source-plugin.version>
-		<maven-javadoc-plugin.version>3.0.1</maven-javadoc-plugin.version>
+
 		<apache-httpclient.version>4.5</apache-httpclient.version>
 		<argLine>-Djava.security.egd=file:/dev/./urandom -Xmx256m</argLine>
 		<assertj.version>3.6.2</assertj.version>
@@ -39,7 +36,7 @@
 		<hibernate.version>5.2.8.Final</hibernate.version>
 		<hikaricp.version>2.6.0</hikaricp.version>
 		<jacoco-maven-plugin.version>0.7.9</jacoco-maven-plugin.version>
-		<java.version>1.8</java.version>
+
 		<jcache.version>1.0.0</jcache.version>
 		<jzlib.version>1.1.3</jzlib.version>
 		<jhipster.server.version>1.3.0</jhipster.server.version>
@@ -49,13 +46,8 @@
 		<logstash-logback-encoder.version>4.11</logstash-logback-encoder.version>
 		<m2e.apt.activation>jdt_apt</m2e.apt.activation>
 		<mapstruct.version>1.2.0.Final</mapstruct.version>
-		<maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
-		<maven-enforcer-plugin.version>3.0.0-M2</maven-enforcer-plugin.version>
-		<maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
-		<maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
-		<maven.compiler.source>${java.version}</maven.compiler.source>
-		<maven.compiler.target>${java.version}</maven.compiler.target>
-		<maven.version>3.0.0</maven.version>
+
+
 		<metrics-spring.version>3.1.3</metrics-spring.version>
 		<node.version>v6.11.1</node.version>
 		<npm.version>5.3.0</npm.version>
@@ -123,11 +115,9 @@
 		<project.scm.id>github-credentials</project.scm.id>
 
 		<!-- our dependencies -->
-		<flair-messages.version>0.0.34</flair-messages.version>
-		<flair-query-language.version>1.6.7</flair-query-language.version>
-		<project-bi-common.version>1.3.28</project-bi-common.version>
+
 		<all-grpc.version>1.23.0</all-grpc.version>
-		<lombok.version>1.18.8</lombok.version>
+
 
 	</properties>
 	<dependencyManagement>
@@ -142,7 +132,7 @@
 			<dependency>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-dependencies</artifactId>
-				<version>1.5.20.RELEASE</version>
+				<version>${spring-boot.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
@@ -154,6 +144,8 @@
 		</dependencies>
 	</dependencyManagement>
 	<dependencies>
+
+
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-eureka</artifactId>
@@ -165,12 +157,10 @@
 		<dependency>
 			<groupId>com.project.bi</groupId>
 			<artifactId>project-bi-common</artifactId>
-			<version>${project-bi-common.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.project.bi</groupId>
 			<artifactId>flair-query-language</artifactId>
-			<version>${flair-query-language.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.github.lognet</groupId>
@@ -186,13 +176,6 @@
 		<dependency>
 			<groupId>com.project.bi</groupId>
 			<artifactId>flair-messages</artifactId>
-			<version>${flair-messages.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>io.grpc</groupId>
-					<artifactId>grpc-core</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>io.grpc</groupId>
@@ -766,13 +749,11 @@
 		<dependency>
 			<groupId>com.querydsl</groupId>
 			<artifactId>querydsl-apt</artifactId>
-			<version>${querydsl.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.querydsl</groupId>
 			<artifactId>querydsl-jpa</artifactId>
-			<version>${querydsl.version}</version>
 		</dependency>
 		<!-- security -->
 		<dependency>
@@ -800,10 +781,39 @@
 			<artifactId>jongo</artifactId>
 			<version>1.3.0</version>
 		</dependency>
+
+		<dependency>
+			<groupId>org.pf4j</groupId>
+			<artifactId>pf4j-spring</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.fbi.engine</groupId>
+			<artifactId>flair-engine-api</artifactId>
+			<version>3.0.0-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<defaultGoal>spring-boot:run</defaultGoal>
 		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${maven-compiler-plugin.version}</version>
+				<configuration>
+					<annotationProcessorPaths>
+						<path>
+							<groupId>org.mapstruct</groupId>
+							<artifactId>mapstruct-processor</artifactId>
+							<version>${mapstruct.version}</version>
+						</path>
+						<path>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok</artifactId>
+							<version>${lombok.version}</version>
+						</path>
+					</annotationProcessorPaths>
+				</configuration>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-release-plugin</artifactId>
@@ -840,63 +850,6 @@
 					<!-- To run only one simulation, you need to disable the "runMultipleSimulations" 
 						above, and write the name of your simulation below. -->
 					<!--<simulationClass>WriteTheNameOfYourGatlingSimulation</simulationClass> -->
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>${maven-compiler-plugin.version}</version>
-				<configuration>
-					<annotationProcessorPaths>
-						<path>
-							<groupId>org.mapstruct</groupId>
-							<artifactId>mapstruct-processor</artifactId>
-							<version>${mapstruct.version}</version>
-						</path>
-						<path>
-							<groupId>org.projectlombok</groupId>
-							<artifactId>lombok</artifactId>
-							<version>${lombok.version}</version>
-						</path>
-					</annotationProcessorPaths>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-eclipse-plugin</artifactId>
-				<version>2.10</version>
-				<configuration>
-					<downloadSources>true</downloadSources>
-					<downloadJavadocs>true</downloadJavadocs>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-enforcer-plugin</artifactId>
-				<version>${maven-enforcer-plugin.version}</version>
-				<executions>
-					<execution>
-						<id>enforce-versions</id>
-						<goals>
-							<goal>enforce</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<rules>
-						<requireMavenVersion>
-							<message>You are running an older version of Maven.
-								${maven.version}
-							</message>
-							<version>[${maven.version},)</version>
-						</requireMavenVersion>
-						<requireJavaVersion>
-							<message>You are running an older version of Java.
-								${java.version}
-							</message>
-							<version>[${java.version}.0,)</version>
-						</requireJavaVersion>
-					</rules>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -1054,6 +1007,9 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
+					<folders>
+						<folder>./lib</folder>
+					</folders>
 					<executable>true</executable>
 					<fork>true</fork>
 					<!-- Enable the line below to have remote debugging of your application 
@@ -1087,7 +1043,7 @@
 				<plugin>
 					<groupId>org.springframework.boot</groupId>
 					<artifactId>spring-boot-maven-plugin</artifactId>
-					<version>1.5.20.RELEASE</version>
+					<version>${spring-boot.version}</version>
 				</plugin>
 				<plugin>
 					<groupId>io.fabric8</groupId>

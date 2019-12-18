@@ -1,29 +1,24 @@
 package com.fbi.engine.config.jackson;
 
-import com.fasterxml.jackson.core.JsonEncoding;
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.json.UTF8JsonGenerator;
-import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
-import org.apache.commons.io.IOUtils;
-import org.codehaus.plexus.util.StringOutputStream;
-import org.h2.tools.SimpleResultSet;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.eq;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.StringWriter;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Types;
 
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.eq;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mockito;
+import org.mockito.runners.MockitoJUnitRunner;
+
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ResultSetSerializerTest {
