@@ -1,10 +1,4 @@
-package com.fbi.engine.query.convert.impl;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.project.bi.general.Converter;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+package com.fbi.engine.plugins.core;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -12,6 +6,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.project.bi.general.Converter;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequiredArgsConstructor

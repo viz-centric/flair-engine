@@ -29,6 +29,6 @@ public interface FlairFactory extends ExtensionPoint {
 	 * @param driver     used for creating the connection
 	 * @return instance of {@link QueryExecutor}
 	 */
-	QueryExecutor getExecutor(Connection connection, DataSourceDriver driver);
+	QueryExecutor getExecutor(Connection connection, DataSourceDriver driver) throws FlairFactoryException;
 
 }

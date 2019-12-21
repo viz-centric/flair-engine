@@ -1,11 +1,4 @@
-package com.fbi.engine.config.jackson;
-
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonSerializer;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+package com.fbi.engine.plugins.core;
 
 import java.io.IOException;
 import java.sql.Blob;
@@ -17,6 +10,11 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.sql.Types;
 
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
+
 public class ResultSetSerializer extends JsonSerializer<ResultSet> {
 
 	@Override
@@ -26,7 +24,7 @@ public class ResultSetSerializer extends JsonSerializer<ResultSet> {
 
 	@Override
 	public void serialize(ResultSet rs, JsonGenerator jgen, SerializerProvider provider) throws IOException {
-		try { 
+		try {
 			ResultSetMetaData rsmd = rs.getMetaData();
 			int numColumns = rsmd.getColumnCount();
 			String[] columnNames = new String[numColumns];
@@ -191,7 +189,6 @@ public class ResultSetSerializer extends JsonSerializer<ResultSet> {
 		}
 	}
 
-	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	private class ResultSetSerializerException extends JsonProcessingException {
 
 		private static final long serialVersionUID = 4232071426036370774L;
