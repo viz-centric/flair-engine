@@ -1,11 +1,11 @@
 package com.fbi.engine.api;
 
-import java.util.Map;
+import java.util.Properties;
 
 /**
  * Connection information for data source.
  */
-public interface Connection {
+public interface DataSourceConnection {
 
 	/**
 	 * Connection string used for connecting to data source.
@@ -19,6 +19,6 @@ public interface Connection {
 	 * 
 	 * @return map with properties
 	 */
-	Map<String, Object> getConnectionProperties();
+	Properties getConnectionProperties();
 
 }

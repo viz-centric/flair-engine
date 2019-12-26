@@ -3,38 +3,46 @@ package com.fbi.engine.domain.details;
 import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
+import java.util.Properties;
 
 @EqualsAndHashCode(callSuper = true)
 public class MongoDBConnectionDetails extends ConnectionDetails implements Serializable {
 
-    public MongoDBConnectionDetails() {
-    }
+	private static final long serialVersionUID = -3039039079896004839L;
 
-    public MongoDBConnectionDetails(String serverIp, Integer serverPort, String databaseName) {
-        super(serverIp, serverPort, databaseName);
-    }
+	public MongoDBConnectionDetails() {
+	}
 
-    /**
-     * @return connection of mongodb jdbc
-     * 
-     */
-    @Override
-    public String getConnectionString() {
-        StringBuilder connectionString = new StringBuilder();
+	public MongoDBConnectionDetails(String serverIp, Integer serverPort, String databaseName) {
+		super(serverIp, serverPort, databaseName);
+	}
 
-        connectionString.append("jdbc:mongo:");
+	/**
+	 * @return connection of mongodb jdbc
+	 * 
+	 */
+	@Override
+	public String getConnectionString() {
+		StringBuilder connectionString = new StringBuilder();
 
-        if (getServerIp() != null) {
-            connectionString.append("//").append(getServerIp());
+		connectionString.append("jdbc:mongo:");
 
-            if (getServerPort() != null) {
-                connectionString.append(":").append(getServerPort());
-            }
+		if (getServerIp() != null) {
+			connectionString.append("//").append(getServerIp());
 
-            connectionString.append("/");
-        }
+			if (getServerPort() != null) {
+				connectionString.append(":").append(getServerPort());
+			}
 
-        connectionString.append(getDatabaseName());
-        return connectionString.toString();
-    }
+			connectionString.append("/");
+		}
+
+		connectionString.append(getDatabaseName());
+		return connectionString.toString();
+	}
+
+	@Override
+	public Properties getAdditionalProperties() {
+		return new Properties();
+	}
 }

@@ -17,11 +17,6 @@ import com.project.bi.query.FlairCompiler;
 public class ApplicationConfiguration {
 
 	@Bean
-	public DriverLoadingStrategy strategy() {
-		return new DynamicDriverLoadingStrategy();
-	}
-
-	@Bean
 	public ObjectMapper objectMapper() {
 		ObjectMapper obj = new ObjectMapper();
 		SimpleModule module = new SimpleModule();
@@ -33,6 +28,11 @@ public class ApplicationConfiguration {
 	@Bean
 	public FlairCompiler compiler() {
 		return new PostgresFlairCompiler();
+	}
+
+	@Bean
+	public DriverLoadingStrategy strategy() {
+		return new DynamicDriverLoadingStrategy();
 	}
 
 }

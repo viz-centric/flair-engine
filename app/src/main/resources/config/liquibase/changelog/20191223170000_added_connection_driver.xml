@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+
+	<changeSet id="20191223170000-1" author="vizcentric">
+		<comment>
+			Since flair engine v3.0.0, the plug-in system is introduced, where dynamic loading of the JDBC drivers is included.
+			In respect to that, the persistence of this drivers will be done in the database.
+		</comment>
+		<addColumn tableName="connection">
+			<column name="driver_artifact_id" type="varchar(255)" />
+			<column name="driver_group_id" type="varchar(255)" />
+			<column name="driver_version" type="varchar(255)" />
+			<column name="driver_jar" type="blob" />
+		</addColumn>
+	</changeSet>
+</databaseChangeLog>

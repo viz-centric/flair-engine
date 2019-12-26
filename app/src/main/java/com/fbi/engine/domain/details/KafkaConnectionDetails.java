@@ -5,37 +5,41 @@ import lombok.EqualsAndHashCode;
 import org.apache.commons.lang.BooleanUtils;
 
 import java.io.Serializable;
+import java.util.Properties;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class KafkaConnectionDetails extends ConnectionDetails implements Serializable {
 
-    private Boolean isSecure;
+	private static final long serialVersionUID = -8362555143589714119L;
 
-    public KafkaConnectionDetails() {
-    }
+	private Boolean isSecure;
 
-    public KafkaConnectionDetails(String serverIp, int serverPort, String databaseName, boolean isSecure) {
-        super(serverIp, serverPort, databaseName);
-        this.isSecure = isSecure;
-    }
+	public KafkaConnectionDetails() {
+	}
 
-    @Override
-    public String getConnectionString() {
-        StringBuilder connectionString = new StringBuilder();
+	public KafkaConnectionDetails(String serverIp, int serverPort, String databaseName, boolean isSecure) {
+		super(serverIp, serverPort, databaseName);
+		this.isSecure = isSecure;
+	}
 
-        if (BooleanUtils.toBoolean(isSecure)) {
-            connectionString.append("https");
-        } else {
-            connectionString.append("http");
-        }
+	@Override
+	public String getConnectionString() {
+		StringBuilder connectionString = new StringBuilder();
 
-        connectionString
-            .append("://")
-            .append(getServerIp())
-            .append(":")
-            .append(getServerPort());
+		if (BooleanUtils.toBoolean(isSecure)) {
+			connectionString.append("https");
+		} else {
+			connectionString.append("http");
+		}
 
-        return connectionString.toString();
-    }
+		connectionString.append("://").append(getServerIp()).append(":").append(getServerPort());
+
+		return connectionString.toString();
+	}
+
+	@Override
+	public Properties getAdditionalProperties() {
+		return new Properties();
+	}
 }

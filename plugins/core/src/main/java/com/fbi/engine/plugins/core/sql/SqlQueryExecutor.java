@@ -2,6 +2,7 @@ package com.fbi.engine.plugins.core.sql;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -9,11 +10,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fbi.engine.api.Connection;
+import com.fbi.engine.api.DataSourceConnection;
 import com.fbi.engine.api.DataSourceDriver;
 import com.fbi.engine.api.Query;
 import com.fbi.engine.api.QueryExecutor;
-import com.fbi.engine.plugins.core.DriverShim;
 import com.fbi.engine.plugins.core.ResultSetConverter;
 import com.project.bi.exceptions.ExecutionException;
 
@@ -29,7 +29,7 @@ public abstract class SqlQueryExecutor implements QueryExecutor {
 
 	protected final DriverLoadingStrategy strategy;
 
-	protected final Connection connection;
+	protected final DataSourceConnection connection;
 
 	protected final ObjectMapper objectMapper;
 
@@ -37,13 +37,14 @@ public abstract class SqlQueryExecutor implements QueryExecutor {
 
 	protected abstract String getDriverClassName();
 
+	protected abstract DataSourceDriver getDefaultDriver();
+
 	protected Driver initDriver() throws ExecutionException {
-		Driver d = strategy.loadDriver(getDriverClassName(), driver);
 		try {
-			DriverManager.registerDriver(new DriverShim(d));
+			final Driver d = strategy.loadDriver(getDriverClassName(), driver);
 			log.info("Driver successfully registered: {}", getDriverClassName());
 			return d;
-		} catch (SQLException e) {
+		} catch (DriverLoadingException e) {
 			log.error("An error occured trying to load driver for SQL Query executor for driver class name: {}",
 					getDriverClassName());
 			throw new ExecutionException(e);
@@ -54,7 +55,7 @@ public abstract class SqlQueryExecutor implements QueryExecutor {
 		try {
 			DriverManager.deregisterDriver(driver);
 			log.info("Driver successfully de-registered: {}", getDriverClassName());
-		} catch (SQLException e) {
+		} catch (SQLException | SecurityException e) {
 			log.error(e.getLocalizedMessage(), e);
 			throw new ExecutionException(e);
 		}
@@ -63,11 +64,11 @@ public abstract class SqlQueryExecutor implements QueryExecutor {
 	@Override
 	public void execute(Query query, Writer writer) throws ExecutionException {
 		final Driver driver = initDriver();
-		try (java.sql.Connection c = DriverManager.getConnection(this.connection.getConnectionString(),
+		try (final Connection c = DriverManager.getConnection(this.connection.getConnectionString(),
 				this.connection.getConnectionProperties().get(USERNAME).toString(),
 				this.connection.getConnectionProperties().get(PASSWORD).toString())) {
 			if (c != null) {
-				try (Statement statement = c.createStatement()) {
+				try (final Statement statement = c.createStatement()) {
 					statement.execute(query.getQuery());
 					try (ResultSet resultSet = statement.getResultSet()) {
 						writer.write(

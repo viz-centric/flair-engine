@@ -108,22 +108,8 @@ public class FbiengineApp {
 			public void run(ApplicationArguments args) throws Exception {
 				final List<FlairFactory> plugins = springPluginManager.getExtensions(FlairFactory.class);
 				log.info(String.format("Number of plugins found: %d", plugins.size()));
-
 				plugins.forEach(x -> {
-					StringWriter compiler = new StringWriter();
-					StringWriter executor = new StringWriter();
-					try {
-						x.getCompiler().compile(null, compiler);
-						x.getExecutor(null, null).execute(null, executor);
-					} catch (ExecutionException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (CompilationException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					log.info("Plugin: {}, compiler: {}, executor: {}", x.getClass(), compiler.toString(),
-							executor.toString());
+					log.info("Plugin loaded: {}", x.getExtensionId());
 				});
 			}
 		};

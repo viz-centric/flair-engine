@@ -1,39 +1,48 @@
 package com.fbi.engine.domain.details;
 
+import java.io.Serializable;
+import java.util.Properties;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
-import java.io.Serializable;
 
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
-@Slf4j
 @Data
 public class AthenaConnectionDetails extends ConnectionDetails implements Serializable {
 
-    private String s3OutputLocation;
-    private String workgroup;
+	private static final long serialVersionUID = -8826789011396868900L;
+	private String s3OutputLocation;
+	private String workgroup;
 
-    public AthenaConnectionDetails(String serverIp, Integer serverPort, String databaseName, String s3OutputLocation, String workgroup) {
-        super(serverIp, serverPort, databaseName);
-        this.s3OutputLocation = s3OutputLocation;
-        this.workgroup = workgroup;
-    }
+	public AthenaConnectionDetails(String serverIp, Integer serverPort, String databaseName, String s3OutputLocation,
+			String workgroup) {
+		super(serverIp, serverPort, databaseName);
+		this.s3OutputLocation = s3OutputLocation;
+		this.workgroup = workgroup;
+	}
 
-    @Override
-    public String getConnectionString() {
-        StringBuilder connectionString = new StringBuilder();
+	@Override
+	public String getConnectionString() {
+		StringBuilder connectionString = new StringBuilder();
 
-        connectionString.append("jdbc:awsathena:");
+		connectionString.append("jdbc:awsathena:");
 
-        connectionString.append("//").append(getServerIp());
+		connectionString.append("//").append(getServerIp());
 
-        if (getServerPort() != null) {
-            connectionString.append(":").append(getServerPort());
-        }
+		if (getServerPort() != null) {
+			connectionString.append(":").append(getServerPort());
+		}
 
-        return connectionString.toString();
-    }
+		return connectionString.toString();
+	}
+
+	@Override
+	public Properties getAdditionalProperties() {
+		Properties info = new Properties();
+		info.put("S3OutputLocation", this.getS3OutputLocation());
+		info.put("Workgroup", this.getWorkgroup());
+		return info;
+	}
 }

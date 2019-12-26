@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- formatter::off  -->
 <databaseChangeLog
     xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -14,4 +15,6 @@
     <include file="config/liquibase/changelog/20170825142500_added_entity_seed.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20190316212100_connection_parameters.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20190505212100_connection_status.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20191223170000_added_connection_driver.xml" relativeToChangelogFile="false"/>
 </databaseChangeLog>
+<!-- formatter::on  -->

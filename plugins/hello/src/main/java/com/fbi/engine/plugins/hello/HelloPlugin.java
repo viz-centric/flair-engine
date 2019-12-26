@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import com.fbi.engine.api.Connection;
+import com.fbi.engine.api.DataSourceConnection;
 import com.fbi.engine.api.DataSourceDriver;
 import com.fbi.engine.api.FlairFactory;
 import com.fbi.engine.api.QueryExecutor;
@@ -52,7 +52,7 @@ public class HelloPlugin extends SpringPlugin {
 			return compiler;
 		}
 
-		public QueryExecutor getExecutor(Connection connection, DataSourceDriver driver) {
+		public QueryExecutor getExecutor(DataSourceConnection connection, DataSourceDriver driver) {
 			return factory.createQueryExecutor(connection, driver);
 		}
 

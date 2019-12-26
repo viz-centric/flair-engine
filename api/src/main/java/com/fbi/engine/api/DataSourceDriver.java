@@ -3,7 +3,7 @@ package com.fbi.engine.api;
 /**
  * Driver used for connecting to the data source.
  * 
- * @see Connection
+ * @see DataSourceConnection
  * @see FlairFactory
  */
 public interface DataSourceDriver {

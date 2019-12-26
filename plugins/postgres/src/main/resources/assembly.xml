@@ -13,6 +13,7 @@
 			<outputDirectory>lib</outputDirectory>
 			<includes>
 				<include>org.pf4j:*</include>
+				<include>com.fbi.engine:flair-engine-plugins-core</include>
 			</includes>
 			<excludes>
 				<exclude>org.springframework:*</exclude>

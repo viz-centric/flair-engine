@@ -8,7 +8,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fbi.engine.api.Connection;
+import com.fbi.engine.api.DataSourceConnection;
 import com.fbi.engine.api.DataSourceDriver;
 import com.fbi.engine.api.FlairFactory;
 import com.fbi.engine.api.QueryExecutor;
@@ -36,18 +36,17 @@ public class PostgresPlugin extends SpringPlugin {
 		@Autowired
 		private ObjectMapper mapper;
 		@Autowired
-		private DriverLoadingStrategy strategy;
-		@Autowired
 		private FlairCompiler compiler;
+		@Autowired
+		private DriverLoadingStrategy strategy;
 
 		public FlairCompiler getCompiler() {
 			return compiler;
 		}
 
-		public QueryExecutor getExecutor(Connection connection, DataSourceDriver driver) {
+		public QueryExecutor getExecutor(DataSourceConnection connection, DataSourceDriver driver) {
 			return new PostgresQueryExecutor(strategy, connection, mapper, driver);
 		}
-
 	}
 
 }

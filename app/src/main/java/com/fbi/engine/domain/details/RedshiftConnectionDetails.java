@@ -4,30 +4,38 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.Properties;
 
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 public class RedshiftConnectionDetails extends ConnectionDetails implements Serializable {
 
-    public RedshiftConnectionDetails(String serverIp, Integer serverPort, String databaseName) {
-        super(serverIp, serverPort, databaseName);
-    }
+	private static final long serialVersionUID = 6314225956397785865L;
 
-    @Override
-    public String getConnectionString() {
-        StringBuilder connectionString = new StringBuilder();
+	public RedshiftConnectionDetails(String serverIp, Integer serverPort, String databaseName) {
+		super(serverIp, serverPort, databaseName);
+	}
 
-        connectionString.append("jdbc:redshift:");
+	@Override
+	public String getConnectionString() {
+		StringBuilder connectionString = new StringBuilder();
 
-        connectionString.append("//").append(getServerIp());
+		connectionString.append("jdbc:redshift:");
 
-        if (getServerPort() != null) {
-            connectionString.append(":").append(getServerPort());
-        }
+		connectionString.append("//").append(getServerIp());
 
-        connectionString.append("/");
-        connectionString.append(getDatabaseName());
+		if (getServerPort() != null) {
+			connectionString.append(":").append(getServerPort());
+		}
 
-        return connectionString.toString();
-    }
+		connectionString.append("/");
+		connectionString.append(getDatabaseName());
+
+		return connectionString.toString();
+	}
+
+	@Override
+	public Properties getAdditionalProperties() {
+		return new Properties();
+	}
 }

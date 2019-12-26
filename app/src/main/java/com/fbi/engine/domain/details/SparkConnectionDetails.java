@@ -4,39 +4,43 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.util.Properties;
 
 @Getter
 @Setter
 public class SparkConnectionDetails extends ConnectionDetails implements Serializable {
 
-    public SparkConnectionDetails() {
-    }
+	private static final long serialVersionUID = 5326819193591278255L;
 
-    public SparkConnectionDetails(String serverIp, Integer serverPort, String serviceName, String databaseName) {
-        super(serverIp, serverPort, databaseName);
-    }
+	public SparkConnectionDetails() {
+	}
 
-    @Override
-    public String getConnectionString() {
-        StringBuilder connectionString = new StringBuilder();
+	public SparkConnectionDetails(String serverIp, Integer serverPort, String serviceName, String databaseName) {
+		super(serverIp, serverPort, databaseName);
+	}
 
-        connectionString.append("jdbc:hive2:");
-        if (getServerIp() != null) {
-            connectionString
-                    .append("//")
-                    .append(getServerIp());
+	@Override
+	public String getConnectionString() {
+		StringBuilder connectionString = new StringBuilder();
 
-            if (getServerPort() != null) {
-                connectionString
-                        .append(":")
-                        .append(getServerPort());
-            }
+		connectionString.append("jdbc:hive2:");
+		if (getServerIp() != null) {
+			connectionString.append("//").append(getServerIp());
 
-            connectionString.append("/");
-        }
+			if (getServerPort() != null) {
+				connectionString.append(":").append(getServerPort());
+			}
 
-        connectionString.append(getDatabaseName());
+			connectionString.append("/");
+		}
 
-        return connectionString.toString();
-    }
+		connectionString.append(getDatabaseName());
+
+		return connectionString.toString();
+	}
+
+	@Override
+	public Properties getAdditionalProperties() {
+		return new Properties();
+	}
 }

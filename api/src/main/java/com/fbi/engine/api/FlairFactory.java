@@ -1,7 +1,5 @@
 package com.fbi.engine.api;
 
-import org.pf4j.ExtensionPoint;
-
 import com.project.bi.query.FlairCompiler;
 
 /**
@@ -10,10 +8,10 @@ import com.project.bi.query.FlairCompiler;
  * 
  * @see FlairCompiler
  * @see QueryExecutor
- * @see Connection
+ * @see DataSourceConnection
  * @see DataSourceDriver
  */
-public interface FlairFactory extends ExtensionPoint {
+public interface FlairFactory extends FlairExtensionPoint {
 
 	/**
 	 * Instantiate a compiler for given data source
@@ -29,6 +27,6 @@ public interface FlairFactory extends ExtensionPoint {
 	 * @param driver     used for creating the connection
 	 * @return instance of {@link QueryExecutor}
 	 */
-	QueryExecutor getExecutor(Connection connection, DataSourceDriver driver) throws FlairFactoryException;
+	QueryExecutor getExecutor(DataSourceConnection connection, DataSourceDriver driver) throws FlairFactoryException;
 
 }

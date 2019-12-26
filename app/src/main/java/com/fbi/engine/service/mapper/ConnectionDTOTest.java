@@ -1,6 +1,5 @@
 package com.fbi.engine.service.mapper;
 
-
 import com.fbi.engine.domain.details.ConnectionDetails;
 import com.fbi.engine.service.dto.ConnectionTypeDTO;
 
@@ -14,112 +13,110 @@ import java.util.Objects;
  */
 public class ConnectionDTOTest implements Serializable {
 
-    private Long id;
+	private static final long serialVersionUID = -8858063235031959666L;
 
-    @NotNull
-    @Size(max = 100)
-    private String name;
+	private Long id;
 
-    @NotNull
-    @Size(min = 1, max = 255)
-    private String connectionUsername;
+	@NotNull
+	@Size(max = 100)
+	private String name;
 
-    @NotNull
-    @Size(min = 1, max = 255)
-    private String connectionPassword;
+	@NotNull
+	@Size(min = 1, max = 255)
+	private String connectionUsername;
 
-    private String linkId;
+	@NotNull
+	@Size(min = 1, max = 255)
+	private String connectionPassword;
 
-    private ConnectionTypeDTO connectionType;
+	private String linkId;
 
-    @NotNull
-    private ConnectionDetails details;
+	private ConnectionTypeDTO connectionType;
 
-    public Long getId() {
-        return id;
-    }
+	@NotNull
+	private ConnectionDetails details;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+	public Long getId() {
+		return id;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public String getConnectionUsername() {
-        return connectionUsername;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    public void setConnectionUsername(String connectionUsername) {
-        this.connectionUsername = connectionUsername;
-    }
+	public String getConnectionUsername() {
+		return connectionUsername;
+	}
 
-    public String getConnectionPassword() {
-        return connectionPassword;
-    }
+	public void setConnectionUsername(String connectionUsername) {
+		this.connectionUsername = connectionUsername;
+	}
 
-    public void setConnectionPassword(String connectionPassword) {
-        this.connectionPassword = connectionPassword;
-    }
+	public String getConnectionPassword() {
+		return connectionPassword;
+	}
 
-    public String getLinkId() {
-        return linkId;
-    }
+	public void setConnectionPassword(String connectionPassword) {
+		this.connectionPassword = connectionPassword;
+	}
 
-    public void setLinkId(String linkId) {
-        this.linkId = linkId;
-    }
+	public String getLinkId() {
+		return linkId;
+	}
 
-    public ConnectionDetails getDetails() {
-        return details;
-    }
+	public void setLinkId(String linkId) {
+		this.linkId = linkId;
+	}
 
-    public void setDetails(ConnectionDetails details) {
-        this.details = details;
-    }
+	public ConnectionDetails getDetails() {
+		return details;
+	}
 
-    public ConnectionTypeDTO getConnectionType() {
-        return connectionType;
-    }
+	public void setDetails(ConnectionDetails details) {
+		this.details = details;
+	}
 
-    public void setConnectionType(ConnectionTypeDTO connectionType) {
-        this.connectionType = connectionType;
-    }
+	public ConnectionTypeDTO getConnectionType() {
+		return connectionType;
+	}
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
+	public void setConnectionType(ConnectionTypeDTO connectionType) {
+		this.connectionType = connectionType;
+	}
 
-        ConnectionDTOTest connectionDTOTest = (ConnectionDTOTest) o;
-        if (connectionDTOTest.getId() == null || getId() == null) {
-            return false;
-        }
-        return Objects.equals(getId(), connectionDTOTest.getId());
-    }
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
 
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(getId());
-    }
+		ConnectionDTOTest connectionDTOTest = (ConnectionDTOTest) o;
+		if (connectionDTOTest.getId() == null || getId() == null) {
+			return false;
+		}
+		return Objects.equals(getId(), connectionDTOTest.getId());
+	}
 
-    @Override
-    public String toString() {
-        return "ConnectionDTO{" +
-            "id=" + getId() +
-            ", name='" + getName() + "'" +
-            ", connectionUsername='" + getConnectionUsername() + "'" +
-            ", connectionPassword='" + getConnectionPassword() + "'" +
-            ", linkId='" + getLinkId() + "'" +
-            "}";
-    }
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(getId());
+	}
+
+	@Override
+	public String toString() {
+		return "ConnectionDTO{" + "id=" + getId() + ", name='" + getName() + "'" + ", connectionUsername='"
+				+ getConnectionUsername() + "'" + ", connectionPassword='" + getConnectionPassword() + "'"
+				+ ", linkId='" + getLinkId() + "'" + "}";
+	}
 }

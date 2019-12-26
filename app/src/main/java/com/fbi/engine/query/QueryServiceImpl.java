@@ -1,10 +1,12 @@
 package com.fbi.engine.query;
 
+import com.fbi.engine.api.FlairFactory;
+import com.fbi.engine.api.Query;
+import com.fbi.engine.api.QueryExecutor;
 import com.fbi.engine.config.FlairCachingConfig;
 import com.fbi.engine.domain.Connection;
-import com.fbi.engine.domain.query.Query;
+import com.fbi.engine.domain.query.GenericQuery;
 import com.fbi.engine.query.abstractfactory.QueryAbstractFactory;
-import com.fbi.engine.query.factory.FlairFactory;
 import com.fbi.engine.service.cache.CacheMetadata;
 import com.fbi.engine.service.cache.CacheParams;
 import com.fbi.engine.service.cache.FlairCachingService;
@@ -24,72 +26,74 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class QueryServiceImpl implements QueryService {
 
-    private final QueryAbstractFactory queryAbstractFactory;
-    private final FlairCachingService flairCachingService;
-    private final FlairCachingConfig flairCachingConfig;
+	private final QueryAbstractFactory queryAbstractFactory;
+	private final FlairCachingService flairCachingService;
+	private final FlairCachingConfig flairCachingConfig;
 
-    @Override
-    public CacheMetadata executeQuery(final Connection connection, final FlairQuery flairQuery) {
-        return executeQuery(connection, flairQuery, new CacheParams());
-    }
+	@Override
+	public CacheMetadata executeQuery(final Connection connection, final FlairQuery flairQuery) {
+		return executeQuery(connection, flairQuery, new CacheParams());
+	}
 
-    @Override
-    public CacheMetadata executeQuery(Connection connection, FlairQuery flairQuery, CacheParams cacheParams) {
-        log.info("Executing query {}", flairQuery);
+	@Override
+	public CacheMetadata executeQuery(Connection connection, FlairQuery flairQuery, CacheParams cacheParams) {
+		log.info("Executing query {}", flairQuery);
 
-        boolean cachingEnabled = flairCachingConfig.isEnabled() && cacheParams.isReadFromCache();
-        if (!cachingEnabled) {
-            return queryAndPutToCache(connection, flairQuery, cacheParams);
-        }
+		boolean cachingEnabled = flairCachingConfig.isEnabled() && cacheParams.isReadFromCache();
+		if (!cachingEnabled) {
+			return queryAndPutToCache(connection, flairQuery, cacheParams);
+		}
 
-        Optional<CacheMetadata> result = getCachedResult(connection, flairQuery);
+		Optional<CacheMetadata> result = getCachedResult(connection, flairQuery);
 
-        return result.orElseGet(() -> queryAndPutToCache(connection, flairQuery, cacheParams));
-    }
+		return result.orElseGet(() -> queryAndPutToCache(connection, flairQuery, cacheParams));
+	}
 
-    private CacheMetadata queryAndPutToCache(Connection connection, FlairQuery flairQuery, CacheParams cacheParams) {
-        boolean cachingEnabled = flairCachingConfig.isEnabled() && cacheParams.isWriteToCache();
-        CacheMetadata queryResult = queryDatasource(connection, flairQuery);
-        if (cachingEnabled) {
-            flairCachingService.putResultAsync(flairQuery, connection.getLinkId(), queryResult.getResult(), cacheParams);
-        }
-        return queryResult;
-    }
+	private CacheMetadata queryAndPutToCache(Connection connection, FlairQuery flairQuery, CacheParams cacheParams) {
+		boolean cachingEnabled = flairCachingConfig.isEnabled() && cacheParams.isWriteToCache();
+		CacheMetadata queryResult = queryDatasource(connection, flairQuery);
+		if (cachingEnabled) {
+			flairCachingService.putResultAsync(flairQuery, connection.getLinkId(), queryResult.getResult(),
+					cacheParams);
+		}
+		return queryResult;
+	}
 
-    private Optional<CacheMetadata> getCachedResult(Connection connection, FlairQuery flairQuery) {
-        return flairCachingService.getResult(flairQuery, connection.getLinkId());
-    }
+	private Optional<CacheMetadata> getCachedResult(Connection connection, FlairQuery flairQuery) {
+		return flairCachingService.getResult(flairQuery, connection.getLinkId());
+	}
 
-    private CacheMetadata queryDatasource(Connection connection, FlairQuery flairQuery) {
-        FlairFactory flairFactory = queryAbstractFactory.getQueryFactory(connection.getConnectionType().getBundleClass());
+	private CacheMetadata queryDatasource(Connection connection, FlairQuery flairQuery) {
+		final FlairFactory flairFactory = queryAbstractFactory
+				.getQueryFactory(connection.getConnectionType().getBundleClass());
 
-        FlairCompiler compiler = flairFactory.getCompiler();
+		final FlairCompiler compiler = flairFactory.getCompiler();
 
-        StringWriter writer = new StringWriter();
+		StringWriter writer = new StringWriter();
 
-        try {
-            compiler.compile(flairQuery, writer);
-        } catch (CompilationException e) {
-            throw new RuntimeException(e);
-        }
+		try {
+			compiler.compile(flairQuery, writer);
+		} catch (CompilationException e) {
+			throw new RuntimeException(e);
+		}
 
-        final Query query = flairFactory.getQuery(flairQuery, writer.toString());
+		final Query query = new GenericQuery(writer.toString(), flairQuery.isPullMeta());
 
-        log.debug("Interpreted Query: {}", query.getQuery());
+		log.debug("Interpreted Query: {}", query.getQuery());
 
-        StringWriter writer2 = new StringWriter();
-        try {
-            QueryExecutor executor = flairFactory.getExecutor(connection);
-            executor.execute(query, writer2);
-        } catch (ExecutionException e) {
-            log.error("Error executing statement " + query.getQuery(), e);
-            return new CacheMetadata();
-        }
+		StringWriter writer2 = new StringWriter();
+		try {
+			final QueryExecutor executor = flairFactory.getExecutor(connection, connection.getDriver());
+			executor.execute(query, writer2);
+		} catch (ExecutionException e) {
+			log.error("Error executing statement " + query.getQuery(), e);
+			return new CacheMetadata();
+		}
 
-        CacheMetadata cacheMetadata = new CacheMetadata();
-        cacheMetadata.setResult(writer2.toString());
-        cacheMetadata.setStale(false);
-        return cacheMetadata;
-    }
+		CacheMetadata cacheMetadata = new CacheMetadata();
+		cacheMetadata.setResult(writer2.toString());
+		cacheMetadata.setStale(false);
+		return cacheMetadata;
+	}
 
 }

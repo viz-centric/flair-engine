@@ -11,21 +11,20 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.util.Properties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY)
-@JsonSubTypes(
-    {@JsonSubTypes.Type(value = OracleConnectionDetails.class, name = "Oracle"),
-        @JsonSubTypes.Type(value = MySqlConnectionDetails.class, name = "MySql"),
-        @JsonSubTypes.Type(value = PostgresConnectionDetails.class, name = "Postgres"),
-        @JsonSubTypes.Type(value = RedshiftConnectionDetails.class, name = "Redshift"),
-        @JsonSubTypes.Type(value = AthenaConnectionDetails.class, name = "Athena"),
-        @JsonSubTypes.Type(value = SparkConnectionDetails.class, name = "Spark"),
-        @JsonSubTypes.Type(value = MongoDBConnectionDetails.class, name = "MongoDB"),
-        @JsonSubTypes.Type(value = CockroachdbConnectionDetails.class, name = "Cockroachdb"),
-        @JsonSubTypes.Type(value = KafkaConnectionDetails.class, name = "Kafka"),
-        @JsonSubTypes.Type(value = SnowflakeConnectionDetails.class, name = "Snowflake")
-    })
+@JsonSubTypes({ @JsonSubTypes.Type(value = OracleConnectionDetails.class, name = "Oracle"),
+		@JsonSubTypes.Type(value = MySqlConnectionDetails.class, name = "MySql"),
+		@JsonSubTypes.Type(value = PostgresConnectionDetails.class, name = "Postgres"),
+		@JsonSubTypes.Type(value = RedshiftConnectionDetails.class, name = "Redshift"),
+		@JsonSubTypes.Type(value = AthenaConnectionDetails.class, name = "Athena"),
+		@JsonSubTypes.Type(value = SparkConnectionDetails.class, name = "Spark"),
+		@JsonSubTypes.Type(value = MongoDBConnectionDetails.class, name = "MongoDB"),
+		@JsonSubTypes.Type(value = CockroachdbConnectionDetails.class, name = "Cockroachdb"),
+		@JsonSubTypes.Type(value = KafkaConnectionDetails.class, name = "Kafka"),
+		@JsonSubTypes.Type(value = SnowflakeConnectionDetails.class, name = "Snowflake") })
 @Getter
 @Setter
 @AllArgsConstructor
@@ -33,12 +32,17 @@ import java.io.Serializable;
 @Data
 public abstract class ConnectionDetails implements Serializable {
 
-    private String serverIp;
+	private static final long serialVersionUID = 4410521021248759392L;
 
-    private Integer serverPort;
+	private String serverIp;
 
-    private String databaseName;
+	private Integer serverPort;
 
-    @JsonIgnore
-    public abstract String getConnectionString();
+	private String databaseName;
+
+	@JsonIgnore
+	public abstract String getConnectionString();
+
+	@JsonIgnore
+	public abstract Properties getAdditionalProperties();
 }

@@ -25,12 +25,12 @@ import java.io.Serializable;
 @EqualsAndHashCode(of = "name")
 public class Authority implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    @NotNull
-    @Size(max = 50)
-    @Id
-    @Column(length = 50)
-    private String name;
+	@NotNull
+	@Size(max = 50)
+	@Id
+	@Column(length = 50)
+	private String name;
 
 }

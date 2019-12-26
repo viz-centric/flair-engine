@@ -17,24 +17,23 @@ import javax.annotation.PostConstruct;
 @RequiredArgsConstructor
 class SimpleKeyManager implements KeyManager {
 
-    private final ApplicationProperties applicationProperties;
+	private final ApplicationProperties applicationProperties;
 
-    private byte[] databaseEncryptionKey;
+	private byte[] databaseEncryptionKey;
 
-    private final CryptoAbstractFactory cryptoAbstractFactory;
+	private final CryptoAbstractFactory cryptoAbstractFactory;
 
-    @PostConstruct
-    public void postConstruct() {
-        final KeyDerivationFunctionFactory kdfFactory = cryptoAbstractFactory.getKdfFactory();
-        KeyDerivationFunction kdf = kdfFactory.getInstance();
-        databaseEncryptionKey =
-            kdf.derive(applicationProperties.getDatabase().getEncryption().getPassphrase(),
-                Hex.decode(applicationProperties.getDatabase().getEncryption().getSalt()),
-                applicationProperties.getDatabase().getEncryption().getKeyLength());
-    }
+	@PostConstruct
+	public void postConstruct() {
+		final KeyDerivationFunctionFactory kdfFactory = cryptoAbstractFactory.getKdfFactory();
+		KeyDerivationFunction kdf = kdfFactory.getInstance();
+		databaseEncryptionKey = kdf.derive(applicationProperties.getDatabase().getEncryption().getPassphrase(),
+				Hex.decode(applicationProperties.getDatabase().getEncryption().getSalt()),
+				applicationProperties.getDatabase().getEncryption().getKeyLength());
+	}
 
-    @Override
-    public byte[] getDatabaseEncryptionKey() {
-        return databaseEncryptionKey;
-    }
+	@Override
+	public byte[] getDatabaseEncryptionKey() {
+		return databaseEncryptionKey;
+	}
 }

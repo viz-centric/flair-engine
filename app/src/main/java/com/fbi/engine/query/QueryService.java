@@ -10,8 +10,8 @@ import com.project.bi.query.FlairQuery;
  */
 public interface QueryService {
 
-    CacheMetadata executeQuery(Connection sources, FlairQuery query);
+	CacheMetadata executeQuery(Connection sources, FlairQuery query);
 
-    CacheMetadata executeQuery(Connection sources, FlairQuery query, CacheParams cacheParams);
+	CacheMetadata executeQuery(Connection sources, FlairQuery query, CacheParams cacheParams);
 
 }

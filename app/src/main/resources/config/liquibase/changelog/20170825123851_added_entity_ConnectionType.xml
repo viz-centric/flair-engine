@@ -1,44 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <databaseChangeLog
-    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
 
-    <property name="now" value="now()" dbms="h2"/>
-
-    <property name="now" value="current_timestamp" dbms="postgresql"/>
-
-    <property name="floatType" value="float4" dbms="postgresql, h2"/>
-    <property name="floatType" value="float" dbms="mysql, oracle, mssql"/>
-
-    <property name="jsonbColumn" value="jsonb" dbms="postgresql"/>
-    <property name="jsonbColumn" value="text" dbms="h2"/>
-
-
-    <!--
-        Added the entity ConnectionType.
-    -->
-    <changeSet id="20170825123851-1" author="jhipster">
-        <createTable tableName="connection_type">
-            <column name="id" type="bigint" autoIncrement="${autoIncrement}">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="name" type="varchar(100)">
-                <constraints nullable="false"/>
-            </column>
-
-            <column name="bundle_class" type="varchar(255)">
-                <constraints nullable="false"/>
-            </column>
-
-            <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
+	<property name="now" value="now()" dbms="h2" />
+	<property name="now" value="current_timestamp"
+		dbms="postgresql" />
+	<property name="floatType" value="float4"
+		dbms="postgresql, h2" />
+	<property name="floatType" value="float"
+		dbms="mysql, oracle, mssql" />
+	<property name="jsonbColumn" value="jsonb" dbms="postgresql" />
+	<property name="jsonbColumn" value="text" dbms="h2" />
 
 
-            <column name="connection_properties_schema" type="${jsonbColumn}">
-                <constraints nullable="false"/>
-            </column>
+	<!-- Added the entity ConnectionType. -->
+	<changeSet id="20170825123851-1" author="jhipster">
+		<createTable tableName="connection_type">
+			<column name="id" type="bigint"
+				autoIncrement="${autoIncrement}">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="name" type="varchar(100)">
+				<constraints nullable="false" />
+			</column>
 
-        </createTable>
+			<column name="bundle_class" type="varchar(255)">
+				<constraints nullable="false" />
+			</column>
 
-    </changeSet>
+			<!-- jhipster-needle-liquibase-add-column - JHipster will add columns 
+				here, do not remove -->
+			<column name="connection_properties_schema"
+				type="${jsonbColumn}">
+				<constraints nullable="false" />
+			</column>
+
+		</createTable>
+
+	</changeSet>
 </databaseChangeLog>
