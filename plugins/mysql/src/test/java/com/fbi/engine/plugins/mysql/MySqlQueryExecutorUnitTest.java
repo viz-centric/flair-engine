@@ -1,4 +1,4 @@
-package com.fbi.engine.plugins.postgres;
+package com.fbi.engine.plugins.mysql;
 
 import java.io.File;
 import java.util.Properties;
@@ -15,57 +15,57 @@ import com.fbi.engine.plugins.core.sql.DriverLoadingStrategy;
 import com.fbi.engine.plugins.core.sql.DynamicDriverLoadingStrategy;
 import com.fbi.engine.plugins.test.AbstractQueryExecutorUnitTest;
 
-public class PostgresQueryExecutorTest extends AbstractQueryExecutorUnitTest<PostgresQueryExecutor> {
+public class MySqlQueryExecutorUnitTest extends AbstractQueryExecutorUnitTest<MySqlQueryExecutor> {
 
-	private DataSourceDriver driver = DataSourceDriverImpl.of(new File("src/test/resources/postgresql-9.4.1212.jar"),
-			"postgresql", "org.postgresql", "9.4.1212");
+	private DataSourceDriver driver = DataSourceDriverImpl.of(
+			new File("src/main/resources/mysql-connector-java-8.0.16.jar"), "mysql-connector-java", "mysql", "8.0.16");
 
-	private ObjectMapper obj = JacksonFactory.getInstance().getObjectMapper();
+	private ObjectMapper objectMapper = JacksonFactory.getInstance().getObjectMapper();
 
-	private DriverLoadingStrategy strat = new DynamicDriverLoadingStrategy();
+	private DriverLoadingStrategy strategy = new DynamicDriverLoadingStrategy();
 
 	@Override
-	protected PostgresQueryExecutor configureQueryExecutor() {
-		return new PostgresQueryExecutor(strat, new DataSourceConnection() {
+	protected MySqlQueryExecutor configureQueryExecutor() {
+		return new MySqlQueryExecutor(strategy, new DataSourceConnection() {
 
 			@Override
 			public String getConnectionString() {
-				return "jdbc:postgresql://localhost:" + container.getFirstMappedPort() + "/services";
+				return "jdbc:mysql://localhost:" + container.getFirstMappedPort() + "/services";
 			}
 
 			@Override
 			public Properties getConnectionProperties() {
 				Properties properties = new Properties();
-				properties.put("username", "postgres");
+				properties.put("username", "mysql");
 				properties.put("password", "admin");
 				return properties;
 			}
-		}, obj, driver);
+		}, objectMapper, driver);
 	}
 
 	@Override
-	protected PostgresQueryExecutor misconfigureQueryExecutor() {
-		return new PostgresQueryExecutor(strat, new DataSourceConnection() {
+	protected MySqlQueryExecutor misconfigureQueryExecutor() {
+		return new MySqlQueryExecutor(strategy, new DataSourceConnection() {
 
 			@Override
 			public String getConnectionString() {
-				return "jdbc:postgresql://localhost:" + container.getFirstMappedPort() + "/notExistingDatabase";
+				return "jdbc:mysql://localhost:" + container.getFirstMappedPort() + "/notWOrking";
 			}
 
 			@Override
 			public Properties getConnectionProperties() {
 				Properties properties = new Properties();
-				properties.put("username", "postgres");
+				properties.put("username", "mysql");
 				properties.put("password", "admin");
 				return properties;
 			}
-		}, obj, driver);
+		}, objectMapper, driver);
 	}
 
 	@Override
 	protected GenericContainer<?> configureTargetDataSource() {
-		return new GenericContainer<>("postgres:9.6.12").withEnv("POSTGRES_USER", "postgres")
-				.withEnv("POSTGRES_PASSWORD", "admin").withEnv("POSTGRES_DB", "services").withExposedPorts(5432)
+		return new GenericContainer<>("mysql:8.0.16").withEnv("MYSQL_USER", "mysql").withEnv("MYSQL_PASSWORD", "admin")
+				.withEnv("MYSQL_ROOT_PASSWORD", "root").withEnv("MYSQL_DATABASE", "services").withExposedPorts(3306)
 				.withCopyFileToContainer(MountableFile.forClasspathResource("init.sql"),
 						"/docker-entrypoint-initdb.d/init.sql");
 	}

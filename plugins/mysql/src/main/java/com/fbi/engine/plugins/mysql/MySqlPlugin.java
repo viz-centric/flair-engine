@@ -1,4 +1,4 @@
-package com.fbi.engine.plugins.postgres;
+package com.fbi.engine.plugins.mysql;
 
 import org.pf4j.Extension;
 import org.pf4j.PluginWrapper;
@@ -15,9 +15,9 @@ import com.fbi.engine.api.QueryExecutor;
 import com.fbi.engine.plugins.core.sql.DriverLoadingStrategy;
 import com.project.bi.query.FlairCompiler;
 
-public class PostgresPlugin extends SpringPlugin {
+public class MySqlPlugin extends SpringPlugin {
 
-	public PostgresPlugin(PluginWrapper wrapper) {
+	public MySqlPlugin(PluginWrapper wrapper) {
 		super(wrapper);
 	}
 
@@ -45,19 +45,18 @@ public class PostgresPlugin extends SpringPlugin {
 		}
 
 		public QueryExecutor getExecutor(DataSourceConnection connection, DataSourceDriver driver) {
-			return new PostgresQueryExecutor(strategy, connection, mapper, driver);
+			return new MySqlQueryExecutor(strategy, connection, mapper, driver);
 		}
 
 		@Override
 		public String getExtensionId() {
-			return "com.fbi.engine.query.factory.impl.PostgresFlairFactory";
+			return "com.fbi.engine.query.factory.impl.MySqlFlairFactory";
 		}
 
 		@Override
 		public String getDescription() {
-			return "Extension enabling connection towards PostgreSQL databases";
+			return "Extension enabling a connection towards MySQL databases";
 		}
-
 	}
 
 }

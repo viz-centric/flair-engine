@@ -10,14 +10,15 @@
 		<version>3.0.0-SNAPSHOT</version>
 	</parent>
 
+
 	<groupId>com.fbi.engine</groupId>
-	<artifactId>flair-engine-postgres-plugin</artifactId>
+	<artifactId>flair-engine-mysql-plugin</artifactId>
 	<version>3.0.0-SNAPSHOT</version>
-	<name>flair-engine-postgres-plugin</name>
+	<name>flair-engine-mysql-plugin</name>
 
 	<properties>
-		<plugin.id>postgres-plugin</plugin.id>
-		<plugin.class>com.fbi.engine.plugins.postgres.PostgresPlugin</plugin.class>
+		<plugin.id>mysql-plugin</plugin.id>
+		<plugin.class>com.fbi.engine.plugins.mysql.MySqlPlugin</plugin.class>
 		<plugin.version>3.0.0</plugin.version>
 		<plugin.provider>Vizcentric</plugin.provider>
 		<plugin.dependencies></plugin.dependencies>

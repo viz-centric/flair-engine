@@ -20,6 +20,8 @@
 		<module>hello</module>
 		<module>core</module>
 		<module>postgres</module>
+		<module>mysql</module>
+		<module>test</module>
 	</modules>
 
 	<properties>
@@ -42,6 +44,11 @@
 
 	<dependencyManagement>
 		<dependencies>
+			<dependency>
+				<groupId>org.pf4j</groupId>
+				<artifactId>pf4j-spring</artifactId>
+				<version>0.5.0</version>
+			</dependency>
 			<dependency>
 				<groupId>org.springframework.cloud</groupId>
 				<artifactId>spring-cloud-dependencies</artifactId>
