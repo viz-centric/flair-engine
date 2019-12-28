@@ -10,6 +10,7 @@ import com.project.bi.exceptions.CompilationException;
 import com.project.bi.query.FlairCompiler;
 import com.project.bi.query.FlairQuery;
 import com.project.bi.query.dto.ConditionExpressionDTO;
+import com.project.bi.query.dto.FieldDTO;
 import com.project.bi.query.dto.QueryDTO;
 import com.project.bi.query.expression.condition.impl.AndConditionExpression;
 import com.project.bi.query.expression.condition.impl.BetweenConditionExpression;
@@ -70,7 +71,7 @@ public class MySqlQueryTest {
 	    	// Create Query
 	        QueryDTO queryDto = new QueryDTO();
 	       
-	        queryDto.setFields(Arrays.asList("*"));
+	        queryDto.setFields(Arrays.asList(new FieldDTO("*")));
 	        ConditionExpressionDTO expDto=new ConditionExpressionDTO();
 	        
 	        CompareConditionExpression copmareCdt=new CompareConditionExpression();
@@ -151,7 +152,7 @@ public class MySqlQueryTest {
 	        QueryDTO queryDto = new QueryDTO();
 	       
 	        
-	        queryDto.setFields(Arrays.asList("*"));
+	        queryDto.setFields(Arrays.asList(new FieldDTO("*")));
 	        ConditionExpressionDTO expDto=new ConditionExpressionDTO();
 	        
 	        ContainsConditionExpression containCdt=new ContainsConditionExpression();
@@ -206,7 +207,7 @@ public class MySqlQueryTest {
 	    	// Create Query
 	        QueryDTO queryDto = new QueryDTO();
 	       
-	        queryDto.setFields(Arrays.asList("*"));
+	        queryDto.setFields(Arrays.asList(new FieldDTO("*")));
 	        ConditionExpressionDTO expDto=new ConditionExpressionDTO();
 	        
 	        CompareConditionExpression copmareCdt1=new CompareConditionExpression();
@@ -265,7 +266,7 @@ public class MySqlQueryTest {
 	    	// Create Query
 	        QueryDTO queryDto = new QueryDTO();
 	       
-	        queryDto.setFields(Arrays.asList("*"));
+	        queryDto.setFields(Arrays.asList(new FieldDTO("*")));
 	        ConditionExpressionDTO expDto=new ConditionExpressionDTO();
 	        
 	        CompareConditionExpression copmareCdt1=new CompareConditionExpression();
@@ -321,7 +322,7 @@ public class MySqlQueryTest {
 	    	// Create Query
 	        QueryDTO queryDto = new QueryDTO();
 	       
-	        queryDto.setFields(Arrays.asList("*"));
+	        queryDto.setFields(Arrays.asList(new FieldDTO("*")));
 	        ConditionExpressionDTO expDto=new ConditionExpressionDTO();
 	        
 	        BetweenConditionExpression copmareCdt1=new BetweenConditionExpression();
@@ -368,7 +369,7 @@ public class MySqlQueryTest {
 	    	// Create Query
 	        QueryDTO queryDto = new QueryDTO();
 	       
-	        queryDto.setFields(Arrays.asList("*"));
+	        queryDto.setFields(Arrays.asList(new FieldDTO("*")));
 	        ConditionExpressionDTO expDto=new ConditionExpressionDTO();
 	        
 	        LikeConditionExpression likeCdt=new LikeConditionExpression();
@@ -415,11 +416,18 @@ public class MySqlQueryTest {
 	    	// Create Query
 	        QueryDTO queryDto = new QueryDTO();
 	       
-	        queryDto.setFields(Arrays.asList("month(order_date) as month, year(order_date) as year, day(order_date) as day","hour(order_date) as hr","quarter(order_date) as qt","yearMonth(order_date) as ym", "yearWeek(order_date) as yw","yearQuarter(order_date) as yq"));
+	        queryDto.setFields(Arrays.asList(
+					new FieldDTO("order_date", "month", "month"),
+					new FieldDTO("order_date", "hour", "hr"),
+					new FieldDTO("order_date", "quarter", "qt"),
+					new FieldDTO("order_date", "yearMonth", "ym"),
+					new FieldDTO("order_date", "yearWeek", "yw"),
+					new FieldDTO("order_date", "yearQuarter", "yq")
+			));
 	       
 		    queryDto.setSource("ecommerce");
 	    		
-	    	expectedQuery="SELECT month(order_date) as month, year(order_date) as year, day(order_date) as day, hour(order_date) as hr, quarter(order_date) as qt, EXTRACT(YEAR_MONTH FROM order_date) as ym, yearWeek(order_date) as yw, CONCAT(YEAR(order_date),'-',QUARTER(order_date)) as yq FROM ecommerce";
+	    	expectedQuery="SELECT month(order_date) as month, hour(order_date) as hr, quarter(order_date) as qt, EXTRACT(YEAR_MONTH FROM order_date) as ym, yearWeek(order_date) as yw, CONCAT(YEAR(order_date),'-',QUARTER(order_date)) as yq FROM ecommerce";
 
 			FlairQuery query = new FlairQuery(queryDto.interpret(), queryDto.isMetaRetrieved());
 
@@ -455,7 +463,7 @@ public class MySqlQueryTest {
 	    	// Create Query
 	        QueryDTO queryDto = new QueryDTO();
 
-			queryDto.setFields(Arrays.asList("Men", "Women"));
+			queryDto.setFields(Arrays.asList(new FieldDTO("Men"), new FieldDTO("Women")));
 	       
 		    queryDto.setSource("ecommerce");
 
@@ -495,11 +503,11 @@ public class MySqlQueryTest {
 	    	// Create Query
 	        QueryDTO queryDto = new QueryDTO();
 	       
-	        queryDto.setFields(Arrays.asList("substr(product_name,0,2)"));
+	        queryDto.setFields(Arrays.asList(new FieldDTO("product_name", "substr")));
 	       
 		    queryDto.setSource("ecommerce");
 	    		
-	    	expectedQuery="SELECT substr(product_name,0,2) FROM ecommerce";
+	    	expectedQuery="SELECT substr(product_name) FROM ecommerce";
 
 			FlairQuery query = new FlairQuery(queryDto.interpret(), queryDto.isMetaRetrieved());
 
@@ -537,7 +545,12 @@ public class MySqlQueryTest {
 	    	// Create Query
 	        QueryDTO queryDto = new QueryDTO();
 	       
-	        queryDto.setFields(Arrays.asList("count(*)","min(order_item_product_price)","max(order_item_product_price)","sum(order_item_product_price)"));
+	        queryDto.setFields(Arrays.asList(
+					new FieldDTO("*", "count"),
+					new FieldDTO("order_item_product_price", "min"),
+					new FieldDTO("order_item_product_price", "max"),
+					new FieldDTO("order_item_product_price", "sum")
+			));
 	       
 		    queryDto.setSource("ecommerce");
 	    		

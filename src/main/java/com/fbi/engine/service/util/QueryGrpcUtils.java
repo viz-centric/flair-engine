@@ -6,12 +6,14 @@ import com.flair.bi.messages.Query;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.project.bi.query.dto.ConditionExpressionDTO;
+import com.project.bi.query.dto.FieldDTO;
 import com.project.bi.query.dto.HavingDTO;
 import com.project.bi.query.dto.QueryDTO;
 import com.project.bi.query.dto.SortDTO;
 import com.project.bi.query.expression.condition.ConditionExpression;
 import com.project.bi.query.expression.condition.impl.AndConditionExpression;
 import com.project.bi.query.expression.condition.impl.OrConditionExpression;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,8 +23,8 @@ public final class QueryGrpcUtils {
     public static QueryDTO mapToQueryDTO(Query request){
         QueryDTO queryDTO = new QueryDTO();
         queryDTO.setSource(request.getSource());
-        queryDTO.setFields(request.getFieldsList());
-        queryDTO.setGroupBy(request.getGroupByList());
+        queryDTO.setFields(toFieldDTOs(request.getFieldsList()));
+        queryDTO.setGroupBy(toFieldDTOs(request.getGroupByList()));
         queryDTO.setLimit(request.getLimit());
         queryDTO.setOffset(request.getOffset());
         queryDTO.setDistinct(request.getDistinct());
@@ -32,10 +34,22 @@ public final class QueryGrpcUtils {
         return queryDTO;
     }
 
+    private static List<FieldDTO> toFieldDTOs(List<Query.Field> fieldsList) {
+        return fieldsList.stream()
+                .map(QueryGrpcUtils::toFieldDTO)
+                .collect(Collectors.toList());
+    }
+
+    private static FieldDTO toFieldDTO(Query.Field field) {
+        return new FieldDTO(StringUtils.isEmpty(field.getName()) ? null : field.getName(),
+                StringUtils.isEmpty(field.getAggregation()) ? null : field.getAggregation(),
+                StringUtils.isEmpty(field.getAlias()) ? null : field.getAlias());
+    }
+
     private static List<HavingDTO> getListHavingDTO(List<Query.HavingHolder> havingList) {
         return havingList.stream()
                 .map(h -> HavingDTO.builder()
-                        .featureName(h.getFeatureName())
+                        .feature(toFieldDTO(h.getFeature()))
                         .value(h.getValue())
                         .comparatorType(HavingDTO.ComparatorType.valueOf(h.getComparatorType().name()))
                         .build()
@@ -46,7 +60,7 @@ public final class QueryGrpcUtils {
     private static List<SortDTO> getListSortDTO(List<Query.SortHolder> orders){
         return orders.stream().map(order -> {
             SortDTO sortDTO = new SortDTO();
-            sortDTO.setFeatureName(order.getFeatureName());
+            sortDTO.setFeature(toFieldDTO(order.getFeature()));
             sortDTO.setDirection(order.getDirectionValue() == 0 ? SortDTO.Direction.ASC: SortDTO.Direction.DESC);
             return sortDTO;
         }).collect(Collectors.toList());
