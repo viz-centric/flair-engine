@@ -1,6 +1,5 @@
 package com.fbi.engine.service.dto;
 
-
 import com.fbi.engine.domain.schema.ConnectionPropertiesSchema;
 
 import javax.validation.constraints.*;
@@ -12,76 +11,75 @@ import java.util.Objects;
  */
 public class ConnectionTypeDTO implements Serializable {
 
-    private Long id;
+	private static final long serialVersionUID = -4441953119630233850L;
 
-    @NotNull
-    @Size(max = 100)
-    private String name;
+	private Long id;
 
-    @NotNull
-    private String bundleClass;
+	@NotNull
+	@Size(max = 100)
+	private String name;
 
-    private ConnectionPropertiesSchema connectionPropertiesSchema;
+	@NotNull
+	private String bundleClass;
 
-    public Long getId() {
-        return id;
-    }
+	private ConnectionPropertiesSchema connectionPropertiesSchema;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+	public Long getId() {
+		return id;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public String getBundleClass() {
-        return bundleClass;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    public void setBundleClass(String bundleClass) {
-        this.bundleClass = bundleClass;
-    }
+	public String getBundleClass() {
+		return bundleClass;
+	}
 
-    public ConnectionPropertiesSchema getConnectionPropertiesSchema() {
-        return connectionPropertiesSchema;
-    }
+	public void setBundleClass(String bundleClass) {
+		this.bundleClass = bundleClass;
+	}
 
-    public void setConnectionPropertiesSchema(ConnectionPropertiesSchema connectionPropertiesSchema) {
-        this.connectionPropertiesSchema = connectionPropertiesSchema;
-    }
+	public ConnectionPropertiesSchema getConnectionPropertiesSchema() {
+		return connectionPropertiesSchema;
+	}
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
+	public void setConnectionPropertiesSchema(ConnectionPropertiesSchema connectionPropertiesSchema) {
+		this.connectionPropertiesSchema = connectionPropertiesSchema;
+	}
 
-        ConnectionTypeDTO connectionTypeDTO = (ConnectionTypeDTO) o;
-        if(connectionTypeDTO.getId() == null || getId() == null) {
-            return false;
-        }
-        return Objects.equals(getId(), connectionTypeDTO.getId());
-    }
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
 
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(getId());
-    }
+		ConnectionTypeDTO connectionTypeDTO = (ConnectionTypeDTO) o;
+		if (connectionTypeDTO.getId() == null || getId() == null) {
+			return false;
+		}
+		return Objects.equals(getId(), connectionTypeDTO.getId());
+	}
 
-    @Override
-    public String toString() {
-        return "ConnectionTypeDTO{" +
-            "id=" + getId() +
-            ", name='" + getName() + "'" +
-            ", bundleClass='" + getBundleClass() + "'" +
-            "}";
-    }
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(getId());
+	}
+
+	@Override
+	public String toString() {
+		return "ConnectionTypeDTO{" + "id=" + getId() + ", name='" + getName() + "'" + ", bundleClass='"
+				+ getBundleClass() + "'" + "}";
+	}
 }
