@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<project name="maven-antrun-" default="main"  >
-<target name="main">
-  <unzip src="target/flair-engine-kafka-plugin-3.0.0-SNAPSHOT.jar" dest="target/plugin-classes"/>
-</target>
-</project>
