@@ -1,0 +1,13 @@
+META-INF/extensions.idx
+com/fbi/engine/plugins/kafka/dto/KafkaKsqlDescribeResponse$Schema.class
+com/fbi/engine/plugins/kafka/dto/KafkaShowTablesResponse$Table.class
+com/fbi/engine/plugins/kafka/dto/KafkaKsqlDescribeResponse.class
+com/fbi/engine/plugins/kafka/dto/KafkaKsqlDescribeResponse$SourceDescription.class
+com/fbi/engine/plugins/kafka/ApplicationConfiguration.class
+com/fbi/engine/plugins/kafka/dto/KafkaKsqlDescribeResponse$Field.class
+com/fbi/engine/plugins/kafka/KafkaQueryExecutor.class
+com/fbi/engine/plugins/kafka/dto/KafkaQueryResponse.class
+com/fbi/engine/plugins/kafka/KafkaPlugin$SpringPlugin.class
+com/fbi/engine/plugins/kafka/dto/KafkaQueryResponse$KafkaQueryRow.class
+com/fbi/engine/plugins/kafka/dto/KafkaShowTablesResponse.class
+com/fbi/engine/plugins/kafka/KafkaPlugin.class

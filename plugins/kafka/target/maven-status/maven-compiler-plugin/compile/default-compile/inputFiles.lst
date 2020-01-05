@@ -1,0 +1,6 @@
+/Users/stefanbratic/Projects/flair-engine_vizcentric/plugins/kafka/src/main/java/com/fbi/engine/plugins/kafka/KafkaPlugin.java
+/Users/stefanbratic/Projects/flair-engine_vizcentric/plugins/kafka/src/main/java/com/fbi/engine/plugins/kafka/dto/KafkaQueryResponse.java
+/Users/stefanbratic/Projects/flair-engine_vizcentric/plugins/kafka/src/main/java/com/fbi/engine/plugins/kafka/dto/KafkaKsqlDescribeResponse.java
+/Users/stefanbratic/Projects/flair-engine_vizcentric/plugins/kafka/src/main/java/com/fbi/engine/plugins/kafka/dto/KafkaShowTablesResponse.java
+/Users/stefanbratic/Projects/flair-engine_vizcentric/plugins/kafka/src/main/java/com/fbi/engine/plugins/kafka/KafkaQueryExecutor.java
+/Users/stefanbratic/Projects/flair-engine_vizcentric/plugins/kafka/src/main/java/com/fbi/engine/plugins/kafka/ApplicationConfiguration.java

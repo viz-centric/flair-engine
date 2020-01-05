@@ -22,6 +22,7 @@
 		<module>postgres</module>
 		<module>mysql</module>
 		<module>oracle</module>
+		<module>kafka</module>
 		<module>test</module>
 	</modules>
 

@@ -1,4 +1,4 @@
-package com.fbi.engine.query.dto;
+package com.fbi.engine.plugins.kafka.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
