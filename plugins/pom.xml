@@ -19,10 +19,15 @@
 	<modules>
 		<module>hello</module>
 		<module>core</module>
+		<module>athena</module>
+		<module>cockroachdb</module>
 		<module>postgres</module>
 		<module>mysql</module>
 		<module>oracle</module>
 		<module>kafka</module>
+		<module>redshift</module>
+		<module>snowflake</module>
+		<module>spark</module>
 		<module>test</module>
 	</modules>
 

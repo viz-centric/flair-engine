@@ -8,6 +8,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Properties;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fbi.engine.api.DataSourceConnection;
@@ -25,7 +26,6 @@ import lombok.extern.slf4j.Slf4j;
 public abstract class SqlQueryExecutor implements QueryExecutor {
 
 	private static final String USERNAME = "username";
-	private static final String PASSWORD = "password";
 
 	protected final DriverLoadingStrategy strategy;
 
@@ -61,12 +61,18 @@ public abstract class SqlQueryExecutor implements QueryExecutor {
 		}
 	}
 
+	protected Properties constructConnectionProperties() {
+		Properties prop = new Properties();
+		prop.put("user", this.connection.getConnectionProperties().get(USERNAME));
+		prop.putAll(this.connection.getConnectionProperties());
+		return prop;
+	}
+
 	@Override
 	public void execute(Query query, Writer writer) throws ExecutionException {
 		final Driver driver = initDriver();
 		try (final Connection c = DriverManager.getConnection(this.connection.getConnectionString(),
-				this.connection.getConnectionProperties().get(USERNAME).toString(),
-				this.connection.getConnectionProperties().get(PASSWORD).toString())) {
+				constructConnectionProperties())) {
 			if (c != null) {
 				try (final Statement statement = c.createStatement()) {
 					statement.execute(query.getQuery());

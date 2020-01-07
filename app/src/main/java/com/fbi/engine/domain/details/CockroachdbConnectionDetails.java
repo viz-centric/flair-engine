@@ -7,8 +7,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CockroachdbConnectionDetails extends PostgresConnectionDetails {
 
-    public CockroachdbConnectionDetails(String serverIp, Integer serverPort, String databaseName) {
-        super(serverIp, serverPort, databaseName);
-    }
+	private static final long serialVersionUID = 4380681452909463305L;
+
+	public CockroachdbConnectionDetails(String serverIp, Integer serverPort, String databaseName) {
+		super(serverIp, serverPort, databaseName);
+	}
 
 }

@@ -43,6 +43,7 @@ public class AthenaConnectionDetails extends ConnectionDetails implements Serial
 		Properties info = new Properties();
 		info.put("S3OutputLocation", this.getS3OutputLocation());
 		info.put("Workgroup", this.getWorkgroup());
+		info.put("Schema", this.getDatabaseName());
 		return info;
 	}
 }
