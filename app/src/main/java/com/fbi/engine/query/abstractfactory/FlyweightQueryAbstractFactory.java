@@ -36,15 +36,11 @@ public class FlyweightQueryAbstractFactory implements QueryAbstractFactory {
 	@Override
 	public FlairFactory getQueryFactory(String name) {
 		return queryFactoryMap.computeIfAbsent(name, x -> {
-			Class<? extends FlairFactory> factory;
 			try {
 				Class<?> clazz = Class.forName(x);
 
-				if (FlairFactory.class.isAssignableFrom(clazz)) {
-					factory = (Class<? extends FlairFactory>) clazz;
-				} else {
-					throw new ClassNotFoundException();
-				}
+				Class<? extends FlairFactory> factory = (Class<? extends FlairFactory>) clazz;
+
 				return factory.newInstance();
 			} catch (IllegalAccessException | InstantiationException | ClassNotFoundException e) {
 				log.error("Cannot determine type of factory: {}", e.getMessage());

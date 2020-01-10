@@ -13,6 +13,7 @@
 		<module>api</module>
 		<module>app</module>
 		<module>plugins</module>
+		<module>distribution</module>
 	</modules>
 
 	<scm>
@@ -48,6 +49,8 @@
 		<maven-scm-provider-gitexe.version>1.9.5</maven-scm-provider-gitexe.version>
 		<maven-source-plugin.version>3.0.1</maven-source-plugin.version>
 		<maven-javadoc-plugin.version>3.0.1</maven-javadoc-plugin.version>
+
+		<testcontainers.version>1.12.4</testcontainers.version>
 	</properties>
 
 	<distributionManagement>
@@ -133,6 +136,17 @@
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
+				<groupId>org.testcontainers</groupId>
+				<artifactId>testcontainers</artifactId>
+				<version>${testcontainers.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.projectlombok</groupId>
+				<artifactId>lombok</artifactId>
+				<version>${lombok.version}</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
 				<groupId>com.project.bi</groupId>
 				<artifactId>project-bi-common</artifactId>
 				<version>${project-bi-common.version}</version>
@@ -183,6 +197,19 @@
 	</dependencies>
 
 	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<artifactId>maven-assembly-plugin</artifactId>
+					<version>3.2.0</version>
+					<configuration>
+						<descriptors>
+							<descriptor>src/assembly/test.xml</descriptor>
+						</descriptors>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -237,6 +264,8 @@
 				</configuration>
 			</plugin>
 		</plugins>
+
+
 	</build>
 
 </project>

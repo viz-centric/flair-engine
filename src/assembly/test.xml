@@ -1,0 +1,23 @@
+<assembly xmlns="http://maven.apache.org/ASSEMBLY/2.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/ASSEMBLY/2.0.0 http://maven.apache.org/xsd/assembly-2.0.0.xsd">
+	<id>distribution</id>
+	<formats>
+		<format>dir</format>
+	</formats>
+	<baseDirectory>distribution</baseDirectory>
+
+	<dependencySets>
+		<!-- Unpack all dependencies of ZIP type and BUNDLE classifier, -->
+		<!-- and unpack them in the root folder. -->
+		<dependencySet>
+			<useProjectArtifact>false</useProjectArtifact>
+			<useTransitiveDependencies>false</useTransitiveDependencies>
+			<unpack>false</unpack>
+			<includes>
+				<include>*:zip:bundle</include>
+			</includes>
+			<outputDirectory>plugins</outputDirectory>
+		</dependencySet>
+	</dependencySets>
+</assembly>

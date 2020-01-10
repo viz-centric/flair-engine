@@ -29,6 +29,7 @@
 		<module>snowflake</module>
 		<module>spark</module>
 		<module>test</module>
+		<module>plugin-assembly</module>
 	</modules>
 
 	<properties>
@@ -39,6 +40,12 @@
 		<lombok.version>1.18.8</lombok.version>
 
 		<testcontainers.version>1.12.4</testcontainers.version>
+
+		<plugin.id />
+		<plugin.class />
+		<plugin.version />
+		<plugin.provider />
+		<plugin.dependencies />
 	</properties>
 
 	<dependencies>
@@ -83,4 +90,75 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
+
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-antrun-plugin</artifactId>
+					<executions>
+						<execution>
+							<id>unzip jar file</id>
+							<phase>package</phase>
+							<configuration>
+								<target>
+									<unzip
+										src="target/${project.artifactId}-${project.version}.${project.packaging}"
+										dest="target/plugin-classes" />
+								</target>
+							</configuration>
+							<goals>
+								<goal>run</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+				<plugin>
+					<artifactId>maven-assembly-plugin</artifactId>
+					<dependencies>
+						<dependency>
+							<groupId>com.fbi.engine</groupId>
+							<artifactId>flair-engine-plugins-assembly-descriptor</artifactId>
+							<version>3.0.0-SNAPSHOT</version>
+						</dependency>
+					</dependencies>
+					<configuration>
+						<descriptorRefs>
+							<descriptorRef>plugin-assembly</descriptorRef>
+						</descriptorRefs>
+					</configuration>
+					<executions>
+						<execution>
+							<id>make-assembly</id>
+							<phase>package</phase>
+							<goals>
+								<goal>attached</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-jar-plugin</artifactId>
+					<configuration>
+						<archive>
+							<manifest>
+								<mainClass>${start-class}</mainClass>
+								<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+							</manifest>
+							<manifestEntries>
+								<Plugin-Id>${plugin.id}</Plugin-Id>
+								<Plugin-Class>${plugin.class}</Plugin-Class>
+								<Plugin-Version>${plugin.version}</Plugin-Version>
+								<Plugin-Provider>${plugin.provider}</Plugin-Provider>
+								<Plugin-Dependencies>${plugin.dependencies}</Plugin-Dependencies>
+							</manifestEntries>
+						</archive>
+					</configuration>
+				</plugin>
+			</plugins>
+
+		</pluginManagement>
+	</build>
 </project>

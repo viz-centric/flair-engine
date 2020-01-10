@@ -6,8 +6,9 @@
 
 	<parent>
 		<groupId>com.fbi.engine</groupId>
-		<artifactId>flair-engine-plugins-parent</artifactId>
+		<artifactId>flair-engine-parent</artifactId>
 		<version>3.0.0-SNAPSHOT</version>
+		<relativePath />
 	</parent>
 
 
@@ -23,37 +24,8 @@
 			<artifactId>flair-engine-api</artifactId>
 			<version>3.0.0-SNAPSHOT</version>
 		</dependency>
-		<dependency>
-			<groupId>org.pf4j</groupId>
-			<artifactId>pf4j-spring</artifactId>
-		</dependency>
-		<!-- spring::begin -->
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context-support</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-autoconfigure</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-configuration-processor</artifactId>
-			<optional>true</optional>
-			<exclusions>
-				<exclusion>
-					<groupId>com.vaadin.external.google</groupId>
-					<artifactId>android-json</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<!-- spring::end -->
 
 		<!-- test::begin -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-		</dependency>
 		<dependency>
 			<groupId>org.testcontainers</groupId>
 			<artifactId>testcontainers</artifactId>
