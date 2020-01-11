@@ -3,9 +3,26 @@
 	xsi:schemaLocation="http://maven.apache.org/ASSEMBLY/2.0.0 http://maven.apache.org/xsd/assembly-2.0.0.xsd">
 	<id>distribution</id>
 	<formats>
-		<format>dir</format>
+		<format>zip</format>
 	</formats>
-	<baseDirectory>distribution</baseDirectory>
+
+	<fileSets>
+		<fileSet>
+			<directory>src/main/resources</directory>
+			<outputDirectory>plugins</outputDirectory>
+			<includes>
+				<include>enabled.txt</include>
+				<include>disabled.txt</include>
+			</includes>
+		</fileSet>
+		<fileSet>
+			<directory>src/main/resources</directory>
+			<outputDirectory />
+			<includes>
+				<include>ssl/**</include>
+			</includes>
+		</fileSet>
+	</fileSets>
 
 	<dependencySets>
 		<!-- Unpack all dependencies of ZIP type and BUNDLE classifier, -->
@@ -18,6 +35,16 @@
 				<include>*:zip:bundle</include>
 			</includes>
 			<outputDirectory>plugins</outputDirectory>
+		</dependencySet>
+
+		<dependencySet>
+			<useProjectArtifact>false</useProjectArtifact>
+			<useTransitiveDependencies>false</useTransitiveDependencies>
+			<unpack>false</unpack>
+			<includes>
+				<include>*:war</include>
+			</includes>
+			<outputDirectory />
 		</dependencySet>
 	</dependencySets>
 </assembly>

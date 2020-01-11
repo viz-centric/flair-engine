@@ -1,26 +1,112 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>com.fbi.engine</groupId>
-		<artifactId>flair-engine-parent</artifactId>
-		<version>3.0.0-SNAPSHOT</version>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<groupId>org.springframework.boot</groupId>
+		<version>1.5.20.RELEASE</version>
+		<relativePath />
 	</parent>
 	<groupId>com.fbi.engine</groupId>
 	<artifactId>flair-engine</artifactId>
 	<version>3.0.0-SNAPSHOT</version>
 	<packaging>war</packaging>
 	<name>flair-engine</name>
-
+	<scm>
+		<connection>scm:git:https://github.com/viz-centric/flair-engine.git</connection>
+		<developerConnection>scm:git:https://github.com/viz-centric/flair-engine.git</developerConnection>
+		<tag>HEAD</tag>
+		<url>https://github.com/viz-centric/flair-engine.git</url>
+	</scm>
+	<distributionManagement>
+		<repository>
+			<id>dev-azure-com-vizcentric-flair-engine</id>
+			<url>https://pkgs.dev.azure.com/VizCentric/_packaging/flair-engine/maven/v1</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+	</distributionManagement>
+	<repositories>
+		<repository>
+			<id>dev-azure-com-vizcentric-flair-engine</id>
+			<url>https://pkgs.dev.azure.com/VizCentric/_packaging/flair-engine/maven/v1</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+			<id>dev-azure-com-vizcentric-flair-commons</id>
+			<url>https://pkgs.dev.azure.com/VizCentric/_packaging/flair-commons/maven/v1</url>
+		</repository>
+		<repository>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+			<id>dev-azure-com-vizcentric-flair-protobuf-messages</id>
+			<url>https://pkgs.dev.azure.com/VizCentric/_packaging/flair-protobuf-messages/maven/v1</url>
+		</repository>
+		<repository>
+			<id>dev-azure-com-vizcentric-flair-query-language</id>
+			<url>https://pkgs.dev.azure.com/VizCentric/_packaging/flair-query-language/maven/v1</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>dev-azure-com-vizcentric-oracle-driver</id>
+			<url>https://pkgs.dev.azure.com/VizCentric/_packaging/oracle-driver/maven/v1</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>redshift</id>
+			<url>http://redshift-maven-repository.s3-website-us-east-1.amazonaws.com/release</url>
+		</repository>
+		<repository>
+			<id>local-maven-repo</id>
+			<url>file:///${project.basedir}/libs</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
 	<properties>
-		<querydsl.version>4.1.4</querydsl.version>
-		<liquibase.version>3.5.5</liquibase.version>
-		<javassist.version>3.21.0-GA</javassist.version>
 
+		<pf4j.version>2.3.0</pf4j.version>
+		<pf4j-spring.version>0.5.0</pf4j-spring.version>
 		<docker-maven-plugin.version>0.27.2</docker-maven-plugin.version>
-
+		<maven-release-plugin.version>2.5.3</maven-release-plugin.version>
+		<maven-scm-provider-gitexe.version>1.9.5</maven-scm-provider-gitexe.version>
+		<maven-source-plugin.version>3.0.1</maven-source-plugin.version>
+		<maven-javadoc-plugin.version>3.0.1</maven-javadoc-plugin.version>
 		<apache-httpclient.version>4.5</apache-httpclient.version>
 		<argLine>-Djava.security.egd=file:/dev/./urandom -Xmx256m</argLine>
 		<assertj.version>3.6.2</assertj.version>
@@ -36,7 +122,7 @@
 		<hibernate.version>5.2.8.Final</hibernate.version>
 		<hikaricp.version>2.6.0</hikaricp.version>
 		<jacoco-maven-plugin.version>0.7.9</jacoco-maven-plugin.version>
-
+		<java.version>1.8</java.version>
 		<jcache.version>1.0.0</jcache.version>
 		<jzlib.version>1.1.3</jzlib.version>
 		<jhipster.server.version>1.3.0</jhipster.server.version>
@@ -46,8 +132,13 @@
 		<logstash-logback-encoder.version>4.11</logstash-logback-encoder.version>
 		<m2e.apt.activation>jdt_apt</m2e.apt.activation>
 		<mapstruct.version>1.2.0.Final</mapstruct.version>
-
-
+		<maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
+		<maven-enforcer-plugin.version>3.0.0-M2</maven-enforcer-plugin.version>
+		<maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
+		<maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
+		<maven.compiler.source>${java.version}</maven.compiler.source>
+		<maven.compiler.target>${java.version}</maven.compiler.target>
+		<maven.version>3.0.0</maven.version>
 		<metrics-spring.version>3.1.3</metrics-spring.version>
 		<node.version>v6.11.1</node.version>
 		<npm.version>5.3.0</npm.version>
@@ -115,8 +206,11 @@
 		<project.scm.id>github-credentials</project.scm.id>
 
 		<!-- our dependencies -->
-
+		<flair-messages.version>0.2.1</flair-messages.version>
+		<flair-query-language.version>1.6.9</flair-query-language.version>
+		<project-bi-common.version>1.4.0</project-bi-common.version>
 		<all-grpc.version>1.23.0</all-grpc.version>
+		<lombok.version>1.18.8</lombok.version>
 
 
 	</properties>
@@ -126,13 +220,6 @@
 				<groupId>org.springframework.cloud</groupId>
 				<artifactId>spring-cloud-dependencies</artifactId>
 				<version>Edgware.SR4</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-dependencies</artifactId>
-				<version>${spring-boot.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
@@ -161,10 +248,12 @@
 		<dependency>
 			<groupId>com.project.bi</groupId>
 			<artifactId>project-bi-common</artifactId>
+			<version>${project-bi-common.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.project.bi</groupId>
 			<artifactId>flair-query-language</artifactId>
+			<version>${flair-query-language.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.github.lognet</groupId>
@@ -180,6 +269,13 @@
 		<dependency>
 			<groupId>com.project.bi</groupId>
 			<artifactId>flair-messages</artifactId>
+			<version>${flair-messages.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>io.grpc</groupId>
+					<artifactId>grpc-core</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>io.grpc</groupId>
@@ -404,17 +500,6 @@
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-envers</artifactId>
-			<version>${hibernate.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-core</artifactId>
-			<version>${hibernate.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-entitymanager</artifactId>
-			<version>${hibernate.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.hibernate</groupId>
@@ -544,207 +629,7 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-cloud-connectors</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-			<version>${mysql-connector.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.amazon.redshift</groupId>
-			<artifactId>redshift-jdbc42-no-awssdk</artifactId>
-			<version>1.2.32.1056</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.hive</groupId>
-			<artifactId>hive-jdbc</artifactId>
-			<version>1.2.1</version>
-			<exclusions>
-				<exclusion>
-					<groupId>javax.servlet</groupId>
-					<artifactId>servlet-api</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>javax.servlet.jsp</groupId>
-					<artifactId>jsp-api</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>commons-pool</groupId>
-					<artifactId>commons-pool</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>commons-dhcp</groupId>
-					<artifactId>commons-dhcp</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>commons-dbcp</groupId>
-					<artifactId>commons-dbcp</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>commons-logging</groupId>
-					<artifactId>commons-logging</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.apache.httpcomponents</groupId>
-					<artifactId>httpcore</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>io.netty.curator</groupId>
-					<artifactId>curator-framework</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>commons-cli</groupId>
-					<artifactId>commons-cli</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.apache.commons</groupId>
-					<artifactId>commons-math3</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.apache.commons</groupId>
-					<artifactId>commons-math3</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>commons-httpclient</groupId>
-					<artifactId>commons-httpclient</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.mortbay.jetty</groupId>
-					<artifactId>jetty</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>com.sun.jersey</groupId>
-					<artifactId>jersey-server</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.codehaus.jackson</groupId>
-					<artifactId>jackson-core-asl</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.json</groupId>
-					<artifactId>json</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.eclipse.jetty.aggregate</groupId>
-					<artifactId>jetty-all</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>log4j</groupId>
-					<artifactId>apache-log4j-extras</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>log4j</groupId>
-					<artifactId>log4j</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>commons-lang</groupId>
-					<artifactId>commons-lang</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>com.sun.jersey.contribs</groupId>
-					<artifactId>jersey-guice</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.slf4j</groupId>
-					<artifactId>slf4j-log4j12</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.hadoop</groupId>
-			<artifactId>hadoop-common</artifactId>
-			<version>2.7.3</version>
-			<exclusions>
-				<exclusion>
-					<groupId>javax.servlet</groupId>
-					<artifactId>servlet-api</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>javax.servlet.jsp</groupId>
-					<artifactId>jsp-api</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>commons-httpclient</groupId>
-					<artifactId>commons-httpclient</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>commons-codec</groupId>
-					<artifactId>commons-codec</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>commons-net</groupId>
-					<artifactId>commons-net</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>commons-collections</groupId>
-					<artifactId>commons-collections</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>commons-cli</groupId>
-					<artifactId>commons-cli</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.apache.commons</groupId>
-					<artifactId>commons-math3</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>com.sun.jersey</groupId>
-					<artifactId>jersey-core</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>commons-lang</groupId>
-					<artifactId>commons-lang</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.codehaus.jackson</groupId>
-					<artifactId>jackson-core-asl</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.codehaus.jackson</groupId>
-					<artifactId>jackson-mapper-asl</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>com.google.code.gson</groupId>
-					<artifactId>gson</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.apache.commons</groupId>
-					<artifactId>commons-compress</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>commons-logging</groupId>
-					<artifactId>commons-logging</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>log4j</groupId>
-					<artifactId>log4j</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.slf4j</groupId>
-					<artifactId>slf4j-log4j12</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>local</groupId>
-			<artifactId>AthenaJDBC42</artifactId>
-			<version>2.0.7</version>
-		</dependency>
-		<dependency>
-			<groupId>net.snowflake</groupId>
-			<artifactId>snowflake-jdbc</artifactId>
-			<version>3.10.1</version>
-		</dependency>
-		<dependency>
-			<groupId>com.oracle</groupId>
-			<artifactId>ojdbc6</artifactId>
-			<version>11.2.0.3</version>
-		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.mongodb/mongo-java-driver -->
-		<dependency>
-			<groupId>org.mongodb</groupId>
-			<artifactId>mongo-java-driver</artifactId>
-			<version>3.7.1</version>
-		</dependency>
+
 		<dependency>
 			<groupId>org.owasp</groupId>
 			<artifactId>dependency-check-maven</artifactId>
@@ -753,11 +638,13 @@
 		<dependency>
 			<groupId>com.querydsl</groupId>
 			<artifactId>querydsl-apt</artifactId>
+			<version>${querydsl.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.querydsl</groupId>
 			<artifactId>querydsl-jpa</artifactId>
+			<version>${querydsl.version}</version>
 		</dependency>
 		<!-- security -->
 		<dependency>
@@ -785,39 +672,21 @@
 			<artifactId>jongo</artifactId>
 			<version>1.3.0</version>
 		</dependency>
-
 		<dependency>
 			<groupId>org.pf4j</groupId>
 			<artifactId>pf4j-spring</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.fbi.engine</groupId>
-			<artifactId>flair-engine-api</artifactId>
-			<version>3.0.0-SNAPSHOT</version>
+			<version>${pf4j-spring.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-log4j12</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 	</dependencies>
 	<build>
 		<defaultGoal>spring-boot:run</defaultGoal>
 		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>${maven-compiler-plugin.version}</version>
-				<configuration>
-					<annotationProcessorPaths>
-						<path>
-							<groupId>org.mapstruct</groupId>
-							<artifactId>mapstruct-processor</artifactId>
-							<version>${mapstruct.version}</version>
-						</path>
-						<path>
-							<groupId>org.projectlombok</groupId>
-							<artifactId>lombok</artifactId>
-							<version>${lombok.version}</version>
-						</path>
-					</annotationProcessorPaths>
-				</configuration>
-			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-release-plugin</artifactId>
@@ -858,6 +727,62 @@
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${maven-compiler-plugin.version}</version>
+				<configuration>
+					<annotationProcessorPaths>
+						<path>
+							<groupId>org.mapstruct</groupId>
+							<artifactId>mapstruct-processor</artifactId>
+							<version>${mapstruct.version}</version>
+						</path>
+						<path>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok</artifactId>
+							<version>${lombok.version}</version>
+						</path>
+					</annotationProcessorPaths>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-eclipse-plugin</artifactId>
+				<configuration>
+					<downloadSources>true</downloadSources>
+					<downloadJavadocs>true</downloadJavadocs>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-enforcer-plugin</artifactId>
+				<version>${maven-enforcer-plugin.version}</version>
+				<executions>
+					<execution>
+						<id>enforce-versions</id>
+						<goals>
+							<goal>enforce</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<rules>
+						<requireMavenVersion>
+							<message>You are running an older version of Maven.
+								${maven.version}
+							</message>
+							<version>[${maven.version},)</version>
+						</requireMavenVersion>
+						<requireJavaVersion>
+							<message>You are running an older version of Java.
+								${java.version}
+							</message>
+							<version>[${java.version}.0,)</version>
+						</requireJavaVersion>
+					</rules>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-resources-plugin</artifactId>
 				<version>${maven-resources-plugin.version}</version>
 				<executions>
@@ -893,36 +818,12 @@
 							</resources>
 						</configuration>
 					</execution>
-					<execution>
-						<id>docker-resources</id>
-						<phase>validate</phase>
-						<goals>
-							<goal>copy-resources</goal>
-						</goals>
-						<configuration>
-							<outputDirectory>target/</outputDirectory>
-							<resources>
-								<resource>
-									<directory>src/main/docker/</directory>
-									<filtering>false</filtering>
-									<!-- <excludes><exclude>**/*.yml</exclude></excludes> -->
-								</resource>
-								<resource>
-									<directory>src/main/resources</directory>
-									<filtering>false</filtering>
-									<includes>
-										<include>ssl/**</include>
-									</includes>
-								</resource>
-							</resources>
-						</configuration>
-					</execution>
+
 				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.18.1</version>
 				<configuration>
 					<!-- Force alphabetical order to have a reproducible build -->
 					<runOrder>alphabetical</runOrder>
@@ -1011,9 +912,6 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
-					<folders>
-						<folder>./lib</folder>
-					</folders>
 					<executable>true</executable>
 					<fork>true</fork>
 					<!-- Enable the line below to have remote debugging of your application 
@@ -1044,11 +942,6 @@
 		</plugins>
 		<pluginManagement>
 			<plugins>
-				<plugin>
-					<groupId>org.springframework.boot</groupId>
-					<artifactId>spring-boot-maven-plugin</artifactId>
-					<version>${spring-boot.version}</version>
-				</plugin>
 				<plugin>
 					<groupId>io.fabric8</groupId>
 					<artifactId>docker-maven-plugin</artifactId>
@@ -1200,50 +1093,7 @@
 							</execution>
 						</executions>
 					</plugin>
-					<plugin>
-						<groupId>io.fabric8</groupId>
-						<artifactId>docker-maven-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>build-dockerfile</id>
-								<phase>package</phase>
-								<goals>
-									<goal>build</goal>
-								</goals>
-							</execution>
-							<execution>
-								<id>push-images</id>
-								<phase>deploy</phase>
-								<goals>
-									<goal>push</goal>
-								</goals>
-							</execution>
-						</executions>
-						<configuration>
-							<images>
-								<image>
-									<name>flairbi/${project.artifactId}</name>
-									<build>
-										<tags>
-											<tag>latest</tag>
-											<tag>v${project.version}</tag>
-										</tags>
-										<dockerFileDir>${project.build.directory}</dockerFileDir>
-									</build>
-								</image>
-								<image>
-									<name>flairbi/flair-engine-pgsql</name>
-									<build>
-										<tags>
-											<tag>latest</tag>
-											<tag>v${project.version}</tag>
-										</tags>
-										<dockerFileDir>${project.build.directory}/flair-engine-pgsql</dockerFileDir>
-									</build>
-								</image>
-							</images>
-						</configuration>
-					</plugin>
+
 				</plugins>
 			</build>
 			<properties>
@@ -1253,55 +1103,7 @@
 				<spring.profiles.active>prod${profile.swagger}${profile.no-liquibase}${profile.jenkins}</spring.profiles.active>
 			</properties>
 		</profile>
-		<profile>
-			<id>jenkins</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>io.fabric8</groupId>
-						<artifactId>docker-maven-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>build-dockerfile</id>
-								<phase>package</phase>
-								<goals>
-									<goal>build</goal>
-								</goals>
-							</execution>
-							<execution>
-								<id>push-images</id>
-								<phase>deploy</phase>
-								<goals>
-									<goal>push</goal>
-								</goals>
-							</execution>
-						</executions>
-						<configuration>
-							<images>
-								<image>
-									<name>flairbi/${project.artifactId}</name>
-									<build>
-										<tags>
-											<tag>v${project.version}.${revision}</tag>
-										</tags>
-										<dockerFileDir>${project.build.directory}</dockerFileDir>
-									</build>
-								</image>
-								<image>
-									<name>flairbi/flair-engine-pgsql</name>
-									<build>
-										<tags>
-											<tag>v${project.version}.${revision}</tag>
-										</tags>
-										<dockerFileDir>${project.build.directory}/flair-engine-pgsql</dockerFileDir>
-									</build>
-								</image>
-							</images>
-						</configuration>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
+
 		<profile>
 			<!-- Profile for doing "continuous compilation" with the Scala Maven plugin. 
 				It allows automatic compilation of Java classes as soon as they are saved. 

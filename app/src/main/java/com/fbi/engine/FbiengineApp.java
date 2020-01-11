@@ -1,13 +1,12 @@
 package com.fbi.engine;
 
-import com.fbi.engine.api.FlairFactory;
-import com.fbi.engine.config.DefaultProfileUtil;
-import com.project.bi.exceptions.CompilationException;
-import com.project.bi.exceptions.ExecutionException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
-import io.github.jhipster.config.JHipsterConstants;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import javax.annotation.PostConstruct;
 
 import org.pf4j.spring.SpringPluginManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,14 +24,12 @@ import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.Environment;
 
-import javax.annotation.PostConstruct;
+import com.fbi.engine.api.FlairFactory;
+import com.fbi.engine.config.DefaultProfileUtil;
 
-import java.io.StringWriter;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import io.github.jhipster.config.JHipsterConstants;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @EnableEurekaClient
 @SpringBootApplication(exclude = { MetricFilterAutoConfiguration.class, MetricRepositoryAutoConfiguration.class,

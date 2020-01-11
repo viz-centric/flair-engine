@@ -39,11 +39,88 @@
 			<classifier>bundle</classifier>
 			<type>zip</type>
 		</dependency>
+		<dependency>
+			<groupId>com.fbi.engine</groupId>
+			<artifactId>flair-engine-spark-plugin</artifactId>
+			<version>3.0.0-SNAPSHOT</version>
+			<classifier>bundle</classifier>
+			<type>zip</type>
+		</dependency>
+		<dependency>
+			<groupId>com.fbi.engine</groupId>
+			<artifactId>flair-engine-athena-plugin</artifactId>
+			<version>3.0.0-SNAPSHOT</version>
+			<classifier>bundle</classifier>
+			<type>zip</type>
+		</dependency>
+		<dependency>
+			<groupId>com.fbi.engine</groupId>
+			<artifactId>flair-engine-cockroachdb-plugin</artifactId>
+			<version>3.0.0-SNAPSHOT</version>
+			<classifier>bundle</classifier>
+			<type>zip</type>
+		</dependency>
+		<dependency>
+			<groupId>com.fbi.engine</groupId>
+			<artifactId>flair-engine-kafka-plugin</artifactId>
+			<version>3.0.0-SNAPSHOT</version>
+			<classifier>bundle</classifier>
+			<type>zip</type>
+		</dependency>
+		<dependency>
+			<groupId>com.fbi.engine</groupId>
+			<artifactId>flair-engine-mysql-plugin</artifactId>
+			<version>3.0.0-SNAPSHOT</version>
+			<classifier>bundle</classifier>
+			<type>zip</type>
+		</dependency>
+		<dependency>
+			<groupId>com.fbi.engine</groupId>
+			<artifactId>flair-engine-oracle-plugin</artifactId>
+			<version>3.0.0-SNAPSHOT</version>
+			<classifier>bundle</classifier>
+			<type>zip</type>
+		</dependency>
+
+		<dependency>
+			<groupId>com.fbi.engine</groupId>
+			<artifactId>flair-engine</artifactId>
+			<version>3.0.0-SNAPSHOT</version>
+			<type>war</type>
+		</dependency>
 	</dependencies>
 
 
 	<build>
 		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>${maven-resources-plugin.version}</version>
+				<executions>
+					<execution>
+						<id>docker-resources</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>target/</outputDirectory>
+							<resources>
+								<resource>
+									<directory>src/main/docker/</directory>
+									<filtering>false</filtering>
+									<includes>
+										<include>Dockerfile</include>
+										<include>.maven-dockerignore</include>
+										<include>flair-engine-pgsql/**</include>
+									</includes>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<executions>
@@ -55,7 +132,7 @@
 						</goals>
 						<configuration>
 							<descriptors>
-								<descriptor>src/assembly/test.xml</descriptor>
+								<descriptor>src/assembly/assembly.xml</descriptor>
 							</descriptors>
 						</configuration>
 					</execution>
@@ -63,6 +140,109 @@
 			</plugin>
 		</plugins>
 	</build>
+
+	<profiles>
+		<profile>
+			<id>prod</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>io.fabric8</groupId>
+						<artifactId>docker-maven-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>build-dockerfile</id>
+								<phase>package</phase>
+								<goals>
+									<goal>build</goal>
+								</goals>
+							</execution>
+							<execution>
+								<id>push-images</id>
+								<phase>deploy</phase>
+								<goals>
+									<goal>push</goal>
+								</goals>
+							</execution>
+						</executions>
+						<configuration>
+							<images>
+								<image>
+									<name>flairbi/flair-engine</name>
+									<build>
+										<tags>
+											<tag>latest</tag>
+											<tag>v${project.version}</tag>
+										</tags>
+										<dockerFileDir>${project.build.directory}</dockerFileDir>
+									</build>
+								</image>
+								<image>
+									<name>flairbi/flair-engine-pgsql</name>
+									<build>
+										<tags>
+											<tag>latest</tag>
+											<tag>v${project.version}</tag>
+										</tags>
+										<dockerFileDir>${project.build.directory}/flair-engine-pgsql</dockerFileDir>
+									</build>
+								</image>
+							</images>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>jenkins</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>io.fabric8</groupId>
+						<artifactId>docker-maven-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>build-dockerfile</id>
+								<phase>package</phase>
+								<goals>
+									<goal>build</goal>
+								</goals>
+							</execution>
+							<execution>
+								<id>push-images</id>
+								<phase>deploy</phase>
+								<goals>
+									<goal>push</goal>
+								</goals>
+							</execution>
+						</executions>
+						<configuration>
+							<images>
+								<image>
+									<name>flairbi/${project.artifactId}</name>
+									<build>
+										<tags>
+											<tag>v${project.version}.${revision}</tag>
+										</tags>
+										<dockerFileDir>${project.build.directory}</dockerFileDir>
+									</build>
+								</image>
+								<image>
+									<name>flairbi/flair-engine-pgsql</name>
+									<build>
+										<tags>
+											<tag>v${project.version}.${revision}</tag>
+										</tags>
+										<dockerFileDir>${project.build.directory}/flair-engine-pgsql</dockerFileDir>
+									</build>
+								</image>
+							</images>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 
 
 
