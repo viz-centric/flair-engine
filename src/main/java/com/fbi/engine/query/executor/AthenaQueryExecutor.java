@@ -24,7 +24,19 @@ public class AthenaQueryExecutor extends SqlQueryExecutor {
     }
 
     @Override
+    protected void loadDrivers() throws ClassNotFoundException {
+        Class.forName("com.simba.athena.jdbc.Driver");
+    }
+
+    @Override
     public void execute(Query query, Writer writer) throws ExecutionException {
+        try {
+            loadDrivers();
+        } catch (ClassNotFoundException e) {
+            log.error("Driver is not supported: {}", e.getMessage());
+            throw new ExecutionException("Driver not supported", e);
+        }
+
         Properties info = new Properties();
         if (this.connection.getConnectionUsername() != null) {
             info.put("user", this.connection.getConnectionUsername());
