@@ -6,7 +6,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fbi.engine.plugins.core.json.JacksonFactory;
-import com.flair.bi.compiler.postgres.PostgresFlairCompiler;
+import com.flair.bi.compiler.kafka.KafkaFlairCompiler;
 import com.project.bi.query.FlairCompiler;
 
 @Configuration
@@ -19,7 +19,7 @@ public class ApplicationConfiguration {
 
 	@Bean
 	public FlairCompiler compiler() {
-		return new PostgresFlairCompiler();
+		return new KafkaFlairCompiler();
 	}
 
 	@Bean

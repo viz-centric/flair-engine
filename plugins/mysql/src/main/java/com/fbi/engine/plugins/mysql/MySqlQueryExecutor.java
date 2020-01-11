@@ -1,7 +1,5 @@
 package com.fbi.engine.plugins.mysql;
 
-import java.io.File;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fbi.engine.api.DataSourceConnection;
 import com.fbi.engine.api.DataSourceDriver;
@@ -23,8 +21,7 @@ public class MySqlQueryExecutor extends SqlQueryExecutor {
 
 	@Override
 	protected DataSourceDriver getDefaultDriver() {
-		return DataSourceDriverImpl.of(new File("src/main/resources/mysql-connector-java-8.0.16.jar"),
-				"mysql-connector-java", "mysql", "8.0.16");
+		return DataSourceDriverImpl.of("mysql-connector-java-8.0.16.jar", "mysql-connector-java", "mysql", "8.0.16");
 	}
 
 }

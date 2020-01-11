@@ -1,7 +1,5 @@
 package com.fbi.engine.plugins.oracle;
 
-import java.io.File;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fbi.engine.api.DataSourceConnection;
 import com.fbi.engine.api.DataSourceDriver;
@@ -23,8 +21,7 @@ public class OracleQueryExecutor extends SqlQueryExecutor {
 
 	@Override
 	protected DataSourceDriver getDefaultDriver() {
-		return DataSourceDriverImpl.of(new File("src/main/resources/ojdbc6-11.2.0.3.jar"), "ojdbc6", "oracle",
-				"11.2.0.3");
+		return DataSourceDriverImpl.of("ojdbc6-11.2.0.3.jar", "ojdbc6", "oracle", "11.2.0.3");
 	}
 
 }

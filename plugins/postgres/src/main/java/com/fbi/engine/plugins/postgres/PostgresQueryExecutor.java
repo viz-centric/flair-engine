@@ -1,7 +1,5 @@
 package com.fbi.engine.plugins.postgres;
 
-import java.io.File;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fbi.engine.api.DataSourceConnection;
 import com.fbi.engine.api.DataSourceDriver;
@@ -23,7 +21,7 @@ public class PostgresQueryExecutor extends SqlQueryExecutor {
 
 	@Override
 	protected DataSourceDriver getDefaultDriver() {
-		return DataSourceDriverImpl.of(new File("src/main/resources/postgresql-9.4.1212.jar"), "postgresql",
+		return DataSourceDriverImpl.of("postgresql-9.4.1212.jar", "postgresql",
 				"org.postgresql", "9.4.1212");
 	}
 

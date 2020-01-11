@@ -1,6 +1,5 @@
 package com.fbi.engine.plugins.mongodb;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
 import java.sql.Driver;
@@ -38,8 +37,7 @@ public class MongoDBQueryExecutor extends SqlQueryExecutor {
 
 	@Override
 	protected DataSourceDriver getDefaultDriver() {
-		return DataSourceDriverImpl.of(new File("src/main/resources/mongo-java-driver-3.7.1.jar"), "mongo-java-driver",
-				"org.mongodb", "3.7.1");
+		return DataSourceDriverImpl.of("mongo-java-driver-3.7.1.jar", "mongo-java-driver", "org.mongodb", "3.7.1");
 	}
 
 	@Override

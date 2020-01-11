@@ -18,13 +18,12 @@ public class SparkQueryExecutor extends SqlQueryExecutor {
 
 	@Override
 	protected String getDriverClassName() {
-		return "com.snowflake.client.jdbc.SnowflakeDriver";
+		return "org.apache.hive.jdbc.HiveDriver";
 	}
 
 	@Override
 	protected DataSourceDriver getDefaultDriver() {
-		return DataSourceDriverImpl.of(new File("src/main/resources/snowflake-jdbc-3.11.0.jar"), "snowflake-jdbc",
-				"net.snowflake", "3.11.0");
+		return DataSourceDriverImpl.of(new File("hive-jdbc-1.2.1.jar"), "hive-jdbc", "org.apache.hive", "1.2.1");
 	}
 
 }
