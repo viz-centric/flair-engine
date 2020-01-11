@@ -1,6 +1,5 @@
 package com.fbi.engine.plugins.mysql;
 
-import java.io.File;
 import java.util.Properties;
 
 import org.testcontainers.containers.GenericContainer;
@@ -17,8 +16,8 @@ import com.fbi.engine.plugins.test.AbstractQueryExecutorUnitTest;
 
 public class MySqlQueryExecutorUnitTest extends AbstractQueryExecutorUnitTest<MySqlQueryExecutor> {
 
-	private DataSourceDriver driver = DataSourceDriverImpl.of(
-			new File("src/main/resources/mysql-connector-java-8.0.16.jar"), "mysql-connector-java", "mysql", "8.0.16");
+	private DataSourceDriver driver = DataSourceDriverImpl.of("mysql-connector-java-8.0.16.jar", "mysql-connector-java",
+			"mysql", "8.0.16");
 
 	private ObjectMapper objectMapper = JacksonFactory.getInstance().getObjectMapper();
 

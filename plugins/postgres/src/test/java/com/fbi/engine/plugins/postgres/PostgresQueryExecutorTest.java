@@ -1,6 +1,5 @@
 package com.fbi.engine.plugins.postgres;
 
-import java.io.File;
 import java.util.Properties;
 
 import org.testcontainers.containers.GenericContainer;
@@ -17,8 +16,8 @@ import com.fbi.engine.plugins.test.AbstractQueryExecutorUnitTest;
 
 public class PostgresQueryExecutorTest extends AbstractQueryExecutorUnitTest<PostgresQueryExecutor> {
 
-	private DataSourceDriver driver = DataSourceDriverImpl.of(new File("src/test/resources/postgresql-9.4.1212.jar"),
-			"postgresql", "org.postgresql", "9.4.1212");
+	private DataSourceDriver driver = DataSourceDriverImpl.of("postgresql-9.4.1212.jar", "postgresql", "org.postgresql",
+			"9.4.1212");
 
 	private ObjectMapper obj = JacksonFactory.getInstance().getObjectMapper();
 
