@@ -219,7 +219,7 @@
 						<configuration>
 							<images>
 								<image>
-									<name>flairbi/${project.artifactId}</name>
+									<name>flairbi/flair-engine</name>
 									<build>
 										<tags>
 											<tag>v${project.version}.${revision}</tag>

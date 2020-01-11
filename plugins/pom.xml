@@ -18,7 +18,6 @@
 	<packaging>pom</packaging>
 	<modules>
 		<module>hello</module>
-		<module>core</module>
 		<module>athena</module>
 		<module>cockroachdb</module>
 		<module>postgres</module>
@@ -28,7 +27,6 @@
 		<module>redshift</module>
 		<module>snowflake</module>
 		<module>spark</module>
-		<module>test</module>
 		<module>plugin-assembly</module>
 	</modules>
 

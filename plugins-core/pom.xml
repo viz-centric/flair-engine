@@ -8,29 +8,31 @@
 		<groupId>com.fbi.engine</groupId>
 		<artifactId>flair-engine-parent</artifactId>
 		<version>3.0.0-SNAPSHOT</version>
-		<relativePath />
 	</parent>
 
 
 	<groupId>com.fbi.engine</groupId>
-	<artifactId>flair-engine-plugins-test</artifactId>
+	<artifactId>flair-engine-plugins-core</artifactId>
 	<version>3.0.0-SNAPSHOT</version>
-	<name>flair-engine-plugins-test</name>
+	<name>flair-engine-plugins-core</name>
 
 
 	<dependencies>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<scope>provided</scope>
+		</dependency>
 		<dependency>
 			<groupId>com.fbi.engine</groupId>
 			<artifactId>flair-engine-api</artifactId>
 			<version>3.0.0-SNAPSHOT</version>
 		</dependency>
-
-		<!-- test::begin -->
 		<dependency>
-			<groupId>org.testcontainers</groupId>
-			<artifactId>testcontainers</artifactId>
+			<groupId>org.pf4j</groupId>
+			<artifactId>pf4j-spring</artifactId>
+			<version>0.5.0</version>
 		</dependency>
-		<!-- test::end -->
 	</dependencies>
 
 

@@ -12,6 +12,8 @@
 	<modules>
 		<module>api</module>
 		<module>app</module>
+		<module>plugins-core</module>
+		<module>plugins-test</module>
 		<module>plugins</module>
 		<module>distribution</module>
 	</modules>
