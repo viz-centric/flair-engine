@@ -27,6 +27,7 @@
 		<module>redshift</module>
 		<module>snowflake</module>
 		<module>spark</module>
+		<module>mongodb</module>
 		<module>plugin-assembly</module>
 	</modules>
 

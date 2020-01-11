@@ -7,3 +7,4 @@ cockroachdb-plugin
 kafka-plugin
 mysql-plugin
 oracle-plugin
+mongodb-plugin

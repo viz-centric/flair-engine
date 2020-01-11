@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.fbi.engine</groupId>
+		<artifactId>flair-engine-plugins-parent</artifactId>
+		<version>3.0.0-SNAPSHOT</version>
+	</parent>
+
+
+	<groupId>com.fbi.engine</groupId>
+	<artifactId>flair-engine-mongodb-plugin</artifactId>
+	<version>3.0.0-SNAPSHOT</version>
+	<name>flair-engine-mongodb-plugin</name>
+
+	<properties>
+		<plugin.id>mongodb-plugin</plugin.id>
+		<plugin.class>com.fbi.engine.plugins.mongodb.MongoDBPlugin</plugin.class>
+		<plugin.version>3.0.0</plugin.version>
+		<plugin.provider>Vizcentric</plugin.provider>
+		<plugin.dependencies></plugin.dependencies>
+	</properties>
+
+
+	<dependencies>
+		<dependency>
+			<groupId>com.fbi.engine</groupId>
+			<artifactId>flair-engine-api</artifactId>
+			<version>3.0.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.pf4j</groupId>
+			<artifactId>pf4j-spring</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.fbi.engine</groupId>
+			<artifactId>flair-engine-plugins-core</artifactId>
+			<version>3.0.0-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<!-- spring::begin -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context-support</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-autoconfigure</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-configuration-processor</artifactId>
+			<optional>true</optional>
+			<exclusions>
+				<exclusion>
+					<groupId>com.vaadin.external.google</groupId>
+					<artifactId>android-json</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<!-- spring::end -->
+
+		<dependency>
+			<groupId>org.mongodb</groupId>
+			<artifactId>mongo-java-driver</artifactId>
+			<version>3.7.1</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.jongo</groupId>
+			<artifactId>jongo</artifactId>
+			<version>1.3.0</version>
+		</dependency>
+
+		<!-- test::begin -->
+		<dependency>
+			<groupId>com.fbi.engine</groupId>
+			<artifactId>flair-engine-plugins-test</artifactId>
+			<version>3.0.0-SNAPSHOT</version>
+			<scope>test</scope>
+		</dependency>
+		<!-- test::end -->
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<artifactId>maven-jar-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+</project>

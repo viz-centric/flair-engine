@@ -81,6 +81,13 @@
 			<classifier>bundle</classifier>
 			<type>zip</type>
 		</dependency>
+		<dependency>
+			<groupId>com.fbi.engine</groupId>
+			<artifactId>flair-engine-mongodb-plugin</artifactId>
+			<version>3.0.0-SNAPSHOT</version>
+			<classifier>bundle</classifier>
+			<type>zip</type>
+		</dependency>
 
 		<dependency>
 			<groupId>com.fbi.engine</groupId>

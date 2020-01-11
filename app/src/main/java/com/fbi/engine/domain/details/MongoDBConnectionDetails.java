@@ -43,6 +43,10 @@ public class MongoDBConnectionDetails extends ConnectionDetails implements Seria
 
 	@Override
 	public Properties getAdditionalProperties() {
-		return new Properties();
+		Properties props = new Properties();
+		props.put("databaseName", getDatabaseName());
+		props.put("serverPort", getServerPort());
+		props.put("serverIp", getServerIp());
+		return props;
 	}
 }
