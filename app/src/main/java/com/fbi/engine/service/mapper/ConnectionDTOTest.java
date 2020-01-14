@@ -2,6 +2,7 @@ package com.fbi.engine.service.mapper;
 
 import com.fbi.engine.domain.details.ConnectionDetails;
 import com.fbi.engine.service.dto.ConnectionTypeDTO;
+import com.fbi.engine.service.dto.DriverDTO;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -35,6 +36,9 @@ public class ConnectionDTOTest implements Serializable {
 
 	@NotNull
 	private ConnectionDetails details;
+
+	@NotNull
+	private DriverDTO driver;
 
 	public Long getId() {
 		return id;
@@ -106,6 +110,14 @@ public class ConnectionDTOTest implements Serializable {
 			return false;
 		}
 		return Objects.equals(getId(), connectionDTOTest.getId());
+	}
+
+	public DriverDTO getDriver() {
+		return driver;
+	}
+
+	public void setDriver(DriverDTO driver) {
+		this.driver = driver;
 	}
 
 	@Override

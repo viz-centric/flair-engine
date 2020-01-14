@@ -1,8 +1,5 @@
 package com.fbi.engine.query.convert.impl;
 
-import org.mockito.Mockito;
-
-import javax.sql.RowSetMetaData;
 import java.io.InputStream;
 import java.io.Reader;
 import java.math.BigDecimal;
@@ -24,6 +21,8 @@ import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Map;
+
+import javax.sql.RowSetMetaData;
 
 public class MockResultSet implements ResultSet {
 

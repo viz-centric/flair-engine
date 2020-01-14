@@ -13,7 +13,7 @@
 			<column name="driver_artifact_id" type="varchar(255)" />
 			<column name="driver_group_id" type="varchar(255)" />
 			<column name="driver_version" type="varchar(255)" />
-			<column name="driver_jar" type="blob" />
+			<column name="driver_jar" type="bytea" />
 		</addColumn>
 	</changeSet>
 </databaseChangeLog>
