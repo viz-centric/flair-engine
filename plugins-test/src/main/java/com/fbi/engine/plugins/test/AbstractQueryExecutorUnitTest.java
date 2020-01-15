@@ -3,25 +3,19 @@ package com.fbi.engine.plugins.test;
 import java.io.StringWriter;
 
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.testcontainers.containers.GenericContainer;
 
 import com.fbi.engine.api.Query;
 import com.fbi.engine.api.QueryExecutor;
 import com.project.bi.exceptions.ExecutionException;
 
 public abstract class AbstractQueryExecutorUnitTest<T extends QueryExecutor> {
-	@Rule
-	public GenericContainer<?> container = configureTargetDataSource();
 
 	protected T sut;
 
 	protected abstract T configureQueryExecutor();
 
 	protected abstract T misconfigureQueryExecutor();
-
-	protected abstract GenericContainer<?> configureTargetDataSource();
 
 	@Before
 	public void before() {

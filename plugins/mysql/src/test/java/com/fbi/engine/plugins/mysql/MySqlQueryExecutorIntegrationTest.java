@@ -2,8 +2,7 @@ package com.fbi.engine.plugins.mysql;
 
 import java.util.Properties;
 
-import org.testcontainers.containers.GenericContainer;
-import org.testcontainers.utility.MountableFile;
+import org.junit.BeforeClass;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fbi.engine.api.DataSourceConnection;
@@ -14,7 +13,7 @@ import com.fbi.engine.plugins.core.sql.DriverLoadingStrategy;
 import com.fbi.engine.plugins.core.sql.DynamicDriverLoadingStrategy;
 import com.fbi.engine.plugins.test.AbstractQueryExecutorUnitTest;
 
-public class MySqlQueryExecutorUnitTest extends AbstractQueryExecutorUnitTest<MySqlQueryExecutor> {
+public class MySqlQueryExecutorIntegrationTest extends AbstractQueryExecutorUnitTest<MySqlQueryExecutor> {
 
 	private DataSourceDriver driver = DataSourceDriverImpl.of("mysql-connector-java-8.0.16.jar", "mysql-connector-java",
 			"mysql", "8.0.16");
@@ -23,13 +22,20 @@ public class MySqlQueryExecutorUnitTest extends AbstractQueryExecutorUnitTest<My
 
 	private DriverLoadingStrategy strategy = new DynamicDriverLoadingStrategy();
 
+	private static int port = -1;
+
+	@BeforeClass
+	public static void retrievePort() {
+		port = Integer.parseInt(System.getenv("it-database.port"));
+	}
+
 	@Override
 	protected MySqlQueryExecutor configureQueryExecutor() {
 		return new MySqlQueryExecutor(strategy, new DataSourceConnection() {
 
 			@Override
 			public String getConnectionString() {
-				return "jdbc:mysql://localhost:" + container.getFirstMappedPort() + "/services";
+				return "jdbc:mysql://localhost:" + port + "/services";
 			}
 
 			@Override
@@ -48,7 +54,7 @@ public class MySqlQueryExecutorUnitTest extends AbstractQueryExecutorUnitTest<My
 
 			@Override
 			public String getConnectionString() {
-				return "jdbc:mysql://localhost:" + container.getFirstMappedPort() + "/notWOrking";
+				return "jdbc:mysql://localhost:" + port + "/notWOrking";
 			}
 
 			@Override
@@ -59,14 +65,6 @@ public class MySqlQueryExecutorUnitTest extends AbstractQueryExecutorUnitTest<My
 				return properties;
 			}
 		}, objectMapper, driver);
-	}
-
-	@Override
-	protected GenericContainer<?> configureTargetDataSource() {
-		return new GenericContainer<>("mysql:8.0.16").withEnv("MYSQL_USER", "mysql").withEnv("MYSQL_PASSWORD", "admin")
-				.withEnv("MYSQL_ROOT_PASSWORD", "root").withEnv("MYSQL_DATABASE", "services").withExposedPorts(3306)
-				.withCopyFileToContainer(MountableFile.forClasspathResource("init.sql"),
-						"/docker-entrypoint-initdb.d/init.sql");
 	}
 
 }

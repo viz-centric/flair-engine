@@ -89,6 +89,107 @@
 			<plugin>
 				<artifactId>maven-jar-plugin</artifactId>
 			</plugin>
+
+			<plugin>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.22.0</version>
+				<configuration>
+					<excludes>
+						<exclude>**/*IntegrationTest</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
+
+	<profiles>
+		<profile>
+			<id>jenkins</id>
+			<build>
+				<plugins>
+					<plugin>
+						<artifactId>maven-surefire-plugin</artifactId>
+						<version>2.22.0</version>
+						<executions>
+							<execution>
+								<phase>integration-test</phase>
+								<goals>
+									<goal>test</goal>
+								</goals>
+								<configuration>
+									<environmentVariables>
+										<it-database.port>${it-database.port}</it-database.port>
+									</environmentVariables>
+									<excludes>
+										<exclude>none</exclude>
+									</excludes>
+									<includes>
+										<include>**/*IntegrationTest</include>
+									</includes>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>io.fabric8</groupId>
+						<artifactId>docker-maven-plugin</artifactId>
+						<version>0.27.2</version>
+						<executions>
+							<execution>
+								<id>prepare-it-database</id>
+								<phase>pre-integration-test</phase>
+								<goals>
+									<goal>start</goal>
+								</goals>
+								<configuration>
+									<images>
+										<image>
+											<name>postgres:9.6.12</name>
+											<alias>it-postgres-database</alias>
+											<run>
+												<env>
+													<POSTGRES_USER>postgres</POSTGRES_USER>
+													<POSTGRES_PASSWORD>admin</POSTGRES_PASSWORD>
+													<POSTGRES_DB>services</POSTGRES_DB>
+												</env>
+												<volumes>
+													<bind>src/test/resources/init.sql:/docker-entrypoint-initdb.d/init.sql</bind>
+												</volumes>
+												<network>
+													<name>jenkins</name>
+													<mode>custom</mode>
+												</network>
+												<ports>
+													<port>it-database.port:5432</port>
+												</ports>
+												<wait>
+													<!-- leave it as one liner -->
+													<log>(?s)PostgreSQL init process complete[\s\S]*database system is ready to accept connections</log>
+													<time>10000</time>
+												</wait>
+												<log>
+													<prefix>TC</prefix>
+													<date>default</date>
+													<color>cyan</color>
+												</log>
+											</run>
+										</image>
+									</images>
+								</configuration>
+							</execution>
+							<execution>
+								<id>remove-it-database</id>
+								<phase>post-integration-test</phase>
+								<goals>
+									<goal>stop</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
+
 </project>
