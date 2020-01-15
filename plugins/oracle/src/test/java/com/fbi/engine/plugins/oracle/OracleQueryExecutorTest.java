@@ -4,8 +4,6 @@ import java.io.File;
 import java.util.Properties;
 
 import org.junit.Ignore;
-import org.testcontainers.containers.GenericContainer;
-import org.testcontainers.utility.MountableFile;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fbi.engine.api.DataSourceConnection;
@@ -32,8 +30,8 @@ public class OracleQueryExecutorTest extends AbstractQueryExecutorUnitTest<Oracl
 
 			@Override
 			public String getConnectionString() {
-				return "jdbc:oracle:thin:@//localhost:" + container.getFirstMappedPort() + "/xe";
-//				return "jdbc:oracle:thin:@//localhost:1521/xe";
+//				return "jdbc:oracle:thin:@//localhost:" + container.getFirstMappedPort() + "/xe";
+				return "jdbc:oracle:thin:@//localhost:1521/xe";
 			}
 
 			@Override
@@ -57,7 +55,8 @@ public class OracleQueryExecutorTest extends AbstractQueryExecutorUnitTest<Oracl
 
 			@Override
 			public String getConnectionString() {
-				return "jdbc:oracle:thin:@//localhost:" + container.getFirstMappedPort() + "/notExist";
+//				return "jdbc:oracle:thin:@//localhost:" + container.getFirstMappedPort() + "/notExist";
+				return "jdbc:oracle:thin:@//localhost:1521/notExist";
 			}
 
 			@Override
@@ -70,14 +69,14 @@ public class OracleQueryExecutorTest extends AbstractQueryExecutorUnitTest<Oracl
 		}, obj, driver);
 	}
 
-	@SuppressWarnings("resource")
-	@Override
-	protected GenericContainer<?> configureTargetDataSource() {
-		return new GenericContainer<>("christophesurmont/oracle-xe-11g").withEnv("ORACLE_DISABLE_ASYNCH_IO", "true")
-				.withEnv("ORACLE_ALLOW_REMOTE", "true").withLogConsumer(x -> {
-					System.out.println(x.getUtf8String());
-				}).withExposedPorts(1521).withCopyFileToContainer(MountableFile.forClasspathResource("init.sql"),
-						"/docker-entrypoint-initdb.d/init.sql");
-	}
+//	@SuppressWarnings("resource")
+//	@Override
+//	protected GenericContainer<?> configureTargetDataSource() {
+//		return new GenericContainer<>("christophesurmont/oracle-xe-11g").withEnv("ORACLE_DISABLE_ASYNCH_IO", "true")
+//				.withEnv("ORACLE_ALLOW_REMOTE", "true").withLogConsumer(x -> {
+//					System.out.println(x.getUtf8String());
+//				}).withExposedPorts(1521).withCopyFileToContainer(MountableFile.forClasspathResource("init.sql"),
+//						"/docker-entrypoint-initdb.d/init.sql");
+//	}
 
 }
