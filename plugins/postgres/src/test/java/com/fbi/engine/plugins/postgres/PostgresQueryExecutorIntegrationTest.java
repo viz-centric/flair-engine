@@ -22,11 +22,13 @@ public class PostgresQueryExecutorIntegrationTest extends AbstractQueryExecutorU
 
 	private DriverLoadingStrategy strat = new DynamicDriverLoadingStrategy();
 
-	private static int port = -1;
+	private static int port = 5432;
+	private static String host = "localhost";
 
 	@BeforeClass
 	public static void retrievePort() {
-		port = Integer.parseInt(System.getenv("it-database.port"));
+		port = Integer.parseInt(System.getProperty("it-database.port"));
+		host = System.getProperty("it-database.host");
 	}
 
 	@Override
@@ -35,7 +37,7 @@ public class PostgresQueryExecutorIntegrationTest extends AbstractQueryExecutorU
 
 			@Override
 			public String getConnectionString() {
-				return "jdbc:postgresql://localhost:" + port + "/services";
+				return "jdbc:postgresql://" + host + ":" + port + "/services";
 			}
 
 			@Override
@@ -54,7 +56,7 @@ public class PostgresQueryExecutorIntegrationTest extends AbstractQueryExecutorU
 
 			@Override
 			public String getConnectionString() {
-				return "jdbc:postgresql://localhost:" + port + "/notExistingDatabase";
+				return "jdbc:postgresql://" + host + ":" + port + "/notExistingDatabase";
 			}
 
 			@Override

@@ -21,6 +21,10 @@
 		<plugin.version>3.0.0</plugin.version>
 		<plugin.provider>Vizcentric</plugin.provider>
 		<plugin.dependencies></plugin.dependencies>
+		
+		<docker.postgres.username>postgres</docker.postgres.username>
+		<docker.postgres.password>admin</docker.postgres.password>
+		<docker.postgres.db>services</docker.postgres.db>
 	</properties>
 
 
@@ -119,6 +123,10 @@
 								<configuration>
 									<environmentVariables>
 										<it-database.port>${it-database.port}</it-database.port>
+										<it-database.host>it-postgres-database</it-database.host>
+										<it-database.user>${docker.postgres.username}</it-database.user>
+										<it-database.password>${docker.postgres.password}</it-database.password>
+										<it-database.db>${docker.postgres.db}</it-database.db>
 									</environmentVariables>
 									<excludes>
 										<exclude>none</exclude>
@@ -152,9 +160,9 @@
 											</build>
 											<run>
 												<env>
-													<POSTGRES_USER>postgres</POSTGRES_USER>
-													<POSTGRES_PASSWORD>admin</POSTGRES_PASSWORD>
-													<POSTGRES_DB>services</POSTGRES_DB>
+													<POSTGRES_USER>${docker.postgres.username}</POSTGRES_USER>
+													<POSTGRES_PASSWORD>${docker.postgres.password}</POSTGRES_PASSWORD>
+													<POSTGRES_DB>${docker.postgres.db}</POSTGRES_DB>
 												</env>
 												<network>
 													<name>jenkins</name>
