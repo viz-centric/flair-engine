@@ -170,7 +170,8 @@
 													<mode>custom</mode>
 												</network>
 												<ports>
-													<port>it-database.port:5432</port>
+													<!-- <port>it-database.port:5432</port> -->
+													<port>1919:5432</port>
 												</ports>
 												<wait>
 													<!-- leave it as one liner -->

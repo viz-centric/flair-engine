@@ -20,8 +20,8 @@ public class PostgresQueryExecutorIntegrationTest extends AbstractQueryExecutorU
 
 	private DriverLoadingStrategy strat = new DynamicDriverLoadingStrategy();
 
-	private static int port = 5432;
-	private static String host = "it-postgres-database";
+	private static int port = 1919;
+	private static String host = "localhost";
 
 //	@BeforeClass
 //	public static void retrievePort() {
