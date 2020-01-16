@@ -14,8 +14,7 @@ import com.fbi.engine.plugins.core.sql.DriverLoadingStrategy;
 import com.fbi.engine.plugins.core.sql.DynamicDriverLoadingStrategy;
 import com.fbi.engine.plugins.test.AbstractQueryExecutorUnitTest;
 
-@Ignore
-public class OracleQueryExecutorTest extends AbstractQueryExecutorUnitTest<OracleQueryExecutor> {
+public class OracleQueryExecutorIntegrationTest extends AbstractQueryExecutorUnitTest<OracleQueryExecutor> {
 
 	private DataSourceDriver driver = DataSourceDriverImpl.of(new File("src/main/resources/ojdbc6-11.2.0.3.jar"),
 			"ojdbc6", "oracle", "11.2.0.3");
@@ -24,14 +23,16 @@ public class OracleQueryExecutorTest extends AbstractQueryExecutorUnitTest<Oracl
 
 	private DriverLoadingStrategy strat = new DynamicDriverLoadingStrategy();
 
+	private static int port = 1521;
+	private static String host = "it-oracle-database";
+
 	@Override
 	protected OracleQueryExecutor configureQueryExecutor() {
 		return new OracleQueryExecutor(strat, new DataSourceConnection() {
 
 			@Override
 			public String getConnectionString() {
-//				return "jdbc:oracle:thin:@//localhost:" + container.getFirstMappedPort() + "/xe";
-				return "jdbc:oracle:thin:@//localhost:1521/xe";
+				return "jdbc:oracle:thin:@//" + host + ":" + port + "/xe";
 			}
 
 			@Override
@@ -55,8 +56,7 @@ public class OracleQueryExecutorTest extends AbstractQueryExecutorUnitTest<Oracl
 
 			@Override
 			public String getConnectionString() {
-//				return "jdbc:oracle:thin:@//localhost:" + container.getFirstMappedPort() + "/notExist";
-				return "jdbc:oracle:thin:@//localhost:1521/notExist";
+				return "jdbc:oracle:thin:@//" + host + ":" + port + "/notExist";
 			}
 
 			@Override
@@ -68,15 +68,5 @@ public class OracleQueryExecutorTest extends AbstractQueryExecutorUnitTest<Oracl
 			}
 		}, obj, driver);
 	}
-
-//	@SuppressWarnings("resource")
-//	@Override
-//	protected GenericContainer<?> configureTargetDataSource() {
-//		return new GenericContainer<>("christophesurmont/oracle-xe-11g").withEnv("ORACLE_DISABLE_ASYNCH_IO", "true")
-//				.withEnv("ORACLE_ALLOW_REMOTE", "true").withLogConsumer(x -> {
-//					System.out.println(x.getUtf8String());
-//				}).withExposedPorts(1521).withCopyFileToContainer(MountableFile.forClasspathResource("init.sql"),
-//						"/docker-entrypoint-initdb.d/init.sql");
-//	}
 
 }

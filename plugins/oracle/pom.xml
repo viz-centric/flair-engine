@@ -89,6 +89,107 @@
 			<plugin>
 				<artifactId>maven-jar-plugin</artifactId>
 			</plugin>
+			<plugin>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.22.0</version>
+				<configuration>
+					<excludes>
+						<exclude>**/*IntegrationTest</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
+	
+	<profiles>
+		<profile>
+			<id>jenkins</id>
+			<build>
+				<plugins>
+					<plugin>
+						<artifactId>maven-surefire-plugin</artifactId>
+						<version>2.22.0</version>
+						<executions>
+							<execution>
+								<phase>integration-test</phase>
+								<goals>
+									<goal>test</goal>
+								</goals>
+								<configuration>
+									<environmentVariables>
+										<it-database.port>${it-database.port}</it-database.port>
+										<it-database.host>it-oracle-database</it-database.host>
+									</environmentVariables>
+									<excludes>
+										<exclude>none</exclude>
+									</excludes>
+									<includes>
+										<include>**/*IntegrationTest</include>
+									</includes>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>io.fabric8</groupId>
+						<artifactId>docker-maven-plugin</artifactId>
+						<version>0.27.2</version>
+						<executions>
+							<execution>
+								<id>prepare-it-database</id>
+								<phase>pre-integration-test</phase>
+								<goals>
+									<goal>build</goal>
+									<goal>start</goal>
+								</goals>
+								<configuration>
+									<images>
+										<image>
+											<name>oracle-test-xe-11g</name>
+											<alias>it-oracle-database</alias>
+											<build>
+												<dockerFile>Dockerfile</dockerFile>
+											</build>
+											<run>
+												<env>
+													<ORACLE_ALLOW_REMOTE>true</ORACLE_ALLOW_REMOTE>
+													<ORACLE_DISABLE_ASYNCH_IO>true</ORACLE_DISABLE_ASYNCH_IO>
+												</env>
+												<network>
+													<name>jenkins</name>
+													<mode>custom</mode>
+													<alias>it-oracle-database</alias>
+												</network>
+												<ports>
+													<port>it-database.port:1521</port>
+												</ports>
+												<wait>
+													<!-- leave it as one liner -->
+													<log>Disconnected from Oracle Database 11g Express Edition Release 11.2.0.2.0 - 64bit Production</log>
+													<time>30000</time>
+												</wait>
+												<log>
+													<prefix>TC</prefix>
+													<date>default</date>
+													<color>cyan</color>
+												</log>
+											</run>
+										</image>
+									</images>
+								</configuration>
+							</execution>
+							<execution>
+								<id>remove-it-database</id>
+								<phase>post-integration-test</phase>
+								<goals>
+									<goal>stop</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+	
 </project>
