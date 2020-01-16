@@ -67,12 +67,4 @@ public class PostgresQueryExecutorIntegrationTest extends AbstractQueryExecutorU
 		}, obj, driver);
 	}
 
-//	@Override
-//	protected GenericContainer<?> configureTargetDataSource() {
-//		return new GenericContainer<>("postgres:9.6.12").withEnv("POSTGRES_USER", "postgres")
-//				.withEnv("POSTGRES_PASSWORD", "admin").withEnv("POSTGRES_DB", "services").withExposedPorts(5432)
-//				.withCopyFileToContainer(MountableFile.forClasspathResource("init.sql"),
-//						"/docker-entrypoint-initdb.d/init.sql");
-//	}
-
 }

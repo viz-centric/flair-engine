@@ -153,7 +153,7 @@
 													<POSTGRES_DB>services</POSTGRES_DB>
 												</env>
 												<volumes>
-													<bind>src/test/resources/init.sql:/docker-entrypoint-initdb.d/init.sql</bind>
+													<bind>${project.basedir}/src/test/resources/init.sql:/docker-entrypoint-initdb.d/init.sql</bind>
 												</volumes>
 												<network>
 													<name>jenkins</name>
