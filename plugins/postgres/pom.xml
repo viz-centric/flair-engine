@@ -122,7 +122,8 @@
 								</goals>
 								<configuration>
 									<environmentVariables>
-										<it-database.port>${it-database.port}</it-database.port>
+										<!-- <it-database.port>${it-database.port}</it-database.port> -->
+										<it-database.port>5432</it-database.port>
 										<it-database.host>it-postgres-database</it-database.host>
 										<it-database.user>${docker.postgres.username}</it-database.user>
 										<it-database.password>${docker.postgres.password}</it-database.password>
