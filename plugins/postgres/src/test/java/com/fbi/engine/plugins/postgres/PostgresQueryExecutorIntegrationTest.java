@@ -2,8 +2,6 @@ package com.fbi.engine.plugins.postgres;
 
 import java.util.Properties;
 
-import org.junit.BeforeClass;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fbi.engine.api.DataSourceConnection;
 import com.fbi.engine.api.DataSourceDriver;
@@ -23,13 +21,13 @@ public class PostgresQueryExecutorIntegrationTest extends AbstractQueryExecutorU
 	private DriverLoadingStrategy strat = new DynamicDriverLoadingStrategy();
 
 	private static int port = 5432;
-	private static String host = "localhost";
+	private static String host = "it-postgres-database";
 
-	@BeforeClass
-	public static void retrievePort() {
-		port = Integer.parseInt(System.getProperty("it-database.port"));
-		host = System.getProperty("it-database.host");
-	}
+//	@BeforeClass
+//	public static void retrievePort() {
+//		port = Integer.parseInt(System.getProperty("it-database.port"));
+//		host = System.getProperty("it-database.host");
+//	}
 
 	@Override
 	protected PostgresQueryExecutor configureQueryExecutor() {
