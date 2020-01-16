@@ -139,22 +139,23 @@
 								<id>prepare-it-database</id>
 								<phase>pre-integration-test</phase>
 								<goals>
+									<goal>build</goal>
 									<goal>start</goal>
 								</goals>
 								<configuration>
 									<images>
 										<image>
-											<name>postgres:9.6.12</name>
+											<name>postgres-test:9.6.12</name>
 											<alias>it-postgres-database</alias>
+											<build>
+												<dockerFile>Dockerfile</dockerFile>
+											</build>
 											<run>
 												<env>
 													<POSTGRES_USER>postgres</POSTGRES_USER>
 													<POSTGRES_PASSWORD>admin</POSTGRES_PASSWORD>
 													<POSTGRES_DB>services</POSTGRES_DB>
 												</env>
-												<volumes>
-													<bind>${project.basedir}/src/test/resources/init.sql:/docker-entrypoint-initdb.d/init.sql</bind>
-												</volumes>
 												<network>
 													<name>jenkins</name>
 													<mode>custom</mode>
