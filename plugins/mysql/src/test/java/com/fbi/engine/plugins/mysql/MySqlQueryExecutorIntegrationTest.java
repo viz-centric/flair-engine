@@ -2,8 +2,6 @@ package com.fbi.engine.plugins.mysql;
 
 import java.util.Properties;
 
-import org.junit.BeforeClass;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fbi.engine.api.DataSourceConnection;
 import com.fbi.engine.api.DataSourceDriver;
@@ -22,12 +20,9 @@ public class MySqlQueryExecutorIntegrationTest extends AbstractQueryExecutorUnit
 
 	private DriverLoadingStrategy strategy = new DynamicDriverLoadingStrategy();
 
-	private static int port = -1;
+	private static int port = 3306;
 
-	@BeforeClass
-	public static void retrievePort() {
-		port = Integer.parseInt(System.getenv("it-database.port"));
-	}
+	private static String host = "it-mysql-database";
 
 	@Override
 	protected MySqlQueryExecutor configureQueryExecutor() {
@@ -35,7 +30,7 @@ public class MySqlQueryExecutorIntegrationTest extends AbstractQueryExecutorUnit
 
 			@Override
 			public String getConnectionString() {
-				return "jdbc:mysql://localhost:" + port + "/services";
+				return "jdbc:mysql://" + host + ":" + port + "/services";
 			}
 
 			@Override
@@ -54,7 +49,7 @@ public class MySqlQueryExecutorIntegrationTest extends AbstractQueryExecutorUnit
 
 			@Override
 			public String getConnectionString() {
-				return "jdbc:mysql://localhost:" + port + "/notWOrking";
+				return "jdbc:mysql://" + host + ":" + port + "/notWOrking";
 			}
 
 			@Override

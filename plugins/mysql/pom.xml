@@ -159,6 +159,7 @@
 												<network>
 													<name>jenkins</name>
 													<mode>custom</mode>
+													<alias>it-mysql-database</alias>
 												</network>
 												<ports>
 													<port>it-database.port:3306</port>
