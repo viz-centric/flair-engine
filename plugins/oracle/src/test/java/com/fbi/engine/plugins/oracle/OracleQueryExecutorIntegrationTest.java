@@ -3,8 +3,6 @@ package com.fbi.engine.plugins.oracle;
 import java.io.File;
 import java.util.Properties;
 
-import org.junit.Ignore;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fbi.engine.api.DataSourceConnection;
 import com.fbi.engine.api.DataSourceDriver;
