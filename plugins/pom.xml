@@ -31,6 +31,25 @@
 		<module>plugin-assembly</module>
 	</modules>
 
+	<scm>
+		<connection>scm:git:https://github.com/viz-centric/flair-engine.git</connection>
+		<developerConnection>scm:git:https://github.com/viz-centric/flair-engine.git</developerConnection>
+		<tag>HEAD</tag>
+		<url>https://github.com/viz-centric/flair-engine.git</url>
+	</scm>
+	<distributionManagement>
+		<repository>
+			<id>dev-azure-com-vizcentric-flair-engine</id>
+			<url>https://pkgs.dev.azure.com/VizCentric/_packaging/flair-engine/maven/v1</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+	</distributionManagement>
+
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
