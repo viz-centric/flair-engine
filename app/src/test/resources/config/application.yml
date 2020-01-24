@@ -12,7 +12,11 @@
 # Full reference is available at:
 # http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
 # ===================================================================
-
+#liquibase:
+#      contexts: dev
+#      drop-first: true
+#messages:
+#        cache-seconds: 1
 spring:
     application:
         name: fbiengine
@@ -52,14 +56,16 @@ spring:
         port: 25
         username:
         password:
-    messages:
-        cache-seconds: 1
+    
     thymeleaf:
         cache: false
+    liquibase:
+        contexts: dev
+        drop-first: true
+    messages:
+        cache-duration: 1
 
-liquibase:
-    contexts: dev
-    drop-first: true
+
 
 
 # ===================================================================
@@ -158,6 +164,7 @@ application:
                   roles:
                   - "ROLE_ADMIN"
                   - "ROLE_USER"
+             
 management:
     context-path: /management
 info:
