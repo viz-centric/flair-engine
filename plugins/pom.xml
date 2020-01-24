@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>1.5.20.RELEASE</version>
+		<version>2.2.4.RELEASE</version>
 		<relativePath />
 	</parent>
 
@@ -84,7 +84,7 @@
 			<dependency>
 				<groupId>org.springframework.cloud</groupId>
 				<artifactId>spring-cloud-dependencies</artifactId>
-				<version>Edgware.SR4</version>
+				<version>Hoxton.RELEASE</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
@@ -151,7 +151,7 @@
 							<id>make-assembly</id>
 							<phase>package</phase>
 							<goals>
-								<goal>attached</goal>
+								<goal>single</goal>
 							</goals>
 						</execution>
 					</executions>
