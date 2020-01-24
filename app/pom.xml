@@ -6,7 +6,7 @@
 	<parent>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<groupId>org.springframework.boot</groupId>
-		<version>1.5.20.RELEASE</version>
+		<version>2.2.4.RELEASE</version>
 		<relativePath />
 	</parent>
 	<groupId>com.fbi.engine</groupId>
@@ -100,6 +100,7 @@
 	</repositories>
 	<properties>
 		<maven.test.skip>false</maven.test.skip>
+		<javassist.version>3.26.0-GA</javassist.version>
 		<pf4j.version>2.3.0</pf4j.version>
 		<pf4j-spring.version>0.5.0</pf4j-spring.version>
 		<docker-maven-plugin.version>0.27.2</docker-maven-plugin.version>
@@ -212,9 +213,9 @@
 		<all-grpc.version>1.23.0</all-grpc.version>
 		<lombok.version>1.18.8</lombok.version>
 
-
 	</properties>
 	<dependencyManagement>
+
 		<dependencies>
 			<dependency>
 				<groupId>org.springframework.cloud</groupId>
@@ -235,6 +236,11 @@
 			<groupId>com.fbi.engine</groupId>
 			<artifactId>flair-engine-api</artifactId>
 			<version>3.0.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-properties-migrator</artifactId>
+			<scope>runtime</scope>
 		</dependency>
 
 		<dependency>
@@ -339,12 +345,10 @@
 		<dependency>
 			<groupId>io.dropwizard.metrics</groupId>
 			<artifactId>metrics-annotation</artifactId>
-			<version>${dropwizard-metrics.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.dropwizard.metrics</groupId>
 			<artifactId>metrics-json</artifactId>
-			<version>${dropwizard-metrics.version}</version>
 			<!--$NO-MVN-MAN-VER$ -->
 		</dependency>
 		<dependency>
@@ -358,7 +362,6 @@
 		<dependency>
 			<groupId>io.dropwizard.metrics</groupId>
 			<artifactId>metrics-jvm</artifactId>
-			<version>${dropwizard-metrics.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.datatype</groupId>
@@ -392,12 +395,10 @@
 		<dependency>
 			<groupId>io.netty</groupId>
 			<artifactId>netty-tcnative-boringssl-static</artifactId>
-			<version>2.0.20.Final</version>
 		</dependency>
 		<dependency>
 			<groupId>com.hazelcast</groupId>
 			<artifactId>hazelcast-hibernate52</artifactId>
-			<version>${hazelcast-hibernate52.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.hazelcast</groupId>
@@ -406,7 +407,6 @@
 		<dependency>
 			<groupId>org.awaitility</groupId>
 			<artifactId>awaitility</artifactId>
-			<version>${awaitility.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -453,7 +453,6 @@
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
-			<version>${commons-lang.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.gatling.highcharts</groupId>
@@ -502,8 +501,8 @@
 			<artifactId>hibernate-envers</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-validator</artifactId>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-validation</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.liquibase</groupId>
@@ -638,13 +637,11 @@
 		<dependency>
 			<groupId>com.querydsl</groupId>
 			<artifactId>querydsl-apt</artifactId>
-			<version>${querydsl.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.querydsl</groupId>
 			<artifactId>querydsl-jpa</artifactId>
-			<version>${querydsl.version}</version>
 		</dependency>
 		<!-- security -->
 		<dependency>
@@ -659,13 +656,11 @@
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<version>${lombok.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>
-			<version>${apache-httpclient.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.jongo</groupId>
@@ -728,7 +723,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>${maven-compiler-plugin.version}</version>
 				<configuration>
 					<annotationProcessorPaths>
 						<path>
@@ -755,7 +749,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-enforcer-plugin</artifactId>
-				<version>${maven-enforcer-plugin.version}</version>
 				<executions>
 					<execution>
 						<id>enforce-versions</id>
@@ -784,7 +777,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-resources-plugin</artifactId>
-				<version>${maven-resources-plugin.version}</version>
 				<executions>
 					<execution>
 						<id>default-resources</id>
@@ -1012,7 +1004,6 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-war-plugin</artifactId>
-						<version>3.2.2</version>
 						<configuration>
 							<warSourceDirectory>src/main/webapp/</warSourceDirectory>
 						</configuration>

@@ -290,7 +290,7 @@ public class ConnectionResourceIntTest {
 		int databaseSizeBeforeUpdate = connectionRepository.findAll().size();
 
 		// Update the connection
-		Connection updatedConnection = connectionRepository.findOne(connection.getId());
+		Connection updatedConnection = connectionRepository.getOne(connection.getId());
 		updatedConnection.name(UPDATED_NAME).connectionUsername(UPDATED_CONNECTION_USERNAME)
 				.connectionPassword(UPDATED_CONNECTION_PASSWORD).linkId(UPDATED_LINK_ID);
 		ConnectionDTO connectionDTO = connectionMapper.toDto(updatedConnection);

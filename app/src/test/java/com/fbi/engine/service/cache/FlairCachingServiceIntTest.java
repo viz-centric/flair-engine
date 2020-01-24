@@ -1,5 +1,22 @@
 package com.fbi.engine.service.cache;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.when;
+
+import java.time.Instant;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
+
 import com.fbi.engine.AbstractGrpcTest;
 import com.fbi.engine.service.grpc.ManagedChannelFactory;
 import com.flair.bi.messages.CacheServiceGrpc;
@@ -8,27 +25,12 @@ import com.flair.bi.messages.GetCacheResponse;
 import com.flair.bi.messages.PutCacheRequest;
 import com.flair.bi.messages.PutCacheResponse;
 import com.project.bi.query.FlairQuery;
+
 import io.grpc.ManagedChannel;
 import io.grpc.Status;
 import io.grpc.inprocess.InProcessChannelBuilder;
 import io.grpc.inprocess.InProcessServerBuilder;
 import io.grpc.stub.StreamObserver;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mock;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
-
-import java.time.Instant;
-import java.util.Optional;
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.when;
 
 public class FlairCachingServiceIntTest extends AbstractGrpcTest {
 
@@ -67,8 +69,8 @@ public class FlairCachingServiceIntTest extends AbstractGrpcTest {
         long dateCreated = Instant.now().getEpochSecond();
 
         doAnswer(invocationOnMock -> {
-            GetCacheRequest getCacheRequest = invocationOnMock.getArgumentAt(0, GetCacheRequest.class);
-            StreamObserver<GetCacheResponse> streamObserver = invocationOnMock.getArgumentAt(1, StreamObserver.class);
+            GetCacheRequest getCacheRequest = invocationOnMock.getArgument(0, GetCacheRequest.class);
+            StreamObserver<GetCacheResponse> streamObserver = invocationOnMock.getArgument(1, StreamObserver.class);
             streamObserver.onNext(GetCacheResponse.newBuilder()
                     .setResult("test")
                     .setMetadata(com.flair.bi.messages.CacheMetadata.newBuilder()
@@ -89,8 +91,8 @@ public class FlairCachingServiceIntTest extends AbstractGrpcTest {
     @Test
     public void getResultReturnsCacheNotFound() {
         doAnswer(invocationOnMock -> {
-            GetCacheRequest getCacheRequest = invocationOnMock.getArgumentAt(0, GetCacheRequest.class);
-            StreamObserver<GetCacheResponse> streamObserver = invocationOnMock.getArgumentAt(1, StreamObserver.class);
+            GetCacheRequest getCacheRequest = invocationOnMock.getArgument(0, GetCacheRequest.class);
+            StreamObserver<GetCacheResponse> streamObserver = invocationOnMock.getArgument(1, StreamObserver.class);
             streamObserver.onError(Status.NOT_FOUND
                     .withDescription("errors.cache.not_found")
                     .asRuntimeException());
@@ -107,8 +109,8 @@ public class FlairCachingServiceIntTest extends AbstractGrpcTest {
         AtomicBoolean cacheSaved = new AtomicBoolean(false);
         doAnswer(invocationOnMock -> {
             cacheSaved.set(true);
-            PutCacheRequest getCacheRequest = invocationOnMock.getArgumentAt(0, PutCacheRequest.class);
-            StreamObserver<PutCacheResponse> streamObserver = invocationOnMock.getArgumentAt(1, StreamObserver.class);
+            PutCacheRequest getCacheRequest = invocationOnMock.getArgument(0, PutCacheRequest.class);
+            StreamObserver<PutCacheResponse> streamObserver = invocationOnMock.getArgument(1, StreamObserver.class);
             assertEquals("result", getCacheRequest.getValue());
             streamObserver.onNext(PutCacheResponse.newBuilder().build());
             streamObserver.onCompleted();

@@ -1,8 +1,8 @@
 package com.fbi.engine.query;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -21,7 +21,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 
 import com.fbi.engine.api.FlairFactory;
-import com.fbi.engine.api.Query;
 import com.fbi.engine.api.QueryExecutor;
 import com.fbi.engine.config.FlairCachingConfig;
 import com.fbi.engine.domain.Connection;
@@ -123,7 +122,7 @@ public class QueryServiceImplTest {
 		doAnswer(new Answer() {
 			@Override
 			public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
-				Writer writer = invocationOnMock.getArgumentAt(1, Writer.class);
+				Writer writer = invocationOnMock.getArgument(1, Writer.class);
 				writer.write("some result");
 				return null;
 			}
@@ -160,7 +159,7 @@ public class QueryServiceImplTest {
 		doAnswer(new Answer() {
 			@Override
 			public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
-				Writer writer = invocationOnMock.getArgumentAt(1, Writer.class);
+				Writer writer = invocationOnMock.getArgument(1, Writer.class);
 				writer.write("some result");
 				return null;
 			}

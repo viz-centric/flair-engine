@@ -6,9 +6,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Matchers.isNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -84,7 +84,7 @@ public class ConnectionGrpcServiceTest {
 		StreamObserver<TestConnectionResponse> responseObserver = Mockito.mock(StreamObserver.class);
 
 		doAnswer(invocationOnMock -> {
-			TestConnectionResponse argument = invocationOnMock.getArgumentAt(0, TestConnectionResponse.class);
+			TestConnectionResponse argument = invocationOnMock.getArgument(0, TestConnectionResponse.class);
 			assertEquals("{\"data\":[]}", argument.getResult());
 			return null;
 		}).when(responseObserver).onNext(any(TestConnectionResponse.class));
@@ -125,7 +125,7 @@ public class ConnectionGrpcServiceTest {
 		StreamObserver<ConnectionTypesResponses> streamObserver = Mockito.mock(StreamObserver.class);
 
 		doAnswer(invocationOnMock -> {
-			ConnectionTypesResponses argument = invocationOnMock.getArgumentAt(0, ConnectionTypesResponses.class);
+			ConnectionTypesResponses argument = invocationOnMock.getArgument(0, ConnectionTypesResponses.class);
 			assertTrue(argument.getConnectionTypesCount() > 1);
 			List<ConnectionType> connectionTypesList = argument.getConnectionTypesList();
 
@@ -162,7 +162,7 @@ public class ConnectionGrpcServiceTest {
 		StreamObserver<SaveConnectionResponse> streamObserver = Mockito.mock(StreamObserver.class);
 
 		doAnswer(invocationOnMock -> {
-			SaveConnectionResponse argument = invocationOnMock.getArgumentAt(0, SaveConnectionResponse.class);
+			SaveConnectionResponse argument = invocationOnMock.getArgument(0, SaveConnectionResponse.class);
 			assertNotEquals(0, argument.getConnection().getId());
 			assertEquals("pwd", argument.getConnection().getConnectionPassword());
 			assertEquals("usr", argument.getConnection().getConnectionUsername());
@@ -194,7 +194,7 @@ public class ConnectionGrpcServiceTest {
 		StreamObserver<SaveConnectionResponse> streamObserver = Mockito.mock(StreamObserver.class);
 
 		doAnswer(invocationOnMock -> {
-			StatusRuntimeException e = invocationOnMock.getArgumentAt(0, StatusRuntimeException.class);
+			StatusRuntimeException e = invocationOnMock.getArgument(0, StatusRuntimeException.class);
 			assertEquals(Status.Code.INVALID_ARGUMENT, e.getStatus().getCode());
 			assertEquals(CONNECTION_EXISTS, e.getStatus().getDescription());
 			return null;
@@ -222,7 +222,7 @@ public class ConnectionGrpcServiceTest {
 		ConnectionDTO savedConnectionDto = connectionService.save(dto);
 
 		doAnswer(invocationOnMock -> {
-			UpdateConnectionResponse argument = invocationOnMock.getArgumentAt(0, UpdateConnectionResponse.class);
+			UpdateConnectionResponse argument = invocationOnMock.getArgument(0, UpdateConnectionResponse.class);
 			assertEquals((long) savedConnectionDto.getId(), argument.getConnection().getId());
 			assertEquals("pwd2", argument.getConnection().getConnectionPassword());
 			assertEquals("usr", argument.getConnection().getConnectionUsername());
@@ -262,7 +262,7 @@ public class ConnectionGrpcServiceTest {
 		ConnectionDTO finalDto = dto;
 
 		doAnswer(invocationOnMock -> {
-			GetConnectionResponse argument = invocationOnMock.getArgumentAt(0, GetConnectionResponse.class);
+			GetConnectionResponse argument = invocationOnMock.getArgument(0, GetConnectionResponse.class);
 			assertEquals("pwd", argument.getConnection().getConnectionPassword());
 			assertEquals("usr", argument.getConnection().getConnectionUsername());
 			assertEquals(finalDto.getLinkId(), argument.getConnection().getLinkId());
@@ -298,7 +298,7 @@ public class ConnectionGrpcServiceTest {
 		ConnectionDTO finalDto = dto;
 
 		doAnswer(invocationOnMock -> {
-			GetConnectionResponse argument = invocationOnMock.getArgumentAt(0, GetConnectionResponse.class);
+			GetConnectionResponse argument = invocationOnMock.getArgument(0, GetConnectionResponse.class);
 			assertEquals("pwd", argument.getConnection().getConnectionPassword());
 			assertEquals("usr", argument.getConnection().getConnectionUsername());
 			assertEquals(finalDto.getLinkId(), argument.getConnection().getLinkId());
@@ -348,7 +348,7 @@ public class ConnectionGrpcServiceTest {
 		ConnectionDTO finalDto = dto;
 
 		doAnswer(invocationOnMock -> {
-			DeleteConnectionResponse argument = invocationOnMock.getArgumentAt(0, DeleteConnectionResponse.class);
+			DeleteConnectionResponse argument = invocationOnMock.getArgument(0, DeleteConnectionResponse.class);
 			assertEquals((long) finalDto.getId(), argument.getConnectionId());
 			assertTrue(argument.getSuccess());
 			return null;
@@ -371,7 +371,7 @@ public class ConnectionGrpcServiceTest {
 		StreamObserver<ListTablesResponse> streamObserver = Mockito.mock(StreamObserver.class);
 
 		doAnswer(invocationOnMock -> {
-			ListTablesResponse argument = invocationOnMock.getArgumentAt(0, ListTablesResponse.class);
+			ListTablesResponse argument = invocationOnMock.getArgument(0, ListTablesResponse.class);
 			assertEquals(2, argument.getTablesList().size());
 			assertEquals("firstTable", argument.getTablesList().get(0).getTableName());
 			assertEquals("secondTable", argument.getTablesList().get(1).getTableName());

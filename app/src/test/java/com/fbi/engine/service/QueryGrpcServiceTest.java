@@ -1,5 +1,20 @@
 package com.fbi.engine.service;
 
+import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.runners.MockitoJUnitRunner;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fbi.engine.domain.Connection;
 import com.fbi.engine.query.QueryServiceImpl;
@@ -18,23 +33,10 @@ import com.flair.bi.messages.RunQueryResponse;
 import com.google.common.collect.ImmutableMap;
 import com.project.bi.query.FlairQuery;
 import com.project.bi.query.dto.QueryDTO;
+
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
-
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class QueryGrpcServiceTest {
@@ -93,7 +95,7 @@ public class QueryGrpcServiceTest {
             .thenReturn(new QueryValidationResult());
 
         doAnswer(invocationOnMock -> {
-            QueryValidationResponse queryValidationResponse = invocationOnMock.getArgumentAt(0, QueryValidationResponse.class);
+            QueryValidationResponse queryValidationResponse = invocationOnMock.getArgument(0, QueryValidationResponse.class);
             assertEquals(QueryValidationResponse.ValidationResult.ValidationResultType.SUCCESS, queryValidationResponse.getValidationResult().getType());
             assertEquals("{}", queryValidationResponse.getValidationResult().getData());
             return queryValidationResponse;
@@ -189,7 +191,7 @@ public class QueryGrpcServiceTest {
             .build();
 
         doAnswer(invocationOnMock -> {
-            RunQueryResponse response = invocationOnMock.getArgumentAt(0, RunQueryResponse.class);
+            RunQueryResponse response = invocationOnMock.getArgument(0, RunQueryResponse.class);
             assertEquals("result", response.getResult());
             return response;
         }).when(streamObserver)
@@ -224,7 +226,7 @@ public class QueryGrpcServiceTest {
             .build();
 
         doAnswer(invocationOnMock -> {
-            StatusRuntimeException response = invocationOnMock.getArgumentAt(0, StatusRuntimeException.class);
+            StatusRuntimeException response = invocationOnMock.getArgument(0, StatusRuntimeException.class);
             assertEquals(Status.Code.INTERNAL, response.getStatus().getCode());
             assertEquals("{\"errorCode\":\"DATASOURCE_NOT_FOUND\"}", response.getStatus().getDescription());
             return response;

@@ -31,79 +31,58 @@ import java.util.Optional;
 @ConditionalOnProperty(prefix = "application.authentication.flair-bi.basic-authentication", name = "enabled")
 public class StatelessBasicAuthenticationSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
+	private final ApplicationProperties applicationProperties;
 
-    private final ApplicationProperties applicationProperties;
+	@Autowired
+	public void configureGlobalSecurity(AuthenticationManagerBuilder auth) throws Exception {
+		for (ApplicationProperties.Authentication.FlairBi.BasicAuthentication.Credentials cred : applicationProperties
+				.getAuthentication().getFlairBi().getBasicAuthentication().getCredentials()) {
 
-    @Autowired
-    public void configureGlobalSecurity(AuthenticationManagerBuilder auth) throws Exception {
-        for (ApplicationProperties.Authentication.FlairBi.BasicAuthentication.Credentials cred :
-            applicationProperties.getAuthentication().getFlairBi().getBasicAuthentication().getCredentials()) {
+			String[] roles = Optional.ofNullable(cred.getRoles()).filter(x -> !x.isEmpty())
+					.map(x -> x.toArray(new String[0])).orElse(new String[] { "ROLE_USER" });
+			auth.inMemoryAuthentication().withUser(cred.getUsername()).password(cred.getPassword()).authorities(roles);
+		}
+	}
 
-            String[] roles = Optional.ofNullable(cred.getRoles())
-                .filter(x -> !x.isEmpty())
-                .map(x -> x.toArray(new String[0]))
-                .orElse(new String[]{"ROLE_USER"});
-            auth.inMemoryAuthentication()
-                .withUser(cred.getUsername())
-                .password(cred.getPassword())
-                .authorities(roles);
-        }
-    }
-
-
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        //        @formatter:off
-        http
-            .authorizeRequests()
-            .antMatchers("/api/register").permitAll()
-            .antMatchers("/api/activate").permitAll()
-            .antMatchers("/api/authenticate").permitAll()
-            .antMatchers("/api/account/reset_password/init").permitAll()
-            .antMatchers("/api/account/reset_password/finish").permitAll()
-            .antMatchers("/api/profile-info").permitAll()
-            .antMatchers("/api/**").authenticated()
-            .antMatchers("/v2/api-docs/**").permitAll()
-            .antMatchers("/swagger-resources/configuration/ui").permitAll()
-            .antMatchers("/swagger-ui/index.html").hasAuthority(AuthoritiesConstants.ADMIN)
-        .and()
-            .httpBasic()
-            .realmName("FBI-ENGINE-REALM")
-            .authenticationEntryPoint(new CustomBasicAuthenticationEntryPoint())
-        .and()
-            .sessionManagement()
-            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-        .and()
-            .csrf().disable();
+	@Override
+	protected void configure(HttpSecurity http) throws Exception {
+		// @formatter:off
+		http.authorizeRequests().antMatchers("/api/register").permitAll().antMatchers("/api/activate").permitAll()
+				.antMatchers("/api/authenticate").permitAll().antMatchers("/api/account/reset_password/init")
+				.permitAll().antMatchers("/api/account/reset_password/finish").permitAll()
+				.antMatchers("/api/profile-info").permitAll().antMatchers("/api/**").authenticated()
+				.antMatchers("/v2/api-docs/**").permitAll().antMatchers("/swagger-resources/configuration/ui")
+				.permitAll().antMatchers("/swagger-ui/index.html").hasAuthority(AuthoritiesConstants.ADMIN).and()
+				.httpBasic().realmName("FBI-ENGINE-REALM")
+				.authenticationEntryPoint(new CustomBasicAuthenticationEntryPoint()).and().sessionManagement()
+				.sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().csrf().disable();
 //        @formatter:on
 
-    }
+	}
 
-    @Override
-    public void configure(WebSecurity web) throws Exception {
-        web
-            .ignoring()
-            .antMatchers(HttpMethod.OPTIONS, "/**");
-    }
+	@Override
+	public void configure(WebSecurity web) throws Exception {
+		web.ignoring().antMatchers(HttpMethod.OPTIONS, "/**");
+	}
 
-    static class CustomBasicAuthenticationEntryPoint extends BasicAuthenticationEntryPoint {
+	static class CustomBasicAuthenticationEntryPoint extends BasicAuthenticationEntryPoint {
 
-        @Override
-        public void afterPropertiesSet() throws Exception {
-            setRealmName("FBI-ENGINE-REALM");
-            super.afterPropertiesSet();
-        }
+		@Override
+		public void afterPropertiesSet() {
+			setRealmName("FBI-ENGINE-REALM");
+			super.afterPropertiesSet();
+		}
 
-        @Override
-        public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
-            //Authentication failed, send error response.
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.addHeader("WWW-Authenticate", "Basic realm=" + getRealmName() + "");
+		@Override
+		public void commence(HttpServletRequest request, HttpServletResponse response,
+				AuthenticationException authException) throws IOException {
+			// Authentication failed, send error response.
+			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+			response.addHeader("WWW-Authenticate", "Basic realm=" + getRealmName() + "");
 
-            PrintWriter writer = response.getWriter();
-            writer.println("HTTP Status 401 : " + authException.getMessage());
-        }
-    }
-
+			PrintWriter writer = response.getWriter();
+			writer.println("HTTP Status 401 : " + authException.getMessage());
+		}
+	}
 
 }

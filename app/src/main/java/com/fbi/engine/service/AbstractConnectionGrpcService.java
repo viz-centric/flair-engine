@@ -44,232 +44,224 @@ import static java.util.stream.Collectors.toList;
 @RequiredArgsConstructor
 public abstract class AbstractConnectionGrpcService extends ConnectionServiceGrpc.ConnectionServiceImplBase {
 
-    private final ConnectionService connectionService;
-    private final ConnectionParameterService connectionParameterService;
-    private final ConnectionTypeService connectionTypeService;
-    private final TestConnectionService connectionTestService;
-    private final ConnectionDetailsMapper connectionDetailsMapper;
-    private final ListTablesService listTablesService;
-    private final ConnectionHelperService connectionHelperService;
-    @Override
-    public void getConnection(GetConnectionRequest request, StreamObserver<GetConnectionResponse> responseObserver) {
-        log.info("Get connection request: {}", request);
-        ConnectionDTO connection = null;
-        if (StringUtils.isNotEmpty(request.getLinkId())) {
-            connection = connectionService.findByConnectionLinkIdAsDto(request.getLinkId());
-        } else if (request.getId() != 0) {
-            connection = connectionService.findOne(request.getId());
-        }
+	private final ConnectionService connectionService;
+	private final ConnectionParameterService connectionParameterService;
+	private final ConnectionTypeService connectionTypeService;
+	private final TestConnectionService connectionTestService;
+	private final ConnectionDetailsMapper connectionDetailsMapper;
+	private final ListTablesService listTablesService;
+	private final ConnectionHelperService connectionHelperService;
 
-        if (connection == null) {
-            responseObserver.onError(Status.INVALID_ARGUMENT.withDescription(CONNECTION_NOT_FOUND).asRuntimeException());
-        } else {
-            Map<String, String> connectionParameters = connectionParameterService.getParametersByLinkId(connection.getLinkId());
-            responseObserver.onNext(GetConnectionResponse.newBuilder()
-                .setConnection(toConnectionProto(connection, connectionParameters))
-                .build());
-            responseObserver.onCompleted();
-        }
-    }
+	@Override
+	public void getConnection(GetConnectionRequest request, StreamObserver<GetConnectionResponse> responseObserver) {
+		log.info("Get connection request: {}", request);
+		ConnectionDTO connection = null;
+		if (StringUtils.isNotEmpty(request.getLinkId())) {
+			connection = connectionService.findByConnectionLinkIdAsDto(request.getLinkId());
+		} else if (request.getId() != 0) {
+			connection = connectionService.findOne(request.getId());
+		}
 
-    @Override
-    public void deleteConnection(DeleteConnectionRequest request, StreamObserver<DeleteConnectionResponse> responseObserver) {
-        log.info("Delete connection {}", request);
+		if (connection == null) {
+			responseObserver
+					.onError(Status.INVALID_ARGUMENT.withDescription(CONNECTION_NOT_FOUND).asRuntimeException());
+		} else {
+			Map<String, String> connectionParameters = connectionParameterService
+					.getParametersByLinkId(connection.getLinkId());
+			responseObserver.onNext(GetConnectionResponse.newBuilder()
+					.setConnection(toConnectionProto(connection, connectionParameters)).build());
+			responseObserver.onCompleted();
+		}
+	}
 
-        ConnectionDTO connectionDTO = connectionService.findById(request.getConnectionId());
+	@Override
+	public void deleteConnection(DeleteConnectionRequest request,
+			StreamObserver<DeleteConnectionResponse> responseObserver) {
+		log.info("Delete connection {}", request);
 
-        connectionService.delete(request.getConnectionId());
-        connectionParameterService.deleteByLinkId(connectionDTO.getLinkId());
+		ConnectionDTO connectionDTO = connectionService.findById(request.getConnectionId());
 
-        log.debug("Connection deleted {}", request.getConnectionId());
+		connectionService.delete(request.getConnectionId());
+		connectionParameterService.deleteByLinkId(connectionDTO.getLinkId());
 
-        responseObserver.onNext(DeleteConnectionResponse.newBuilder()
-            .setConnectionId(request.getConnectionId())
-            .setSuccess(true)
-            .build());
-        responseObserver.onCompleted();
-    }
+		log.debug("Connection deleted {}", request.getConnectionId());
 
+		responseObserver.onNext(DeleteConnectionResponse.newBuilder().setConnectionId(request.getConnectionId())
+				.setSuccess(true).build());
+		responseObserver.onCompleted();
+	}
 
-    @Override
-    public void getAllConnections(EmptyConnection request, StreamObserver<ConnectionResponses> responseObserver) {
-        log.debug("Getting all connections");
-        List<ConnectionDTO> connections = connectionService.findAllAsDto();
-        ConnectionResponses responses = ConnectionResponses.newBuilder()
-            .addAllConnection(connections
-                .stream()
-                .map(connection -> {
-                    Map<String, String> connectionParameters = connectionParameterService.getParametersByLinkId(connection.getLinkId());
-                    return toConnectionProto(connection, connectionParameters);
-                })
-                .collect(toList()))
-            .build();
-        responseObserver.onNext(responses);
-        responseObserver.onCompleted();
-    }
+	@Override
+	public void getAllConnections(EmptyConnection request, StreamObserver<ConnectionResponses> responseObserver) {
+		log.debug("Getting all connections");
+		List<ConnectionDTO> connections = connectionService.findAllAsDto();
+		ConnectionResponses responses = ConnectionResponses.newBuilder()
+				.addAllConnection(connections.stream().map(connection -> {
+					Map<String, String> connectionParameters = connectionParameterService
+							.getParametersByLinkId(connection.getLinkId());
+					return toConnectionProto(connection, connectionParameters);
+				}).collect(toList())).build();
+		responseObserver.onNext(responses);
+		responseObserver.onCompleted();
+	}
 
-    @Override
-    public void getConnectionTypes(GetAllConnectionTypesRequest request, StreamObserver<ConnectionTypesResponses> responseObserver) {
-        log.debug("Get connection types");
-        Page<ConnectionTypeDTO> all = connectionTypeService.findAll(new PageRequest(0, Integer.MAX_VALUE));
-        List<ConnectionTypeDTO> connectionTypeDTOList = all.getContent();
+	@Override
+	public void getConnectionTypes(GetAllConnectionTypesRequest request,
+			StreamObserver<ConnectionTypesResponses> responseObserver) {
+		log.debug("Get connection types");
+		Page<ConnectionTypeDTO> all = connectionTypeService.findAll(PageRequest.of(0, Integer.MAX_VALUE));
+		List<ConnectionTypeDTO> connectionTypeDTOList = all.getContent();
 
-        responseObserver.onNext(ConnectionTypesResponses.
-            newBuilder()
-            .addAllConnectionTypes(connectionTypeDTOList.stream().map(this::toConnectionTypeProto).collect(toList()))
-            .build());
-        responseObserver.onCompleted();
-    }
+		responseObserver
+				.onNext(ConnectionTypesResponses.newBuilder()
+						.addAllConnectionTypes(
+								connectionTypeDTOList.stream().map(this::toConnectionTypeProto).collect(toList()))
+						.build());
+		responseObserver.onCompleted();
+	}
 
-    @Override
-    public void testConnection(TestConnectionRequest request, StreamObserver<TestConnectionResponse> responseObserver) {
-        log.debug("Test connection connection {}", request.getConnection());
+	@Override
+	public void testConnection(TestConnectionRequest request, StreamObserver<TestConnectionResponse> responseObserver) {
+		log.debug("Test connection connection {}", request.getConnection());
 
-        String result = connectionTestService.testConnection(connectionHelperService.toConnectionEntity(request.getConnection()));
+		String result = connectionTestService
+				.testConnection(connectionHelperService.toConnectionEntity(request.getConnection()));
 
-        TestConnectionResponse.Builder builder = TestConnectionResponse.newBuilder();
+		TestConnectionResponse.Builder builder = TestConnectionResponse.newBuilder();
 
-        if (result != null) {
-            builder.setResult(result);
-        }
+		if (result != null) {
+			builder.setResult(result);
+		}
 
-        responseObserver.onNext(builder.build());
-        responseObserver.onCompleted();
-    }
+		responseObserver.onNext(builder.build());
+		responseObserver.onCompleted();
+	}
 
-    @Override
-    public void saveConnection(SaveConnectionRequest request, StreamObserver<SaveConnectionResponse> responseObserver) {
-        if (request.getConnection().getId() != 0) {
-            log.info("Cannot create a connection if ID is already present {}", request.getConnection().getId());
-            responseObserver.onError(Status.INVALID_ARGUMENT.withDescription(CONNECTION_EXISTS).asRuntimeException());
-            return;
-        }
+	@Override
+	public void saveConnection(SaveConnectionRequest request, StreamObserver<SaveConnectionResponse> responseObserver) {
+		if (request.getConnection().getId() != 0) {
+			log.info("Cannot create a connection if ID is already present {}", request.getConnection().getId());
+			responseObserver.onError(Status.INVALID_ARGUMENT.withDescription(CONNECTION_EXISTS).asRuntimeException());
+			return;
+		}
 
-        ConnectionDTO dto = new ConnectionDTO();
-        dto.setName(request.getConnection().getName());
-        dto.setConnectionUsername(request.getConnection().getConnectionUsername());
-        dto.setConnectionPassword(request.getConnection().getConnectionPassword());
-        dto.setLinkId(request.getConnection().getLinkId());
-        dto.setConnectionType(connectionTypeService.findOne(request.getConnection().getConnectionType()));
-        dto.setDetails(connectionDetailsMapper.mapToEntity(request.getConnection().getDetailsMap()));
+		ConnectionDTO dto = new ConnectionDTO();
+		dto.setName(request.getConnection().getName());
+		dto.setConnectionUsername(request.getConnection().getConnectionUsername());
+		dto.setConnectionPassword(request.getConnection().getConnectionPassword());
+		dto.setLinkId(request.getConnection().getLinkId());
+		dto.setConnectionType(connectionTypeService.findOne(request.getConnection().getConnectionType()));
+		dto.setDetails(connectionDetailsMapper.mapToEntity(request.getConnection().getDetailsMap()));
 
-        log.info("Saving connection {}", dto);
+		log.info("Saving connection {}", dto);
 
-        ConnectionDTO createdConnection = connectionService.save(dto);
+		ConnectionDTO createdConnection = connectionService.save(dto);
 
-        log.debug("Saved connection {}", createdConnection);
+		log.debug("Saved connection {}", createdConnection);
 
-        connectionParameterService.save(createdConnection.getLinkId(), request.getConnection().getConnectionParametersMap());
-        Map<String, String> connectionParameters = connectionParameterService.getParametersByLinkId(createdConnection.getLinkId());
+		connectionParameterService.save(createdConnection.getLinkId(),
+				request.getConnection().getConnectionParametersMap());
+		Map<String, String> connectionParameters = connectionParameterService
+				.getParametersByLinkId(createdConnection.getLinkId());
 
-        log.debug("Saved connection parameters {}", connectionParameters);
+		log.debug("Saved connection parameters {}", connectionParameters);
 
-        responseObserver.onNext(SaveConnectionResponse.newBuilder()
-            .setConnection(toConnectionProto(createdConnection, connectionParameters))
-            .build());
-        responseObserver.onCompleted();
-    }
+		responseObserver.onNext(SaveConnectionResponse.newBuilder()
+				.setConnection(toConnectionProto(createdConnection, connectionParameters)).build());
+		responseObserver.onCompleted();
+	}
 
-    @Override
-    public void updateConnection(UpdateConnectionRequest request, StreamObserver<UpdateConnectionResponse> responseObserver) {
-        if (request.getConnection().getId() == 0) {
-            log.info("Cannot update a connection if ID is not present {}", request.getConnection().getId());
-            responseObserver.onError(Status.INVALID_ARGUMENT.withDescription(CONNECTION_NOT_FOUND).asRuntimeException());
-            return;
-        }
+	@Override
+	public void updateConnection(UpdateConnectionRequest request,
+			StreamObserver<UpdateConnectionResponse> responseObserver) {
+		if (request.getConnection().getId() == 0) {
+			log.info("Cannot update a connection if ID is not present {}", request.getConnection().getId());
+			responseObserver
+					.onError(Status.INVALID_ARGUMENT.withDescription(CONNECTION_NOT_FOUND).asRuntimeException());
+			return;
+		}
 
-        UpdateConnectionDTO dto = new UpdateConnectionDTO();
-        dto.setId(request.getConnection().getId());
-        dto.setName(request.getConnection().getName());
-        dto.setConnectionUsername(request.getConnection().getConnectionUsername());
-        dto.setConnectionPassword(request.getConnection().getConnectionPassword());
-        dto.setLinkId(request.getConnection().getLinkId());
-        dto.setConnectionType(connectionTypeService.findOne(request.getConnection().getConnectionType()));
-        dto.setDetails(connectionDetailsMapper.mapToEntity(request.getConnection().getDetailsMap()));
+		UpdateConnectionDTO dto = new UpdateConnectionDTO();
+		dto.setId(request.getConnection().getId());
+		dto.setName(request.getConnection().getName());
+		dto.setConnectionUsername(request.getConnection().getConnectionUsername());
+		dto.setConnectionPassword(request.getConnection().getConnectionPassword());
+		dto.setLinkId(request.getConnection().getLinkId());
+		dto.setConnectionType(connectionTypeService.findOne(request.getConnection().getConnectionType()));
+		dto.setDetails(connectionDetailsMapper.mapToEntity(request.getConnection().getDetailsMap()));
 
-        log.info("Updating connection {}", dto);
+		log.info("Updating connection {}", dto);
 
-        ConnectionDTO createdConnection = connectionService.updateConnection(dto);
+		ConnectionDTO createdConnection = connectionService.updateConnection(dto);
 
-        log.debug("Updated connection {}", createdConnection);
+		log.debug("Updated connection {}", createdConnection);
 
-        connectionParameterService.save(createdConnection.getLinkId(), request.getConnection().getConnectionParametersMap());
-        Map<String, String> connectionParameters = connectionParameterService.getParametersByLinkId(createdConnection.getLinkId());
+		connectionParameterService.save(createdConnection.getLinkId(),
+				request.getConnection().getConnectionParametersMap());
+		Map<String, String> connectionParameters = connectionParameterService
+				.getParametersByLinkId(createdConnection.getLinkId());
 
-        log.debug("Updated connection parameters {}", connectionParameters);
+		log.debug("Updated connection parameters {}", connectionParameters);
 
-        responseObserver.onNext(UpdateConnectionResponse.newBuilder()
-            .setConnection(toConnectionProto(createdConnection, connectionParameters))
-            .build());
-        responseObserver.onCompleted();
-    }
+		responseObserver.onNext(UpdateConnectionResponse.newBuilder()
+				.setConnection(toConnectionProto(createdConnection, connectionParameters)).build());
+		responseObserver.onCompleted();
+	}
 
-    @Override
-    public void listTables(ListTablesRequest request, StreamObserver<ListTablesResponse> responseObserver) {
-        log.info("Listing tables for connection link id {}", request.getConnectionLinkId());
-        Set<String> tables = listTablesService.listTables(request.getConnectionLinkId(),
-            request.getTableNameLike(),
-            request.getMaxEntries(),
-            connectionHelperService.toConnectionEntity(request.hasConnection() ? request.getConnection() : null));
+	@Override
+	public void listTables(ListTablesRequest request, StreamObserver<ListTablesResponse> responseObserver) {
+		log.info("Listing tables for connection link id {}", request.getConnectionLinkId());
+		Set<String> tables = listTablesService.listTables(request.getConnectionLinkId(), request.getTableNameLike(),
+				request.getMaxEntries(),
+				connectionHelperService.toConnectionEntity(request.hasConnection() ? request.getConnection() : null));
 
-        if (tables == null) {
-            responseObserver.onError(Status.INVALID_ARGUMENT.withDescription(CONNECTION_NOT_FOUND).asRuntimeException());
-            return;
-        }
+		if (tables == null) {
+			responseObserver
+					.onError(Status.INVALID_ARGUMENT.withDescription(CONNECTION_NOT_FOUND).asRuntimeException());
+			return;
+		}
 
-        responseObserver.onNext(ListTablesResponse.newBuilder()
-            .addAllTables(tables.stream()
-                .map(table -> ListTablesResponse.Table.newBuilder()
-                    .setTableName(table)
-                    .build())
-                .collect(Collectors.toList()))
-            .build());
-        responseObserver.onCompleted();
-    }
+		responseObserver
+				.onNext(ListTablesResponse.newBuilder()
+						.addAllTables(tables.stream()
+								.map(table -> ListTablesResponse.Table.newBuilder().setTableName(table).build())
+								.collect(Collectors.toList()))
+						.build());
+		responseObserver.onCompleted();
+	}
 
-    private ConnectionType toConnectionTypeProto(ConnectionTypeDTO connType) {
-        return ConnectionType.newBuilder()
-            .setBundleClass(connType.getBundleClass())
-            .setConnectionPropertiesSchema(createConnectionPropertiesSchema(connType))
-            .setId(connType.getId())
-            .setName(connType.getName())
-            .build();
-    }
+	private ConnectionType toConnectionTypeProto(ConnectionTypeDTO connType) {
+		return ConnectionType.newBuilder().setBundleClass(connType.getBundleClass())
+				.setConnectionPropertiesSchema(createConnectionPropertiesSchema(connType)).setId(connType.getId())
+				.setName(connType.getName()).build();
+	}
 
-    private ConnectionType.ConnectionPropertiesSchema createConnectionPropertiesSchema(ConnectionTypeDTO connType) {
-        return ConnectionType.ConnectionPropertiesSchema.newBuilder()
-            .setConnectionDetailsClass(connType.getConnectionPropertiesSchema().getConnectionDetailsClass())
-            .setConnectionDetailsType(connType.getConnectionPropertiesSchema().getConnectionDetailsType())
-            .setImagePath(connType.getConnectionPropertiesSchema().getImagePath())
-            .addAllConnectionProperties(connType.getConnectionPropertiesSchema()
-                .getConnectionProperties()
-                .stream()
-                .map(connProperty -> createConnectionProperty(connProperty))
-                .collect(toList()))
-            .build();
-    }
+	private ConnectionType.ConnectionPropertiesSchema createConnectionPropertiesSchema(ConnectionTypeDTO connType) {
+		return ConnectionType.ConnectionPropertiesSchema.newBuilder()
+				.setConnectionDetailsClass(connType.getConnectionPropertiesSchema().getConnectionDetailsClass())
+				.setConnectionDetailsType(connType.getConnectionPropertiesSchema().getConnectionDetailsType())
+				.setImagePath(connType.getConnectionPropertiesSchema().getImagePath())
+				.addAllConnectionProperties(connType.getConnectionPropertiesSchema().getConnectionProperties().stream()
+						.map(connProperty -> createConnectionProperty(connProperty)).collect(toList()))
+				.build();
+	}
 
-    private ConnectionType.ConnectionPropertiesSchema.ConnectionProperty createConnectionProperty(ConnectionProperty connProperty) {
-        return ConnectionType.ConnectionPropertiesSchema.ConnectionProperty.newBuilder()
-            .setDisplayName(connProperty.getDisplayName())
-            .setFieldName(connProperty.getFieldName())
-            .setOrder(connProperty.getOrder())
-            .setFieldType(connProperty.getFieldType())
-            .setDefaultValue(connProperty.getDefaultValue() != null ? connProperty.getDefaultValue() : "")
-            .setRequired(connProperty.isRequired())
-            .build();
-    }
+	private ConnectionType.ConnectionPropertiesSchema.ConnectionProperty createConnectionProperty(
+			ConnectionProperty connProperty) {
+		return ConnectionType.ConnectionPropertiesSchema.ConnectionProperty.newBuilder()
+				.setDisplayName(connProperty.getDisplayName()).setFieldName(connProperty.getFieldName())
+				.setOrder(connProperty.getOrder()).setFieldType(connProperty.getFieldType())
+				.setDefaultValue(connProperty.getDefaultValue() != null ? connProperty.getDefaultValue() : "")
+				.setRequired(connProperty.isRequired()).build();
+	}
 
-    private com.flair.bi.messages.Connection toConnectionProto(ConnectionDTO connection, Map<String, String> connectionParameters) {
-        return com.flair.bi.messages.Connection.newBuilder()
-            .setId(connection.getId())
-            .setName(connection.getName())
-            .setConnectionUsername(connection.getConnectionUsername())
-            .setConnectionPassword(connection.getConnectionPassword())
-            .setConnectionType(connection.getConnectionType().getId())
-            .setLinkId(connection.getLinkId())
-            .putAllDetails(connectionDetailsMapper.entityToMap(connection.getDetails()))
-            .putAllConnectionParameters(connectionParameters)
-            .build();
-    }
+	private com.flair.bi.messages.Connection toConnectionProto(ConnectionDTO connection,
+			Map<String, String> connectionParameters) {
+		return com.flair.bi.messages.Connection.newBuilder().setId(connection.getId()).setName(connection.getName())
+				.setConnectionUsername(connection.getConnectionUsername())
+				.setConnectionPassword(connection.getConnectionPassword())
+				.setConnectionType(connection.getConnectionType().getId()).setLinkId(connection.getLinkId())
+				.putAllDetails(connectionDetailsMapper.entityToMap(connection.getDetails()))
+				.putAllConnectionParameters(connectionParameters).build();
+	}
 }
