@@ -43,7 +43,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.xnio.OptionMap;
 
-import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.servlet.InstrumentedFilter;
 import com.codahale.metrics.servlets.MetricsServlet;
 import com.hazelcast.cardinality.CardinalityEstimator;
@@ -108,8 +107,6 @@ public class WebConfigurerTest {
 
 	private JHipsterProperties props;
 
-	private MetricRegistry metricRegistry;
-
 	@Before
 	public void setup() {
 		servletContext = spy(new MockServletContext());
@@ -127,8 +124,6 @@ public class WebConfigurerTest {
 		env.setActiveProfiles(JHipsterConstants.SPRING_PROFILE_PRODUCTION);
 		webConfigurer.onStartup(servletContext);
 
-		assertThat(servletContext.getAttribute(InstrumentedFilter.REGISTRY_ATTRIBUTE)).isEqualTo(metricRegistry);
-		assertThat(servletContext.getAttribute(MetricsServlet.METRICS_REGISTRY)).isEqualTo(metricRegistry);
 		verify(servletContext).addFilter(eq("webappMetricsFilter"), any(InstrumentedFilter.class));
 		verify(servletContext).addServlet(eq("metricsServlet"), any(MetricsServlet.class));
 		verify(servletContext).addFilter(eq("cachingHttpHeadersFilter"), any(CachingHttpHeadersFilter.class));
@@ -139,8 +134,6 @@ public class WebConfigurerTest {
 		env.setActiveProfiles(JHipsterConstants.SPRING_PROFILE_DEVELOPMENT);
 		webConfigurer.onStartup(servletContext);
 
-		assertThat(servletContext.getAttribute(InstrumentedFilter.REGISTRY_ATTRIBUTE)).isEqualTo(metricRegistry);
-		assertThat(servletContext.getAttribute(MetricsServlet.METRICS_REGISTRY)).isEqualTo(metricRegistry);
 		verify(servletContext).addFilter(eq("webappMetricsFilter"), any(InstrumentedFilter.class));
 		verify(servletContext).addServlet(eq("metricsServlet"), any(MetricsServlet.class));
 		verify(servletContext, never()).addFilter(eq("cachingHttpHeadersFilter"), any(CachingHttpHeadersFilter.class));
