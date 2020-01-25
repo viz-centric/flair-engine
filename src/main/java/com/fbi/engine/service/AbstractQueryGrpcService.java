@@ -72,7 +72,7 @@ public abstract class AbstractQueryGrpcService extends QueryServiceGrpc.QuerySer
         }
 
         QueryDTO queryDTO = QueryGrpcUtils.mapToQueryDTO(request.getQuery());
-        FlairQuery flairQuery = new FlairQuery(queryDTO.interpret(), queryDTO.isMetaRetrieved());
+        FlairQuery flairQuery = new FlairQuery(queryDTO.interpret(), true, queryDTO.getSource());
         CacheMetadata result = queryService.executeQuery(connection, flairQuery);
         log.debug("Query all result request {}", flairQuery.getStatement());
         log.info("Query all result result {}", result);
