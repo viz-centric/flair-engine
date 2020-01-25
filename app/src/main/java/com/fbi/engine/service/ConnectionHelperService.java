@@ -1,12 +1,13 @@
 package com.fbi.engine.service;
 
+import org.springframework.stereotype.Service;
+
 import com.fbi.engine.service.dto.ConnectionDTO;
 import com.fbi.engine.service.dto.ConnectionTypeDTO;
 import com.fbi.engine.service.mapper.ConnectionDetailsMapper;
 import com.fbi.engine.service.mapper.ConnectionMapper;
+
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor

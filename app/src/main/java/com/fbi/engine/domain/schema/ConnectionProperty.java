@@ -4,65 +4,66 @@ import java.io.Serializable;
 
 public class ConnectionProperty implements Serializable {
 
-    private String displayName;
+	private static final long serialVersionUID = -6671148578781810909L;
 
-    private String fieldName;
+	private String displayName;
 
-    private int order;
+	private String fieldName;
 
-    private String fieldType;
+	private int order;
 
-    private String defaultValue;
+	private String fieldType;
 
-    private boolean required;
+	private String defaultValue;
 
-    public String getDisplayName() {
-        return displayName;
-    }
+	private boolean required;
 
-    public void setDisplayName(String displayName) {
-        this.displayName = displayName;
-    }
+	public String getDisplayName() {
+		return displayName;
+	}
 
-    public boolean isRequired() {
-        return required;
-    }
+	public void setDisplayName(String displayName) {
+		this.displayName = displayName;
+	}
 
-    public void setRequired(boolean required) {
-        this.required = required;
-    }
+	public boolean isRequired() {
+		return required;
+	}
 
-    public int getOrder() {
-        return order;
-    }
+	public void setRequired(boolean required) {
+		this.required = required;
+	}
 
-    public void setOrder(int order) {
-        this.order = order;
-    }
+	public int getOrder() {
+		return order;
+	}
 
-    public String getFieldName() {
-        return fieldName;
-    }
+	public void setOrder(int order) {
+		this.order = order;
+	}
 
-    public void setFieldName(String fieldName) {
-        this.fieldName = fieldName;
-    }
+	public String getFieldName() {
+		return fieldName;
+	}
 
-    public String getFieldType() {
-        return fieldType;
-    }
+	public void setFieldName(String fieldName) {
+		this.fieldName = fieldName;
+	}
 
-    public void setFieldType(String fieldType) {
-        this.fieldType = fieldType;
-    }
+	public String getFieldType() {
+		return fieldType;
+	}
 
-    public String getDefaultValue() {
-        return defaultValue;
-    }
+	public void setFieldType(String fieldType) {
+		this.fieldType = fieldType;
+	}
 
-    public void setDefaultValue(String defaultValue) {
-        this.defaultValue = defaultValue;
-    }
+	public String getDefaultValue() {
+		return defaultValue;
+	}
 
+	public void setDefaultValue(String defaultValue) {
+		this.defaultValue = defaultValue;
+	}
 
 }

@@ -25,19 +25,20 @@ import java.sql.SQLException;
 @RequestMapping("/api")
 public class QueryResource {
 
-    private final ConnectionService connectionService;
+	private final ConnectionService connectionService;
 
-    private final QueryServiceImpl queryService;
+	private final QueryServiceImpl queryService;
 
-    @PostMapping(value = "/queries/{connectionLinkId}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<String> executeQuery(@PathVariable String connectionLinkId, @Valid @RequestBody QueryDTO queryDTO) throws JSONException, SQLException {
-        log.info(" Connection name with out metadata : " + connectionLinkId);
-        Connection connection = connectionService.findByConnectionLinkId(connectionLinkId);
-        if (connection == null) {
-            return ResponseEntity.badRequest().body(null);
-        }
-        FlairQuery query = new FlairQuery(queryDTO.interpret(), queryDTO.isMetaRetrieved());
-        return ResponseEntity.ok(queryService.executeQuery(connection, query).getResult());
-    }
+	@PostMapping(value = "/queries/{connectionLinkId}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<String> executeQuery(@PathVariable String connectionLinkId,
+			@Valid @RequestBody QueryDTO queryDTO) throws JSONException, SQLException {
+		log.info(" Connection name with out metadata : " + connectionLinkId);
+		Connection connection = connectionService.findByConnectionLinkId(connectionLinkId);
+		if (connection == null) {
+			return ResponseEntity.badRequest().body(null);
+		}
+		FlairQuery query = new FlairQuery(queryDTO.interpret(), queryDTO.isMetaRetrieved());
+		return ResponseEntity.ok(queryService.executeQuery(connection, query).getResult());
+	}
 
 }

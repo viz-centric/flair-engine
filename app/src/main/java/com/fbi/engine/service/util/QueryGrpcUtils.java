@@ -94,8 +94,8 @@ public final class QueryGrpcUtils {
 
 	private static ConditionExpression createAndOrConditionExpression(String conditionExpressionString,
 			Integer expressionType, Query.ConditionExpressionHolder.AndOrExpressionType andOrExpressionType) {
-		JsonParser parser = new JsonParser();
-		JsonElement jsonTree = parser.parse(conditionExpressionString);
+
+		final JsonElement jsonTree = JsonParser.parseString(conditionExpressionString);
 		if (jsonTree.isJsonObject()) {
 			ConditionExpression firstExpression = JacksonUtil.fromString(
 					jsonTree.getAsJsonObject().get(GrpcConstants.FIRST_EXPRESSION).toString(),

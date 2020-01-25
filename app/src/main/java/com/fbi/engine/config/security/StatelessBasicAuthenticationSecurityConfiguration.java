@@ -1,8 +1,12 @@
 package com.fbi.engine.config.security;
 
-import com.fbi.engine.ApplicationProperties;
-import com.fbi.engine.security.AuthoritiesConstants;
-import lombok.RequiredArgsConstructor;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Optional;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
@@ -17,12 +21,10 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.Optional;
+import com.fbi.engine.ApplicationProperties;
+import com.fbi.engine.security.AuthoritiesConstants;
+
+import lombok.RequiredArgsConstructor;
 
 @Configuration
 @EnableWebSecurity

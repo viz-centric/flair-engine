@@ -1,6 +1,7 @@
 package com.fbi.engine.config;
 
 import java.io.File;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.util.EnumSet;
 
@@ -8,11 +9,10 @@ import javax.servlet.DispatcherType;
 import javax.servlet.FilterRegistration;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-import javax.servlet.ServletRegistration;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.embedded.undertow.UndertowServletWebServerFactory;
 import org.springframework.boot.web.server.MimeMappings;
+import org.springframework.boot.web.server.WebServerFactory;
 import org.springframework.boot.web.server.WebServerFactoryCustomizer;
 import org.springframework.boot.web.servlet.ServletContextInitializer;
 import org.springframework.boot.web.servlet.server.ConfigurableServletWebServerFactory;
@@ -20,13 +20,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.Profiles;
+import org.springframework.http.MediaType;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
-
-import com.codahale.metrics.MetricRegistry;
-import com.codahale.metrics.servlet.InstrumentedFilter;
-import com.codahale.metrics.servlets.MetricsServlet;
 
 import io.github.jhipster.config.JHipsterConstants;
 import io.github.jhipster.config.JHipsterProperties;
@@ -38,14 +35,11 @@ import lombok.extern.slf4j.Slf4j;
 @Configuration
 @Slf4j
 @RequiredArgsConstructor
-public class WebConfigurer
-		implements ServletContextInitializer, WebServerFactoryCustomizer<ConfigurableServletWebServerFactory> {
+public class WebConfigurer implements ServletContextInitializer, WebServerFactoryCustomizer<WebServerFactory> {
 
 	private final Environment env;
 
 	private final JHipsterProperties jHipsterProperties;
-
-	private MetricRegistry metricRegistry;
 
 	@Override
 	public void onStartup(ServletContext servletContext) throws ServletException {
@@ -54,7 +48,7 @@ public class WebConfigurer
 		}
 		EnumSet<DispatcherType> disps = EnumSet.of(DispatcherType.REQUEST, DispatcherType.FORWARD,
 				DispatcherType.ASYNC);
-		initMetrics(servletContext, disps);
+
 		if (env.acceptsProfiles(Profiles.of(JHipsterConstants.SPRING_PROFILE_PRODUCTION))) {
 			initCachingHttpHeadersFilter(servletContext, disps);
 		}
@@ -88,30 +82,6 @@ public class WebConfigurer
 		cachingHttpHeadersFilter.setAsyncSupported(true);
 	}
 
-	/**
-	 * Initializes Metrics.
-	 */
-	private void initMetrics(ServletContext servletContext, EnumSet<DispatcherType> disps) {
-		log.debug("Initializing Metrics registries");
-		servletContext.setAttribute(InstrumentedFilter.REGISTRY_ATTRIBUTE, metricRegistry);
-		servletContext.setAttribute(MetricsServlet.METRICS_REGISTRY, metricRegistry);
-
-		log.debug("Registering Metrics Filter");
-		FilterRegistration.Dynamic metricsFilter = servletContext.addFilter("webappMetricsFilter",
-				new InstrumentedFilter());
-
-		metricsFilter.addMappingForUrlPatterns(disps, true, "/*");
-		metricsFilter.setAsyncSupported(true);
-
-		log.debug("Registering Metrics Servlet");
-		ServletRegistration.Dynamic metricsAdminServlet = servletContext.addServlet("metricsServlet",
-				new MetricsServlet());
-
-		metricsAdminServlet.addMapping("/management/metrics/*");
-		metricsAdminServlet.setAsyncSupported(true);
-		metricsAdminServlet.setLoadOnStartup(2);
-	}
-
 	@Bean
 	public CorsFilter corsFilter() {
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
@@ -124,19 +94,21 @@ public class WebConfigurer
 		return new CorsFilter(source);
 	}
 
-	@Autowired(required = false)
-	public void setMetricRegistry(MetricRegistry metricRegistry) {
-		this.metricRegistry = metricRegistry;
+	private void setMimeMappings(WebServerFactory server) {
+		if (server instanceof ConfigurableServletWebServerFactory) {
+			MimeMappings mappings = new MimeMappings(MimeMappings.DEFAULT);
+			// IE issue, see https://github.com/jhipster/generator-jhipster/pull/711
+			mappings.add("html", MediaType.TEXT_HTML_VALUE + ";charset=" + StandardCharsets.UTF_8.name().toLowerCase());
+			// CloudFoundry issue, see https://github.com/cloudfoundry/gorouter/issues/64
+			mappings.add("json", MediaType.TEXT_HTML_VALUE + ";charset=" + StandardCharsets.UTF_8.name().toLowerCase());
+			ConfigurableServletWebServerFactory servletWebServer = (ConfigurableServletWebServerFactory) server;
+			servletWebServer.setMimeMappings(mappings);
+		}
 	}
 
 	@Override
-	public void customize(ConfigurableServletWebServerFactory factory) {
-		MimeMappings mappings = new MimeMappings(MimeMappings.DEFAULT);
-		// IE issue, see https://github.com/jhipster/generator-jhipster/pull/711
-		mappings.add("html", "text/html;charset=utf-8");
-		// CloudFoundry issue, see https://github.com/cloudfoundry/gorouter/issues/64
-		mappings.add("json", "text/html;charset=utf-8");
-		factory.setMimeMappings(mappings);
+	public void customize(WebServerFactory factory) {
+		setMimeMappings(factory);
 		// When running in an IDE or with ./mvnw spring-boot:run, set location of the
 		// static web assets.
 		setLocationForStaticAssets(factory);
@@ -156,16 +128,16 @@ public class WebConfigurer
 
 	}
 
-	/**
-	 * Customize the Servlet engine: Mime types, the document root, the cache.
-	 */
-
-	private void setLocationForStaticAssets(ConfigurableServletWebServerFactory container) {
-		File root;
-		String prefixPath = resolvePathPrefix();
-		root = new File(prefixPath + "target/www/");
-		if (root.exists() && root.isDirectory()) {
-			container.setDocumentRoot(root);
+	private void setLocationForStaticAssets(WebServerFactory server) {
+		if (server instanceof ConfigurableServletWebServerFactory) {
+			ConfigurableServletWebServerFactory servletWebServer = (ConfigurableServletWebServerFactory) server;
+			File root;
+			String prefixPath = resolvePathPrefix();
+			root = new File(prefixPath + "target/www/");
+			if (root.exists() && root.isDirectory()) {
+				servletWebServer.setDocumentRoot(root);
+			}
 		}
+
 	}
 }

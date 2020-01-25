@@ -1,29 +1,31 @@
 package com.fbi.engine.domain.schema;
 
-import lombok.Data;
-
 import java.io.Serializable;
 import java.util.List;
+
+import lombok.Data;
 
 @Data
 public class ConnectionPropertiesSchema implements Serializable {
 
-    /*
-        Derived instance of ConnectionDetails class that is associated with this connection properties schma
-     */
-    private String connectionDetailsClass;
+	private static final long serialVersionUID = -7307650425760114794L;
 
-    /*
-       @type that is used for JSON polymorphic (de)serialization
-     */
-    private String connectionDetailsType;
+	/*
+	 * Derived instance of ConnectionDetails class that is associated with this
+	 * connection properties schma
+	 */
+	private String connectionDetailsClass;
 
-    /*
-     File system path or url of image that is displayed.
-     */
-    private String imagePath;
+	/*
+	 * @type that is used for JSON polymorphic (de)serialization
+	 */
+	private String connectionDetailsType;
 
-    private List<ConnectionProperty> connectionProperties;
+	/*
+	 * File system path or url of image that is displayed.
+	 */
+	private String imagePath;
 
+	private List<ConnectionProperty> connectionProperties;
 
 }

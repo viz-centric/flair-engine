@@ -10,6 +10,7 @@ import org.springframework.boot.autoconfigure.liquibase.LiquibaseProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
+import org.springframework.core.env.Profiles;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -25,24 +26,24 @@ import javax.sql.DataSource;
 @RequiredArgsConstructor
 public class DatabaseConfiguration {
 
-    private final Environment env;
+	private final Environment env;
 
-    @Bean
-    public SpringLiquibase liquibase(@Qualifier("taskExecutor") TaskExecutor taskExecutor,
-            DataSource dataSource, LiquibaseProperties liquibaseProperties) {
+	@Bean
+	public SpringLiquibase liquibase(@Qualifier("taskExecutor") TaskExecutor taskExecutor, DataSource dataSource,
+			LiquibaseProperties liquibaseProperties) {
 
-        SpringLiquibase liquibase = new AsyncSpringLiquibase(taskExecutor, env);
-        liquibase.setDataSource(dataSource);
-        liquibase.setChangeLog("classpath:config/liquibase/master.xml");
-        liquibase.setContexts(liquibaseProperties.getContexts());
-        liquibase.setDefaultSchema(liquibaseProperties.getDefaultSchema());
-        liquibase.setDropFirst(liquibaseProperties.isDropFirst());
-        if (env.acceptsProfiles(JHipsterConstants.SPRING_PROFILE_NO_LIQUIBASE)) {
-            liquibase.setShouldRun(false);
-        } else {
-            liquibase.setShouldRun(liquibaseProperties.isEnabled());
-            log.debug("Configuring Liquibase");
-        }
-        return liquibase;
-    }
+		SpringLiquibase liquibase = new AsyncSpringLiquibase(taskExecutor, env);
+		liquibase.setDataSource(dataSource);
+		liquibase.setChangeLog("classpath:config/liquibase/master.xml");
+		liquibase.setContexts(liquibaseProperties.getContexts());
+		liquibase.setDefaultSchema(liquibaseProperties.getDefaultSchema());
+		liquibase.setDropFirst(liquibaseProperties.isDropFirst());
+		if (env.acceptsProfiles(Profiles.of(JHipsterConstants.SPRING_PROFILE_NO_LIQUIBASE))) {
+			liquibase.setShouldRun(false);
+		} else {
+			liquibase.setShouldRun(liquibaseProperties.isEnabled());
+			log.debug("Configuring Liquibase");
+		}
+		return liquibase;
+	}
 }
