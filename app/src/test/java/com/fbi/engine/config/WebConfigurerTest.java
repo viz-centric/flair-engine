@@ -124,8 +124,6 @@ public class WebConfigurerTest {
 		env.setActiveProfiles(JHipsterConstants.SPRING_PROFILE_PRODUCTION);
 		webConfigurer.onStartup(servletContext);
 
-		verify(servletContext).addFilter(eq("webappMetricsFilter"), any(InstrumentedFilter.class));
-		verify(servletContext).addServlet(eq("metricsServlet"), any(MetricsServlet.class));
 		verify(servletContext).addFilter(eq("cachingHttpHeadersFilter"), any(CachingHttpHeadersFilter.class));
 	}
 
@@ -134,8 +132,6 @@ public class WebConfigurerTest {
 		env.setActiveProfiles(JHipsterConstants.SPRING_PROFILE_DEVELOPMENT);
 		webConfigurer.onStartup(servletContext);
 
-		verify(servletContext).addFilter(eq("webappMetricsFilter"), any(InstrumentedFilter.class));
-		verify(servletContext).addServlet(eq("metricsServlet"), any(MetricsServlet.class));
 		verify(servletContext, never()).addFilter(eq("cachingHttpHeadersFilter"), any(CachingHttpHeadersFilter.class));
 	}
 
