@@ -66,18 +66,17 @@ public class KafkaSqlQueryExecutor extends SqlQueryExecutor {
         Map<String, String> metadata = null;
         if (kafkaQuery.isMetadataRetrieved()) {
             metadata = getQueryMetadata(kafkaQuery);
-
-            String columns = String.join(",", metadata.keySet());
-            String statement = "select " + columns + " from " + kafkaQuery.getSource() + " limit 1";
-
-            kafkaQuery.setQuery(statement);
         }
 
         List<Map<String, Object>> data;
         if (Objects.equals(kafkaQuery.getQuery(), KafkaListener.QUERY__SHOW_TABLES_AND_STREAMS)) {
             data = getShowTablesResult();
         } else  {
-            data = getQueryResult(kafkaQuery, kafkaQuery.getQuery());
+            List<String> columns = null;
+            if (metadata != null) {
+                columns = new ArrayList<>(metadata.keySet());
+            }
+            data = getQueryResult(kafkaQuery, kafkaQuery.getQuery(), columns);
         }
 
         if (metadata != null) {
@@ -93,8 +92,13 @@ public class KafkaSqlQueryExecutor extends SqlQueryExecutor {
         }
     }
 
-    private List<Map<String, Object>> getQueryResult(KafkaQuery query, String statement) throws ExecutionException {
-        List<String> selectColumns = getQueryColumns(query);
+    private List<Map<String, Object>> getQueryResult(KafkaQuery query, String statement, List<String> columns) throws ExecutionException {
+        List<String> selectColumns;
+        if (columns != null) {
+            selectColumns = columns;
+        } else {
+            selectColumns = getQueryColumns(query);
+        }
         if (selectColumns == null || selectColumns.isEmpty()) {
             return new ArrayList<>();
         }
