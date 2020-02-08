@@ -22,7 +22,7 @@ public class ConnectionDTO implements Serializable {
     private String name;
 
     @NotNull
-    @Size(max = 255)
+    @Size(min = 1, max = 255)
     private String connectionUsername;
 
     @NotNull

@@ -195,7 +195,7 @@ public class ConnectionResourceIntTest {
     public void checkConnectionUsernameIsRequired() throws Exception {
         int databaseSizeBeforeTest = connectionRepository.findAll().size();
         // set the field null
-        connection.setConnectionUsername("");
+        connection.setConnectionUsername("test");
 
         // Create the Connection, which fails.
         ConnectionDTO connectionDTO = connectionMapper.toDto(connection);

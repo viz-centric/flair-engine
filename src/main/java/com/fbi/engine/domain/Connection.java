@@ -55,7 +55,7 @@ public class Connection implements Serializable {
     private String name;
 
     @NotNull
-    @Size(max = 255)
+    @Size(min = 1, max = 255)
     @Convert(converter = StringCryptoConverter.class)
     @Column(name = "connection_username", nullable = false)
     private String connectionUsername;
