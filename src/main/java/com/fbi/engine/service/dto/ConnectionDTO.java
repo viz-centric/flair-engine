@@ -22,12 +22,12 @@ public class ConnectionDTO implements Serializable {
     private String name;
 
     @NotNull
-    @Size(min = 1, max = 255)
+    @Size(max = 255)
     private String connectionUsername;
 
     @NotNull
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @Size(min = 1, max = 255)
+    @Size(max = 255)
     private String connectionPassword;
 
     @NotNull

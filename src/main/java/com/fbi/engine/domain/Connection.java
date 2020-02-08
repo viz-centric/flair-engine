@@ -57,14 +57,14 @@ public class Connection implements Serializable {
     @NotNull
     @Size(max = 255)
     @Convert(converter = StringCryptoConverter.class)
-    @Column(name = "connection_username", nullable = true)
+    @Column(name = "connection_username", nullable = false)
     private String connectionUsername;
 
     @NotNull
     @Size(max = 255)
     @JsonIgnore
     @Convert(converter = StringCryptoConverter.class)
-    @Column(name = "connection_password", nullable = true)
+    @Column(name = "connection_password", nullable = false)
     private String connectionPassword;
 
     @NotNull
