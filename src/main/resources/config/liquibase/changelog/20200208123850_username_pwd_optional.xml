@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+
+    <property name="now" value="now()" dbms="h2"/>
+
+    <property name="now" value="current_timestamp" dbms="postgresql"/>
+
+    <property name="floatType" value="float4" dbms="postgresql, h2"/>
+    <property name="floatType" value="float" dbms="mysql, oracle, mssql"/>
+
+    <!--
+        Added the entity Connection.
+    -->
+    <changeSet id="20200208123850" author="jhipster">
+        <dropNotNullConstraint tableName="connection"
+                               columnName="connection_username"
+                               columnDataType="varchar(255)"/>
+        <dropNotNullConstraint tableName="connection"
+                               columnName="connection_password"
+                               columnDataType="varchar(255)"/>
+    </changeSet>
+</databaseChangeLog>

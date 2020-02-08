@@ -7,8 +7,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CockroachdbConnectionDetails extends PostgresConnectionDetails {
 
-    public CockroachdbConnectionDetails(String serverIp, Integer serverPort, String databaseName) {
-        super(serverIp, serverPort, databaseName);
+    public CockroachdbConnectionDetails(String serverIp, Integer serverPort, String databaseName, String connectionParams) {
+        super(serverIp, serverPort, databaseName, connectionParams);
     }
 
 }

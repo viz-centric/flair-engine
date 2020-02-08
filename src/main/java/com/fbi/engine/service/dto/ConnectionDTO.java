@@ -30,6 +30,7 @@ public class ConnectionDTO implements Serializable {
     @Size(min = 1, max = 255)
     private String connectionPassword;
 
+    @NotNull
     private String linkId;
 
     private ConnectionTypeDTO connectionType;
