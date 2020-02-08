@@ -32,9 +32,11 @@ public class ConnectionDetailsMapper {
                 break;
             case "Postgres":
                 connectionDetails = new PostgresConnectionDetails();
+                ((PostgresConnectionDetails) connectionDetails).setConnectionParams(value.get("connectionParams"));
                 break;
             case "Cockroachdb":
                 connectionDetails = new CockroachdbConnectionDetails();
+                ((CockroachdbConnectionDetails) connectionDetails).setConnectionParams(value.get("connectionParams"));
                 break;
             case "Redshift":
                 connectionDetails = new RedshiftConnectionDetails();
@@ -86,6 +88,9 @@ public class ConnectionDetailsMapper {
             map.put("@type", "MySql");
         } else if (connectionDetails instanceof CockroachdbConnectionDetails) {
             map.put("@type", "Cockroachdb");
+            if (((CockroachdbConnectionDetails) connectionDetails).getConnectionParams() != null) {
+                map.put("connectionParams", ((CockroachdbConnectionDetails) connectionDetails).getConnectionParams());
+            }
         } else if (connectionDetails instanceof RedshiftConnectionDetails) {
             map.put("@type", "Redshift");
         } else if (connectionDetails instanceof AthenaConnectionDetails) {
@@ -94,6 +99,9 @@ public class ConnectionDetailsMapper {
             map.put("workgroup", ((AthenaConnectionDetails) connectionDetails).getWorkgroup());
         } else if (connectionDetails instanceof PostgresConnectionDetails) {
             map.put("@type", "Postgres");
+            if (((PostgresConnectionDetails) connectionDetails).getConnectionParams() != null) {
+                map.put("connectionParams", ((PostgresConnectionDetails) connectionDetails).getConnectionParams());
+            }
         } else if (connectionDetails instanceof SparkConnectionDetails) {
             map.put("@type", "Spark");
         } else if (connectionDetails instanceof MongoDBConnectionDetails) {

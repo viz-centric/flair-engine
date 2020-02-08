@@ -30,10 +30,13 @@ public abstract class SqlQueryExecutor implements QueryExecutor {
 
     @Override
     public void execute(Query query, Writer writer) throws ExecutionException {
+        String connectionString = this.connection.getDetails().getConnectionString();
+        String connectionUsername = this.connection.getConnectionUsername();
+        String connectionPassword = this.connection.getConnectionPassword();
         try (java.sql.Connection c = DriverManager.getConnection(
-            this.connection.getDetails().getConnectionString(),
-            this.connection.getConnectionUsername(),
-            this.connection.getConnectionPassword())) {
+                connectionString,
+                connectionUsername,
+                connectionPassword)) {
             if (c != null) {
                 try (Statement statement = c.createStatement()) {
                     statement.execute(query.getQuery());

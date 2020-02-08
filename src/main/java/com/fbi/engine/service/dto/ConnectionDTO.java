@@ -27,9 +27,10 @@ public class ConnectionDTO implements Serializable {
 
     @NotNull
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @Size(min = 1, max = 255)
+    @Size(max = 255)
     private String connectionPassword;
 
+    @NotNull
     private String linkId;
 
     private ConnectionTypeDTO connectionType;

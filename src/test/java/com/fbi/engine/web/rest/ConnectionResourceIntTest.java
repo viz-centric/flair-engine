@@ -30,8 +30,13 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.not;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
  * Test class for the ConnectionResource REST controller.
@@ -130,6 +135,7 @@ public class ConnectionResourceIntTest {
         testConnection.setConnectionUsername(connectionDTO.getConnectionUsername());
         testConnection.setDetails(connectionDTO.getDetails());
         testConnection.setName(connectionDTO.getName());
+        testConnection.setLinkId(connectionDTO.getLinkId());
 
         restConnectionMockMvc.perform(post("/api/connections")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -189,26 +195,7 @@ public class ConnectionResourceIntTest {
     public void checkConnectionUsernameIsRequired() throws Exception {
         int databaseSizeBeforeTest = connectionRepository.findAll().size();
         // set the field null
-        connection.setConnectionUsername(null);
-
-        // Create the Connection, which fails.
-        ConnectionDTO connectionDTO = connectionMapper.toDto(connection);
-
-        restConnectionMockMvc.perform(post("/api/connections")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(connectionDTO)))
-            .andExpect(status().isBadRequest());
-
-        List<Connection> connectionList = connectionRepository.findAll();
-        assertThat(connectionList).hasSize(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
-    public void checkConnectionPasswordIsRequired() throws Exception {
-        int databaseSizeBeforeTest = connectionRepository.findAll().size();
-        // set the field null
-        connection.setConnectionPassword(null);
+        connection.setConnectionUsername("test");
 
         // Create the Connection, which fails.
         ConnectionDTO connectionDTO = connectionMapper.toDto(connection);
