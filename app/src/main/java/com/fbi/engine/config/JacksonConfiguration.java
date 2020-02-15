@@ -1,35 +1,62 @@
 package com.fbi.engine.config;
 
-import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
-import com.fasterxml.jackson.module.afterburner.AfterburnerModule;
-import com.fbi.engine.config.jackson.ResultSetSerializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.zalando.problem.ProblemModule;
+import org.zalando.problem.violations.ConstraintViolationProblemModule;
+
+import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.module.afterburner.AfterburnerModule;
 
 @Configuration
 public class JacksonConfiguration {
 
-    /*
-     * Support for Hibernate types in Jackson.
-     */
-    @Bean
-    public Hibernate5Module hibernate5Module() {
-        return new Hibernate5Module();
-    }
+	/**
+	 * Support for Java date and time API.
+	 * 
+	 * @return the corresponding Jackson module.
+	 */
+	@Bean
+	public JavaTimeModule javaTimeModule() {
+		return new JavaTimeModule();
+	}
 
-    /*
-     * Jackson Afterburner module to speed up serialization/deserialization.
-     */
-    @Bean
-    public AfterburnerModule afterburnerModule() {
-        return new AfterburnerModule();
-    }
+	@Bean
+	public Jdk8Module jdk8TimeModule() {
+		return new Jdk8Module();
+	}
 
-    @Bean
-    public SimpleModule resultSetModule() {
-        SimpleModule module = new SimpleModule();
-        module.addSerializer(new ResultSetSerializer());
-        return module;
-    }
+	/*
+	 * Support for Hibernate types in Jackson.
+	 */
+	@Bean
+	public Hibernate5Module hibernate5Module() {
+		return new Hibernate5Module();
+	}
+
+	/*
+	 * Jackson Afterburner module to speed up serialization/deserialization.
+	 */
+	@Bean
+	public AfterburnerModule afterburnerModule() {
+		return new AfterburnerModule();
+	}
+
+	/*
+	 * Module for serialization/deserialization of RFC7807 Problem.
+	 */
+	@Bean
+	ProblemModule problemModule() {
+		return new ProblemModule();
+	}
+
+	/*
+	 * Module for serialization/deserialization of ConstraintViolationProblem.
+	 */
+	@Bean
+	ConstraintViolationProblemModule constraintViolationProblemModule() {
+		return new ConstraintViolationProblemModule();
+	}
 }
