@@ -1,41 +1,114 @@
-appgrpc:
-  port: 6565
-  tls:
-    enabled: ${GRPC_SSL_ENABLED:false}
-    certChainFile: ${GRPC_CERT:/app/certChainFile.crt}
-    privateKeyFile: ${GRPC_KEY:/app/privateKeyFile.pem}
-    trustCertCollectionFile: ${GRPC_TRUST_CERT:/app/trustCertCollectionFile.crt}
-    cacheTrustCertCollectionFile: ${GRPC_CACHE_TRUST_CERT:/app/cacheTrustCertCollectionFile.crt}
-    cacheClientCertChainFile: ${GRPC_CACHE_CERT:/app/cacheClientCertChainFile.crt}
-    cacheClientPrivateKeyFile: ${GRPC_CACHE_KEY:/app/cacheClientPrivateKeyFile.pem}
+# ===================================================================
+# Spring Boot configuration.
+#
+# This configuration is used for unit/integration tests.
+#
+# More information on profiles: https://www.jhipster.tech/profiles/
+# More information on configuration properties: https://www.jhipster.tech/common-application-properties/
+# ===================================================================
+
+# ===================================================================
+# Standard Spring Boot properties.
+# Full reference is available at:
+# http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
+# ===================================================================
+eureka:
+  client:
+    enabled: true
+    healthcheck:
+      enabled: true
+    fetch-registry: true
+    register-with-eureka: true
+    instance-info-replication-interval-seconds: 10
+    registry-fetch-interval-seconds: 10
+  instance:
+    appname: flairengine
+    instanceId: flairengine:${spring.application.instance-id:${random.value}}
+    lease-renewal-interval-in-seconds: 5
+    lease-expiration-duration-in-seconds: 10
+    status-page-url-path: ${management.endpoints.web.base-path}/info
+    health-check-url-path: ${management.endpoints.web.base-path}/health
+    metadata-map:
+      zone: primary # This is needed for the load balancer
+      profile: ${spring.profiles.active}
+      version: #project.version#
+      git-version: ${git.commit.id.describe:}
+      git-commit: ${git.commit.id.abbrev:}
+      git-branch: ${git.branch:}
+ribbon:
+  eureka:
+    enabled: true
+feign:
+  hystrix:
+    enabled: true
     
-    
-
-
-flair-cache:
-  enabled: false
-
----
-
+# See https://github.com/Netflix/Hystrix/wiki/Configuration
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          strategy: SEMAPHORE
+          # See https://github.com/spring-cloud/spring-cloud-netflix/issues/1330
+          # thread:
+          #     timeoutInMilliseconds: 10000
+  shareSecurityContext: true
 
 management:
-  security:
-    roles: ADMIN
-  context-path: /
+  endpoints:
+    web:
+      base-path: /management
+      exposure:
+        include: ['configprops', 'env', 'health', 'info', 'jhimetrics', 'logfile', 'loggers', 'prometheus', 'threaddump']
+  endpoint:
+    health:
+      show-details: when-authorized
+      roles: 'ROLE_ADMIN'
+    jhimetrics:
+      enabled: true
+  info:
+    git:
+      mode: full
   health:
     mail:
       enabled: false # When using the MailService, configure an SMTP server and set this to true
+  metrics:
+    export:
+      # Prometheus is the default metrics backend
+      prometheus:
+        enabled: true
+        step: 60
+    enable:
+      http: true
+      jvm: true
+      logback: true
+      process: true
+      system: true
+    distribution:
+      percentiles-histogram:
+        all: true
+      percentiles:
+        all: 0, 0.5, 0.75, 0.95, 0.99, 1.0
+    tags:
+      application: ${spring.application.name}
+    web:
+      server:
+        auto-time-requests: true
+
 
 spring:
-  profiles:
-    # The commented value for `active` can be replaced with valid Spring profiles to load.
-    # Otherwise, it will be filled in by maven when building the WAR file
-    # Either way, it can be overridden by `--spring.profiles.active` value passed in the commandline or `-Dspring.profiles.active` set in `JAVA_OPTS`
-    active: dev
-  jackson:
-    serialization.write_dates_as_timestamps: false
+  application:
+    name: flairengine
+  jmx:
+    enabled: false
+  data:
+    jpa:
+      repositories:
+        bootstrap-mode: deferred
   jpa:
     open-in-view: false
+    properties:
+      hibernate.jdbc.time_zone: UTC
     hibernate:
       ddl-auto: none
       naming:
@@ -43,58 +116,110 @@ spring:
         implicit-strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
   messages:
     basename: i18n/messages
+  main:
+    allow-bean-definition-overriding: true
   mvc:
     favicon:
       enabled: false
+  task:
+    execution:
+      thread-name-prefix: flairengine-task-
+      pool:
+        core-size: 2
+        max-size: 50
+        queue-capacity: 10000
+    scheduling:
+      thread-name-prefix: flairengine-scheduling-
+      pool:
+        size: 2
   thymeleaf:
-    mode: XHTML
-security:
-  basic:
-    enabled: false
-
+    mode: HTML
+  output:
+    ansi:
+      console-available: true
+      
 server:
-  port: 8080
-  session:
-    cookie:
-      http-only: true
-
-
+  servlet:
+    session:
+      cookie:
+        http-only: true
+        
+# Properties to be exposed on the /info management endpoint
 info:
-  project:
-    version: #project.version#
+  # Comma separated list of profiles that will trigger the ribbon to show
+  display-ribbon-on-profiles: 'dev'
+  
+  
 
+# ===================================================================
+# Grpc properties
+#
+# ===================================================================
+grpc:
+    enabled: false
+    
+flair-cache:
+  enabled: false
 
 # ===================================================================
 # JHipster specific properties
 #
-# Full reference is available at: https://jhipster.github.io/common-application-properties/
+# Full reference is available at: https://www.jhipster.tech/common-application-properties/
 # ===================================================================
 
 jhipster:
-  async:
-    core-pool-size: 2
-    max-pool-size: 50
-    queue-capacity: 10000
-    # By default CORS is disabled. Uncomment to enable.
-    #cors:
-    #allowed-origins: "*"
-    #allowed-methods: GET, PUT, POST, DELETE, OPTIONS
-    #allowed-headers: "*"
-    #exposed-headers:
-    #allow-credentials: true
-    #max-age: 1800
-  mail:
-    from: fbiengine@localhost
-  swagger:
-    default-include-pattern: /api/.*
-    title: fbiengine API
-    description: fbiengine API documentation
-    version: 0.0.1
-    terms-of-service-url:
-    contact-name:
-    contact-url:
-    contact-email:
-    license:
-    license-url:
-  ribbon:
-    display-on-active-profiles: dev
+  clientApp:
+    name: 'flairengineApp'
+  logging:
+    # To test json console appender
+    use-json-format: true # By default, logs are in Json format
+    logstash:
+      enabled: false
+      host: localhost
+      port: 5000
+      queue-size: 512
+  security:
+    authentication:
+      jwt:
+        # This token must be encoded using Base64 (you can type `echo 'secret-key'|base64` on your command line)
+        base64-secret: MWYyNjhiY2QzMGEyN2M2MWNmNjA1ZDUyODU4Mjc5NDYyNzNmNmVkMzNjY2UyY2JmOTcxYzZiYzIzMWE5YWRkZmRmYjhmNmQxODg4OTlhZjMzNTY4NjA3ZTYzOTE5OTVmZDMzYmNjNDkwZDBmMDJiMDBjMjYwZTBkNTY3NTQyMjQ=
+        # Token is valid 24 hours
+        token-validity-in-seconds: 86400
+  metrics:
+    logs: # Reports metrics in the logs
+      enabled: true
+      report-frequency: 60 # in seconds
+
+# ===================================================================
+# Application specific properties
+# Add your own application properties here, see the ApplicationProperties class
+# to have type-safe configuration, like in the JHipsterProperties above
+#
+# More documentation is available at:
+# https://www.jhipster.tech/common-application-properties/
+# ===================================================================
+
+# application:
+
+# ===================================================================
+# Application specific properties
+# Add your own application properties here, see the ApplicationProperties class
+# to have type-safe configuration, like in the JHipsterProperties above
+#
+# More documentation is available at:
+# https://jhipster.github.io/common-application-properties/
+# ==================================================================
+application:
+    database:
+        encryption:
+            passphrase: "top-secret"
+            salt: "799B148235B09A85"
+            key-length: 32
+    authentication:
+        flair-bi:
+            pki:
+                enabled: false
+            basic-authentication:
+                enabled: false
+             
+

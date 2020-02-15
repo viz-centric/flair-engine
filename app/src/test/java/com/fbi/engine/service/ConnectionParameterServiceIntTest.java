@@ -1,18 +1,16 @@
 package com.fbi.engine.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fbi.engine.FbiengineApp;
@@ -21,10 +19,9 @@ import com.fbi.engine.repository.ConnectionParameterRepository;
 import com.fbi.engine.service.dto.ConnectionParameters;
 import com.google.common.collect.ImmutableMap;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest(classes = FbiengineApp.class)
 @Transactional
-public class ConnectionParameterServiceTest {
+public class ConnectionParameterServiceIntTest {
 
 	@Autowired
 	private ConnectionParameterService connectionParameterService;
@@ -32,7 +29,7 @@ public class ConnectionParameterServiceTest {
 	@Autowired
 	private ConnectionParameterRepository connectionParameterRepository;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 
 	}

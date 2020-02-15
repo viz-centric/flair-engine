@@ -1,6 +1,7 @@
 package com.fbi.engine.domain;
 
 import javax.persistence.Embeddable;
+import javax.persistence.Lob;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Type;
@@ -24,7 +25,7 @@ import lombok.ToString;
 public class Driver implements DataSourceDriver {
 
 	@NotNull
-	@Type(type = "org.hibernate.type.BinaryType")
+	@Lob
 	private byte[] jar;
 	private String artifactId;
 	private String groupId;

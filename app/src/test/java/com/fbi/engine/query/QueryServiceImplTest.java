@@ -1,6 +1,6 @@
 package com.fbi.engine.query;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
@@ -12,12 +12,12 @@ import static org.mockito.Mockito.when;
 import java.io.Writer;
 import java.util.Optional;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.stubbing.Answer;
 
 import com.fbi.engine.api.FlairFactory;
@@ -32,7 +32,7 @@ import com.fbi.engine.service.cache.FlairCachingService;
 import com.project.bi.query.FlairCompiler;
 import com.project.bi.query.FlairQuery;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class QueryServiceImplTest {
 
 	@Mock
@@ -46,7 +46,7 @@ public class QueryServiceImplTest {
 
 	private QueryServiceImpl service;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		service = new QueryServiceImpl(queryAbstractFactory, flairCachingService, flairCachingConfig);
 		when(flairCachingConfig.isEnabled()).thenReturn(true);
@@ -86,14 +86,6 @@ public class QueryServiceImplTest {
 
 		FlairQuery flairQuery = new FlairQuery("statement", true);
 
-		FlairFactory flairFactory = mock(FlairFactory.class);
-		FlairCompiler flairCompiler = mock(FlairCompiler.class);
-		QueryExecutor queryExecutor = mock(QueryExecutor.class);
-
-		when(flairFactory.getCompiler()).thenReturn(flairCompiler);
-		when(flairFactory.getExecutor(eq(connection), eq(null))).thenReturn(queryExecutor);
-
-		when(queryAbstractFactory.getQueryFactory(eq("bundleClass"))).thenReturn(flairFactory);
 		when(flairCachingService.getResult(eq(flairQuery), eq(connection.getLinkId())))
 				.thenReturn(Optional.of(new CacheMetadata().setResult("result")));
 
@@ -119,18 +111,16 @@ public class QueryServiceImplTest {
 
 		when(flairFactory.getCompiler()).thenReturn(flairCompiler);
 		when(flairFactory.getExecutor(eq(connection), eq(null))).thenReturn(queryExecutor);
-		doAnswer(new Answer() {
+		doAnswer(new Answer<Object>() {
 			@Override
 			public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
-				Writer writer = invocationOnMock.getArgument(1, Writer.class);
+				Writer writer = invocationOnMock.getArgument(1);
 				writer.write("some result");
 				return null;
 			}
 		}).when(queryExecutor).execute(any(), any(Writer.class));
 
 		when(queryAbstractFactory.getQueryFactory(eq("bundleClass"))).thenReturn(flairFactory);
-		when(flairCachingService.getResult(eq(flairQuery), eq(connection.getLinkId())))
-				.thenReturn(Optional.of(new CacheMetadata().setResult("result")));
 
 		CacheMetadata cacheMetadata = service.executeQuery(connection, flairQuery,
 				new CacheParams().setReadFromCache(false).setWriteToCache(true));
@@ -156,10 +146,10 @@ public class QueryServiceImplTest {
 
 		when(flairFactory.getCompiler()).thenReturn(flairCompiler);
 		when(flairFactory.getExecutor(eq(connection), eq(null))).thenReturn(queryExecutor);
-		doAnswer(new Answer() {
+		doAnswer(new Answer<Object>() {
 			@Override
 			public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
-				Writer writer = invocationOnMock.getArgument(1, Writer.class);
+				Writer writer = invocationOnMock.getArgument(1);
 				writer.write("some result");
 				return null;
 			}

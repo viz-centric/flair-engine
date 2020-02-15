@@ -13,17 +13,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,7 +42,6 @@ import com.fbi.engine.web.rest.errors.ExceptionTranslator;
  *
  * @see ConnectionResource
  */
-@RunWith(SpringRunner.class)
 @SpringBootTest(classes = FbiengineApp.class)
 public class ConnectionResourceIntTest {
 
@@ -82,7 +79,7 @@ public class ConnectionResourceIntTest {
 
 	private Connection connection;
 
-	@Before
+	@BeforeEach
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
 		ConnectionResource connectionResource = new ConnectionResource(connectionService);
@@ -112,7 +109,7 @@ public class ConnectionResourceIntTest {
 		return connection;
 	}
 
-	@Before
+	@BeforeEach
 	public void initTest() {
 		connection = createEntity(DEFAULT_NAME, DEFAULT_LINK_ID);
 	}
@@ -239,7 +236,7 @@ public class ConnectionResourceIntTest {
 
 		// Get all the connectionList
 		restConnectionMockMvc.perform(get("/api/connections?sort=id,desc")).andExpect(status().isOk())
-				.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
 				.andExpect(jsonPath("$.[*].id").value(hasItem(connection.getId().intValue())))
 				.andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
 				.andExpect(jsonPath("$.[*].connectionUsername").value(hasItem(DEFAULT_CONNECTION_USERNAME.toString())))
@@ -256,7 +253,7 @@ public class ConnectionResourceIntTest {
 
 		// Get all the connectionList
 		restConnectionMockMvc.perform(get("/api/connections?sort=id,desc")).andExpect(status().isOk())
-				.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
 				.andExpect(jsonPath("$.[*].id").value(not(hasItem(savedConnection.getId().intValue()))));
 	}
 
@@ -268,7 +265,7 @@ public class ConnectionResourceIntTest {
 
 		// Get the connection
 		restConnectionMockMvc.perform(get("/api/connections/{id}", connection.getId())).andExpect(status().isOk())
-				.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
 				.andExpect(jsonPath("$.id").value(connection.getId().intValue()))
 				.andExpect(jsonPath("$.name").value(DEFAULT_NAME.toString()))
 				.andExpect(jsonPath("$.connectionUsername").value(DEFAULT_CONNECTION_USERNAME.toString()))
@@ -343,7 +340,7 @@ public class ConnectionResourceIntTest {
 		assertThat(connectionList).hasSize(databaseSizeBeforeDelete - 1);
 	}
 
-	@Ignore
+	@Disabled
 	@Test
 	@Transactional
 	public void equalsVerifier() throws Exception {

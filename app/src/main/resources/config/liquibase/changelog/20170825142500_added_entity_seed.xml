@@ -5,10 +5,21 @@
 	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
 	<changeSet id="20170825142500" author="jhipster">
 
-		<loadData tableName="connection_type" separator="|"
-			file="config/liquibase/seed/connectionType.csv" />
-		<loadData tableName="connection"
-			file="config/liquibase/seed/connection.csv" />
+		<!-- <loadData tableName="connection_type" separator="|" file="config/liquibase/seed/connectionType.csv"> 
+			<column name="id" type="numeric" /> <column name="name" type="string" /> 
+			<column name="bundle_class" type="string" /> <column name="connection_properties_schema" 
+			type="string" /> </loadData> -->
+
+
+		<sqlFile encoding="UTF-8"
+			path="config/liquibase/seed/connectionType.sql" />
+	<!-- <loadData tableName="connection" file="config/liquibase/seed/connection.csv"> 
+		<column name="id" type="numeric" /> <column name="name" type="string" /> 
+		<column name="connection_username" type="string" /> <column name="connection_password" 
+		type="string" /> <column name="connection_type_id" type="numeric" /> <column 
+		name="link_id" type="uuid" /> <column name="details" type="string" /> </loadData> -->
+
+
 
 	</changeSet>
 </databaseChangeLog>

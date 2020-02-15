@@ -8,6 +8,8 @@ import java.util.Properties;
 @EqualsAndHashCode(callSuper = true)
 public class MySqlConnectionDetails extends ConnectionDetails implements Serializable {
 
+	private static final long serialVersionUID = 423203250887764135L;
+
 	public MySqlConnectionDetails() {
 	}
 

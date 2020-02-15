@@ -1,0 +1,5 @@
+eureka:
+  instance:
+    nonSecurePort: ${grpc.port}
+    securePort: ${grpc.port}
+    securePortEnabled: true

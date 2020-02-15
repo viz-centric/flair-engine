@@ -1,10 +1,10 @@
 # ===================================================================
-# Spring Boot configuration for the "dev" profile.
+# Spring Boot configuration.
 #
-# This configuration overrides the application.yml file.
+# This configuration is used for unit/integration tests.
 #
-# More information on profiles: https://jhipster.github.io/profiles/
-# More information on configuration properties: https://jhipster.github.io/common-application-properties/
+# More information on profiles: https://www.jhipster.tech/profiles/
+# More information on configuration properties: https://www.jhipster.tech/common-application-properties/
 # ===================================================================
 
 # ===================================================================
@@ -12,129 +12,112 @@
 # Full reference is available at:
 # http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
 # ===================================================================
-#liquibase:
-#      contexts: dev
-#      drop-first: true
-#messages:
-#        cache-seconds: 1
 spring:
-    application:
-        name: fbiengine
-    profiles:
-        include:
-        - test
-        - dev
-        - swagger
-    devtools:
-        restart:
-            enabled: true
-        livereload:
-            enabled: false # we use gulp + BrowserSync for livereload
-    jackson:
-        serialization.indent_output: true
-    datasource:
-        type: com.zaxxer.hikari.HikariDataSource
-        #    url: jdbc:postgresql://localhost:5432/fbiengine?ssl=true&sslfactory=com.fbi.engine.ssl.FBIEnginePgSQLSSLSocketFactory&sslfactoryarg=src/main/resources/config/ssl/ssl-dev.properties
-        url: jdbc:postgresql://localhost:5432/fbiengine?ssl=false
-        username: postgres
-        password: admin
-    jpa:
-        database-platform: io.github.jhipster.domain.util.FixedPostgreSQL82Dialect
-        database: POSTGRESQL
-        show-sql: true
-        properties:
-            hibernate.id.new_generator_mappings: true
-            hibernate.cache.use_second_level_cache: true
-            hibernate.cache.use_query_cache: false
-            hibernate.generate_statistics: true
-            hibernate.cache.region.factory_class: com.hazelcast.hibernate.HazelcastCacheRegionFactory
-            hibernate.cache.hazelcast.instance_name: fbiengine
-            hibernate.cache.use_minimal_puts: true
-            hibernate.cache.hazelcast.use_lite_member: true
-    mail:
-        host: localhost
-        port: 25
-        username:
-        password:
-    
-    thymeleaf:
-        cache: false
-    liquibase:
-        contexts: dev
-        drop-first: true
-    messages:
-        cache-duration: 1
+  application:
+    name: flairengine
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    url: ${TEST_DATASOURCE_URL:jdbc:postgresql://localhost:5432/fbiengine?ssl=false}
+    username: postgres
+    password: admin
+    hikari:
+      auto-commit: false
+  jpa:
+    database-platform: io.github.jhipster.domain.util.FixedPostgreSQL95Dialect
+    database: postgresql
+    open-in-view: false
+    show-sql: false
+    hibernate:
+      ddl-auto: create
+      naming:
+        physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
+        implicit-strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
+    properties:
+      hibernate.id.new_generator_mappings: true
+      hibernate.connection.provider_disables_autocommit: true
+      hibernate.cache.use_second_level_cache: false
+      hibernate.cache.use_query_cache: false
+      hibernate.generate_statistics: false
+      hibernate.hbm2ddl.auto: validate
+      hibernate.jdbc.time_zone: UTC
+  liquibase:
+    contexts: test
+  mail:
+    host: localhost
+  main:
+    allow-bean-definition-overriding: true
+  messages:
+    basename: i18n/messages
+  mvc:
+    favicon:
+      enabled: false
+  task:
+    execution:
+      thread-name-prefix: flairengine-task-
+      pool:
+        core-size: 1
+        max-size: 50
+        queue-capacity: 10000
+    scheduling:
+      thread-name-prefix: flairengine-scheduling-
+      pool:
+        size: 1
+  thymeleaf:
+    mode: HTML
 
-
-
+server:
+  port: 0
+  address: localhost
+  
+  
 
 # ===================================================================
-# To enable SSL, generate a certificate using:
-# keytool -genkey -alias fbiengine -storetype PKCS12 -keyalg RSA -keysize 2048 -keystore keystore.p12 -validity 3650
+# Grpc properties
 #
-# You can also use Let's Encrypt:
-# https://maximilian-boehm.com/hp2121/Create-a-Java-Keystore-JKS-from-Let-s-Encrypt-Certificates.htm
-#
-# Then, modify the server.ssl properties so your "server" configuration looks like:
-#
-# server:
-#    port: 8443
-#    ssl:
-#        key-store: keystore.p12
-#        key-store-password: <your-password>
-#        keyStoreType: PKCS12
-#        keyAlias: fbiengine
 # ===================================================================
+grpc:
+    enabled: false
+
 # ===================================================================
 # JHipster specific properties
 #
-# Full reference is available at: https://jhipster.github.io/common-application-properties/
+# Full reference is available at: https://www.jhipster.tech/common-application-properties/
 # ===================================================================
 
 jhipster:
-    http:
-        version: V_1_1 # To use HTTP/2 you will need SSL support (see above the "server.ssl" configuration)
-    cache: # Cache configuration
-        hazelcast: # Hazelcast distributed cache
-            time-to-live-seconds: 3600
-            backup-count: 1
-    # CORS is only enabled by default with the "dev" profile, so BrowserSync can access the API
-    cors:
-        allowed-origins: "*"
-        allowed-methods: GET, PUT, POST, DELETE, OPTIONS
-        allowed-headers: "*"
-        exposed-headers:
-        allow-credentials: true
-        max-age: 1800
-    security:
-        authentication:
-            jwt:
-                secret: my-secret-token-to-change-in-production
-                # Token is valid 24 hours
-                token-validity-in-seconds: 86400
-                token-validity-in-seconds-for-remember-me: 2592000
-    mail: # specific JHipster mail property, for standard properties see MailProperties
-        from: fbiengine@localhost
-        base-url: http://127.0.0.1:8080
-    metrics: # DropWizard Metrics configuration, used by MetricsConfiguration
-        jmx.enabled: true
-        graphite: # Use the "graphite" Maven profile to have the Graphite dependencies
-            enabled: false
-            host: localhost
-            port: 2003
-            prefix: fbiengine
-        prometheus: # Use the "prometheus" Maven profile to have the Prometheus dependencies
-            enabled: false
-            endpoint: /prometheusMetrics
-        logs: # Reports Dropwizard metrics in the logs
-            enabled: false
-            report-frequency: 60 # in seconds
-    logging:
-        logstash: # Forward logs to logstash over a socket, used by LoggingConfiguration
-            enabled: false
-            host: localhost
-            port: 5000
-            queue-size: 512
+  clientApp:
+    name: 'flairengineApp'
+  logging:
+    # To test json console appender
+    use-json-format: true # By default, logs are in Json format
+    logstash:
+      enabled: false
+      host: localhost
+      port: 5000
+      queue-size: 512
+  security:
+    authentication:
+      jwt:
+        # This token must be encoded using Base64 (you can type `echo 'secret-key'|base64` on your command line)
+        base64-secret: MWYyNjhiY2QzMGEyN2M2MWNmNjA1ZDUyODU4Mjc5NDYyNzNmNmVkMzNjY2UyY2JmOTcxYzZiYzIzMWE5YWRkZmRmYjhmNmQxODg4OTlhZjMzNTY4NjA3ZTYzOTE5OTVmZDMzYmNjNDkwZDBmMDJiMDBjMjYwZTBkNTY3NTQyMjQ=
+        # Token is valid 24 hours
+        token-validity-in-seconds: 86400
+  metrics:
+    logs: # Reports metrics in the logs
+      enabled: true
+      report-frequency: 60 # in seconds
+
+# ===================================================================
+# Application specific properties
+# Add your own application properties here, see the ApplicationProperties class
+# to have type-safe configuration, like in the JHipsterProperties above
+#
+# More documentation is available at:
+# https://www.jhipster.tech/common-application-properties/
+# ===================================================================
+
+# application:
+
 # ===================================================================
 # Application specific properties
 # Add your own application properties here, see the ApplicationProperties class
@@ -153,24 +136,7 @@ application:
         flair-bi:
             pki:
                 enabled: false
-                subjects:
-                - flairbi
-                - flairai
             basic-authentication:
                 enabled: false
-                credentials:
-                - username: "admin"
-                  password: "admin"
-                  roles:
-                  - "ROLE_ADMIN"
-                  - "ROLE_USER"
              
-management:
-    context-path: /management
-info:
-    project:
-        version: 1.0
-grpc:
-    port: 9996
-    tls:
-        enabled: false
+

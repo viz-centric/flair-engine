@@ -1,13 +1,10 @@
 package com.fbi.engine.config;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.options;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
@@ -15,87 +12,27 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.EnumSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentMap;
 
-import javax.servlet.DispatcherType;
 import javax.servlet.Filter;
 import javax.servlet.FilterRegistration;
-import javax.servlet.MultipartConfigElement;
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRegistration;
-import javax.servlet.ServletSecurityElement;
 
-import org.apache.commons.io.FilenameUtils;
-import org.junit.Before;
-import org.junit.Test;
-import org.springframework.boot.web.embedded.undertow.UndertowServletWebServerFactory;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.mock.env.MockEnvironment;
 import org.springframework.mock.web.MockServletContext;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.xnio.OptionMap;
-
-import com.codahale.metrics.servlet.InstrumentedFilter;
-import com.codahale.metrics.servlets.MetricsServlet;
-import com.hazelcast.cardinality.CardinalityEstimator;
-import com.hazelcast.config.Config;
-import com.hazelcast.core.ClientService;
-import com.hazelcast.core.Cluster;
-import com.hazelcast.core.DistributedObject;
-import com.hazelcast.core.DistributedObjectListener;
-import com.hazelcast.core.Endpoint;
-import com.hazelcast.core.HazelcastInstance;
-import com.hazelcast.core.IAtomicLong;
-import com.hazelcast.core.IAtomicReference;
-import com.hazelcast.core.ICacheManager;
-import com.hazelcast.core.ICountDownLatch;
-import com.hazelcast.core.IExecutorService;
-import com.hazelcast.core.IList;
-import com.hazelcast.core.ILock;
-import com.hazelcast.core.IMap;
-import com.hazelcast.core.IQueue;
-import com.hazelcast.core.ISemaphore;
-import com.hazelcast.core.ISet;
-import com.hazelcast.core.ITopic;
-import com.hazelcast.core.IdGenerator;
-import com.hazelcast.core.LifecycleService;
-import com.hazelcast.core.MultiMap;
-import com.hazelcast.core.PartitionService;
-import com.hazelcast.core.ReplicatedMap;
-import com.hazelcast.cp.CPSubsystem;
-import com.hazelcast.crdt.pncounter.PNCounter;
-import com.hazelcast.durableexecutor.DurableExecutorService;
-import com.hazelcast.flakeidgen.FlakeIdGenerator;
-import com.hazelcast.logging.LoggingService;
-import com.hazelcast.mapreduce.JobTracker;
-import com.hazelcast.quorum.QuorumService;
-import com.hazelcast.ringbuffer.Ringbuffer;
-import com.hazelcast.scheduledexecutor.IScheduledExecutorService;
-import com.hazelcast.transaction.HazelcastXAResource;
-import com.hazelcast.transaction.TransactionContext;
-import com.hazelcast.transaction.TransactionException;
-import com.hazelcast.transaction.TransactionOptions;
-import com.hazelcast.transaction.TransactionalTask;
 
 import io.github.jhipster.config.JHipsterConstants;
 import io.github.jhipster.config.JHipsterProperties;
-import io.github.jhipster.web.filter.CachingHttpHeadersFilter;
-import io.undertow.Undertow;
-import io.undertow.Undertow.Builder;
-import io.undertow.UndertowOptions;
 
 /**
- * Unit tests for the WebConfigurer class.
- *
- * @see WebConfigurer
+ * Unit tests for the {@link WebConfigurer} class.
  */
 public class WebConfigurerTest {
 
@@ -107,11 +44,12 @@ public class WebConfigurerTest {
 
 	private JHipsterProperties props;
 
-	@Before
+	@BeforeEach
 	public void setup() {
 		servletContext = spy(new MockServletContext());
-		doReturn(new MockFilterRegistration()).when(servletContext).addFilter(anyString(), any(Filter.class));
-		doReturn(new MockServletRegistration()).when(servletContext).addServlet(anyString(), any(Servlet.class));
+		doReturn(mock(FilterRegistration.Dynamic.class)).when(servletContext).addFilter(anyString(), any(Filter.class));
+		doReturn(mock(ServletRegistration.Dynamic.class)).when(servletContext).addServlet(anyString(),
+				any(Servlet.class));
 
 		env = new MockEnvironment();
 		props = new JHipsterProperties();
@@ -124,7 +62,6 @@ public class WebConfigurerTest {
 		env.setActiveProfiles(JHipsterConstants.SPRING_PROFILE_PRODUCTION);
 		webConfigurer.onStartup(servletContext);
 
-		verify(servletContext).addFilter(eq("cachingHttpHeadersFilter"), any(CachingHttpHeadersFilter.class));
 	}
 
 	@Test
@@ -132,36 +69,6 @@ public class WebConfigurerTest {
 		env.setActiveProfiles(JHipsterConstants.SPRING_PROFILE_DEVELOPMENT);
 		webConfigurer.onStartup(servletContext);
 
-		verify(servletContext, never()).addFilter(eq("cachingHttpHeadersFilter"), any(CachingHttpHeadersFilter.class));
-	}
-
-	@Test
-	public void testCustomizeServletContainer() {
-		env.setActiveProfiles(JHipsterConstants.SPRING_PROFILE_PRODUCTION);
-		UndertowServletWebServerFactory container = new UndertowServletWebServerFactory();
-		webConfigurer.customize(container);
-		assertThat(container.getMimeMappings().get("abs")).isEqualTo("audio/x-mpeg");
-		assertThat(container.getMimeMappings().get("html")).isEqualTo("text/html;charset=utf-8");
-		assertThat(container.getMimeMappings().get("json")).isEqualTo("text/html;charset=utf-8");
-		if (container.getDocumentRoot() != null) {
-			assertThat(container.getDocumentRoot().getPath()).isEqualTo(FilenameUtils.separatorsToSystem("target/www"));
-		}
-
-		Builder builder = Undertow.builder();
-		container.getBuilderCustomizers().forEach(c -> c.customize(builder));
-		OptionMap.Builder serverOptions = (OptionMap.Builder) ReflectionTestUtils.getField(builder, "serverOptions");
-		assertThat(serverOptions.getMap().get(UndertowOptions.ENABLE_HTTP2)).isNull();
-	}
-
-	@Test
-	public void testUndertowHttp2Enabled() {
-		props.getHttp().setVersion(JHipsterProperties.Http.Version.V_2_0);
-		UndertowServletWebServerFactory container = new UndertowServletWebServerFactory();
-		webConfigurer.customize(container);
-		Builder builder = Undertow.builder();
-		container.getBuilderCustomizers().forEach(c -> c.customize(builder));
-		OptionMap.Builder serverOptions = (OptionMap.Builder) ReflectionTestUtils.getField(builder, "serverOptions");
-		assertThat(serverOptions.getMap().get(UndertowOptions.ENABLE_HTTP2)).isTrue();
 	}
 
 	@Test
@@ -223,367 +130,4 @@ public class WebConfigurerTest {
 		mockMvc.perform(get("/api/test-cors").header(HttpHeaders.ORIGIN, "other.domain.com")).andExpect(status().isOk())
 				.andExpect(header().doesNotExist(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN));
 	}
-
-	static class MockFilterRegistration implements FilterRegistration, FilterRegistration.Dynamic {
-
-		@Override
-		public void addMappingForServletNames(EnumSet<DispatcherType> dispatcherTypes, boolean isMatchAfter,
-				String... servletNames) {
-
-		}
-
-		@Override
-		public Collection<String> getServletNameMappings() {
-			return null;
-		}
-
-		@Override
-		public void addMappingForUrlPatterns(EnumSet<DispatcherType> dispatcherTypes, boolean isMatchAfter,
-				String... urlPatterns) {
-
-		}
-
-		@Override
-		public Collection<String> getUrlPatternMappings() {
-			return null;
-		}
-
-		@Override
-		public void setAsyncSupported(boolean isAsyncSupported) {
-
-		}
-
-		@Override
-		public String getName() {
-			return null;
-		}
-
-		@Override
-		public String getClassName() {
-			return null;
-		}
-
-		@Override
-		public boolean setInitParameter(String name, String value) {
-			return false;
-		}
-
-		@Override
-		public String getInitParameter(String name) {
-			return null;
-		}
-
-		@Override
-		public Set<String> setInitParameters(Map<String, String> initParameters) {
-			return null;
-		}
-
-		@Override
-		public Map<String, String> getInitParameters() {
-			return null;
-		}
-	}
-
-	static class MockServletRegistration implements ServletRegistration, ServletRegistration.Dynamic {
-
-		@Override
-		public void setLoadOnStartup(int loadOnStartup) {
-
-		}
-
-		@Override
-		public Set<String> setServletSecurity(ServletSecurityElement constraint) {
-			return null;
-		}
-
-		@Override
-		public void setMultipartConfig(MultipartConfigElement multipartConfig) {
-
-		}
-
-		@Override
-		public void setRunAsRole(String roleName) {
-
-		}
-
-		@Override
-		public void setAsyncSupported(boolean isAsyncSupported) {
-
-		}
-
-		@Override
-		public Set<String> addMapping(String... urlPatterns) {
-			return null;
-		}
-
-		@Override
-		public Collection<String> getMappings() {
-			return null;
-		}
-
-		@Override
-		public String getRunAsRole() {
-			return null;
-		}
-
-		@Override
-		public String getName() {
-			return null;
-		}
-
-		@Override
-		public String getClassName() {
-			return null;
-		}
-
-		@Override
-		public boolean setInitParameter(String name, String value) {
-			return false;
-		}
-
-		@Override
-		public String getInitParameter(String name) {
-			return null;
-		}
-
-		@Override
-		public Set<String> setInitParameters(Map<String, String> initParameters) {
-			return null;
-		}
-
-		@Override
-		public Map<String, String> getInitParameters() {
-			return null;
-		}
-	}
-
-	public static class MockHazelcastInstance implements HazelcastInstance {
-
-		@Override
-		public String getName() {
-			return "HazelcastInstance";
-		}
-
-		@Override
-		public <E> IQueue<E> getQueue(String s) {
-			return null;
-		}
-
-		@Override
-		public <E> ITopic<E> getTopic(String s) {
-			return null;
-		}
-
-		@Override
-		public <E> ISet<E> getSet(String s) {
-			return null;
-		}
-
-		@Override
-		public <E> IList<E> getList(String s) {
-			return null;
-		}
-
-		@Override
-		public <K, V> IMap<K, V> getMap(String s) {
-			return null;
-		}
-
-		@Override
-		public <K, V> ReplicatedMap<K, V> getReplicatedMap(String s) {
-			return null;
-		}
-
-		@Override
-		public JobTracker getJobTracker(String s) {
-			return null;
-		}
-
-		@Override
-		public <K, V> MultiMap<K, V> getMultiMap(String s) {
-			return null;
-		}
-
-		@Override
-		public ILock getLock(String s) {
-			return null;
-		}
-
-		@Override
-		public <E> Ringbuffer<E> getRingbuffer(String s) {
-			return null;
-		}
-
-		@Override
-		public <E> ITopic<E> getReliableTopic(String s) {
-			return null;
-		}
-
-		@Override
-		public Cluster getCluster() {
-			return null;
-		}
-
-		@Override
-		public Endpoint getLocalEndpoint() {
-			return null;
-		}
-
-		@Override
-		public IExecutorService getExecutorService(String s) {
-			return null;
-		}
-
-		@Override
-		public DurableExecutorService getDurableExecutorService(String s) {
-			return null;
-		}
-
-		@Override
-		public <T> T executeTransaction(TransactionalTask<T> transactionalTask) throws TransactionException {
-			return null;
-		}
-
-		@Override
-		public <T> T executeTransaction(TransactionOptions transactionOptions, TransactionalTask<T> transactionalTask)
-				throws TransactionException {
-			return null;
-		}
-
-		@Override
-		public TransactionContext newTransactionContext() {
-			return null;
-		}
-
-		@Override
-		public TransactionContext newTransactionContext(TransactionOptions transactionOptions) {
-			return null;
-		}
-
-		@Override
-		public IdGenerator getIdGenerator(String s) {
-			return null;
-		}
-
-		@Override
-		public IAtomicLong getAtomicLong(String s) {
-			return null;
-		}
-
-		@Override
-		public <E> IAtomicReference<E> getAtomicReference(String s) {
-			return null;
-		}
-
-		@Override
-		public ICountDownLatch getCountDownLatch(String s) {
-			return null;
-		}
-
-		@Override
-		public ISemaphore getSemaphore(String s) {
-			return null;
-		}
-
-		@Override
-		public Collection<DistributedObject> getDistributedObjects() {
-			return null;
-		}
-
-		@Override
-		public String addDistributedObjectListener(DistributedObjectListener distributedObjectListener) {
-			return null;
-		}
-
-		@Override
-		public boolean removeDistributedObjectListener(String s) {
-			return false;
-		}
-
-		@Override
-		public Config getConfig() {
-			return null;
-		}
-
-		@Override
-		public PartitionService getPartitionService() {
-			return null;
-		}
-
-		@Override
-		public QuorumService getQuorumService() {
-			return null;
-		}
-
-		@Override
-		public ClientService getClientService() {
-			return null;
-		}
-
-		@Override
-		public LoggingService getLoggingService() {
-			return null;
-		}
-
-		@Override
-		public LifecycleService getLifecycleService() {
-			return null;
-		}
-
-		@Override
-		public <T extends DistributedObject> T getDistributedObject(String s, String s1) {
-			return null;
-		}
-
-		@Override
-		public ConcurrentMap<String, Object> getUserContext() {
-			return null;
-		}
-
-		@Override
-		public HazelcastXAResource getXAResource() {
-			return null;
-		}
-
-		@Override
-		public ICacheManager getCacheManager() {
-			return null;
-		}
-
-		@Override
-		public void shutdown() {
-
-		}
-
-		@Override
-		public FlakeIdGenerator getFlakeIdGenerator(String name) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public CardinalityEstimator getCardinalityEstimator(String name) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public PNCounter getPNCounter(String name) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public IScheduledExecutorService getScheduledExecutorService(String name) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public CPSubsystem getCPSubsystem() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-	}
-
 }
