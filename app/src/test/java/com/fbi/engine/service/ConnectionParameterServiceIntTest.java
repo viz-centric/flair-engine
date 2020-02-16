@@ -10,18 +10,16 @@ import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.fbi.engine.FbiengineApp;
+import com.fbi.engine.AbstractIntegrationTest;
 import com.fbi.engine.domain.ConnectionParameter;
 import com.fbi.engine.repository.ConnectionParameterRepository;
 import com.fbi.engine.service.dto.ConnectionParameters;
 import com.google.common.collect.ImmutableMap;
 
-@SpringBootTest(classes = FbiengineApp.class)
 @Transactional
-public class ConnectionParameterServiceIntTest {
+public class ConnectionParameterServiceIntTest extends AbstractIntegrationTest {
 
 	@Autowired
 	private ConnectionParameterService connectionParameterService;

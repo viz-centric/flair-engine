@@ -1,3 +1,0 @@
-eureka:
-  instance:
-    nonSecurePort: ${server.port}

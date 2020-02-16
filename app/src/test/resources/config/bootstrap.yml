@@ -1,16 +1,7 @@
 spring:
   cloud:
     config:
-      uri:
-      - http://admin:admin@localhost:${IT_EUREKA_PORT}
-      username: admin
-      password: admin
-      
+      enabled: false
 eureka:
-  instance:
-    prefer-ip-address: true
-    appname: flairengine
-    instance-id: flairengine:${spring.application.instance-id:${random.value}}
   client:
-    service-url:
-      defaultZone: http://admin:admin@localhost:${IT_EUREKA_PORT}/eureka/
+    enabled: false

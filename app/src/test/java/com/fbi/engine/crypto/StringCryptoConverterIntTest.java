@@ -5,15 +5,13 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.util.Base64Utils;
 
-import com.fbi.engine.FbiengineApp;
+import com.fbi.engine.AbstractIntegrationTest;
 import com.fbi.engine.crypto.converter.StringCryptoConverter;
 import com.fbi.engine.crypto.exceptions.IllegalCipherTextSizeException;
 
-@SpringBootTest(classes = FbiengineApp.class)
-public class StringCryptoConverterIntTest {
+public class StringCryptoConverterIntTest extends AbstractIntegrationTest {
 
 	private StringCryptoConverter converter;
 

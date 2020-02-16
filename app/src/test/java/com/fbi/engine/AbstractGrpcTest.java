@@ -31,7 +31,7 @@ import io.grpc.testing.GrpcCleanupRule;
 @Profile("grpc")
 @SpringBootTest(classes = FbiengineApp.class, webEnvironment = WebEnvironment.RANDOM_PORT)
 @Transactional
-public abstract class AbstractGrpcTest {
+public abstract class AbstractGrpcTest extends AbstractIntegrationTest {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractGrpcTest.class);
 

@@ -327,6 +327,10 @@
 			<artifactId>jackson-datatype-hibernate5</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>com.fasterxml.jackson.module</groupId>
+			<artifactId>jackson-module-jaxb-annotations</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>org.zalando</groupId>
 			<artifactId>problem-spring-web</artifactId>
 		</dependency>
@@ -1257,6 +1261,7 @@
 		<profile>
 			<id>jenkins</id>
 			<properties>
+				<docker.postgres.host>it-postgres-database</docker.postgres.host>
 				<docker.postgres.username>postgres</docker.postgres.username>
 				<docker.postgres.password>admin</docker.postgres.password>
 				<docker.postgres.db>fbiengine</docker.postgres.db>
@@ -1340,44 +1345,6 @@
 												<log>
 													<enabled>false</enabled>
 													<prefix>PG</prefix>
-													<date>default</date>
-													<color>cyan</color>
-												</log>
-											</run>
-										</image>
-										<image>
-											<name>jhipster/jhipster-registry:v6.0.2</name>
-											<alias>it-jhipster-registry</alias>
-											<run>
-												<env>
-													<SPRING_PROFILES_ACTIVE>dev</SPRING_PROFILES_ACTIVE>
-													<SPRING_SECURITY_USER_PASSWORD>admin</SPRING_SECURITY_USER_PASSWORD>
-													<JHIPSTER_REGISTRY_PASSWORD>admin</JHIPSTER_REGISTRY_PASSWORD>
-													<SPRING_CLOUD_CONFIG_SERVER_COMPOSITE_0_TYPE>native</SPRING_CLOUD_CONFIG_SERVER_COMPOSITE_0_TYPE>
-													<SPRING_CLOUD_CONFIG_SERVER_COMPOSITE_0_SEARCH_LOCATIONS>file:./central-config/localhost-config/</SPRING_CLOUD_CONFIG_SERVER_COMPOSITE_0_SEARCH_LOCATIONS>
-													<TEST_DATASOURCE_URL>jdbc:postgresql://db:${it-database.port}/fbiengine?ssl=false</TEST_DATASOURCE_URL>
-													<JHIPSTER_SECURITY_AUTHENTICATION_JWT_BASE64_SECRET>MjNiZjdiNDk5MGM4MjE4ODI4YzRiNjZkOTRhNTU3YmNkMWRmMWYxMzkzYjAzMzI5OWI0MzNjNzVmZjg0ZDRkNDkwOTNkNjlmNjU4Zjc0NmEyYTQ3NzViMWIzZTliYjNkNjI5ZQ==</JHIPSTER_SECURITY_AUTHENTICATION_JWT_BASE64_SECRET>
-												</env>
-
-												<volumes>
-													<bind>
-														<volume>src/test/resources:/central-config</volume>
-													</bind>
-												</volumes>
-												<ports>
-													<port>it-registry.port:8761</port>
-												</ports>
-												<wait>
-													<http>
-														<url>http://localhost:${it-registry.port}</url>
-														<method>GET</method>
-														<status>200..399</status>
-													</http>
-													<time>50000</time>
-												</wait>
-												<log>
-													<enabled>false</enabled>
-													<prefix>JR</prefix>
 													<date>default</date>
 													<color>cyan</color>
 												</log>

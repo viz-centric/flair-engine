@@ -21,11 +21,10 @@ import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.fbi.engine.FbiengineApp;
+import com.fbi.engine.AbstractIntegrationTest;
 import com.fbi.engine.domain.details.PostgresConnectionDetails;
 import com.fbi.engine.domain.schema.ConnectionPropertiesSchema;
 import com.fbi.engine.domain.schema.ConnectionProperty;
@@ -54,9 +53,8 @@ import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
 
-@SpringBootTest(classes = FbiengineApp.class)
 @Transactional
-public class ConnectionGrpcServiceIntTest {
+public class ConnectionGrpcServiceIntTest extends AbstractIntegrationTest {
 
 	@Autowired
 	private ConnectionTypeService connectionTypeService;
