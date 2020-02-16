@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -47,28 +48,37 @@ public class ListTablesService {
 
         log.info("List tables for connection {}", conn.getName());
 
+        HashSet<String> sets = new HashSet<>();
+        sets.addAll(executeQuery(tableNameLike, maxEntries, conn));
+        sets.addAll(executeQuery(tableNameLike.toLowerCase(), maxEntries, conn));
+        sets.addAll(executeQuery(tableNameLike.toUpperCase(), maxEntries, conn));
+        Set<String> strings = sets
+                .stream()
+                .filter(item -> item.toUpperCase().contains(tableNameLike.toUpperCase()))
+                .limit(maxEntries)
+                .collect(Collectors.toSet());
+        log.debug("List tables result {}", strings);
+        return strings;
+    }
+
+    private Set<String> executeQuery(String tableNameLike, int maxEntries, Connection conn) {
         FlairQuery query = new FlairQuery("SHOW TABLES LIKE '%" + sanitize(tableNameLike) + "%' LIMIT " + maxEntries, false);
         String executeQuery = queryService.executeQuery(conn, query).getResult();
 
         log.debug("List tables query executed {}", executeQuery);
 
+        RowResult map;
         try {
-            RowResult map = objectMapper.readValue(executeQuery, RowResult.class);
-            Set<String> strings = map.getData()
+            map = objectMapper.readValue(executeQuery, RowResult.class);
+        } catch (IOException e) {
+            log.error("Error converting result into json for " + tableNameLike, e);
+            return new HashSet<>();
+        }
+        return map.getData()
                 .stream()
                 .map(item -> item.values())
                 .flatMap((Function<Collection, Stream<String>>) collection -> collection.stream().map(item -> String.valueOf(item)))
-                .collect(Collectors.toSet())
-                .stream()
-                .filter(item -> item.toUpperCase().contains(tableNameLike.toUpperCase()))
-                .limit(maxEntries)
                 .collect(Collectors.toSet());
-            log.debug("List tables result {}", strings);
-            return strings;
-        } catch (IOException e) {
-            log.error("Error converting result into json for " + tableNameLike, e);
-            return null;
-        }
     }
 
     @Data
