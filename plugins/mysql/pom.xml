@@ -166,8 +166,7 @@
 												</ports>
 												<wait>
 													<!-- leave it as one liner -->
-													<log>(?s)MySQL init process done. Ready for start
-														up.[\s\S]*ready for connections</log>
+													<log>(?s)Ready for start up.[\s\S]*ready for connections</log>
 													<time>20000</time>
 												</wait>
 												<log>
