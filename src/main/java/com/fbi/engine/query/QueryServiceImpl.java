@@ -35,7 +35,7 @@ public class QueryServiceImpl implements QueryService {
 
     @Override
     public CacheMetadata executeQuery(Connection connection, FlairQuery flairQuery, CacheParams cacheParams) {
-        log.info("Executing query {}", flairQuery);
+        log.info("Executing flair query {}", flairQuery.getStatement());
 
         boolean cachingEnabled = flairCachingConfig.isEnabled() && cacheParams.isReadFromCache();
         if (!cachingEnabled) {
@@ -75,7 +75,7 @@ public class QueryServiceImpl implements QueryService {
 
         final Query query = flairFactory.getQuery(flairQuery, writer.toString());
 
-        log.debug("Interpreted Query: {}", query.getQuery());
+        log.info("Interpreted Query: {}", query.getQuery());
 
         StringWriter writer2 = new StringWriter();
         try {
