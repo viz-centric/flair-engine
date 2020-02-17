@@ -1265,6 +1265,7 @@
 				<docker.postgres.username>postgres</docker.postgres.username>
 				<docker.postgres.password>admin</docker.postgres.password>
 				<docker.postgres.db>fbiengine</docker.postgres.db>
+				<docker.postgres.host>it-postgres-database</docker.postgres.host>
 				<log.msg>(?s)init process complete[\s\S]*database system is ready</log.msg>
 			</properties>
 			<build>
@@ -1288,7 +1289,7 @@
 								<include>**/*IntTest*</include>
 							</includes>
 							<environmentVariables>
-								<TEST_DATASOURCE_URL>jdbc:postgresql://localhost:${it-database.port}/fbiengine?ssl=false</TEST_DATASOURCE_URL>
+								<TEST_DATASOURCE_URL>jdbc:postgresql://${docker.postgres.host}:${it-database.port}/${docker.postgres.db}?ssl=false</TEST_DATASOURCE_URL>
 								<IT_EUREKA_PORT>${it-registry.port}</IT_EUREKA_PORT>
 							</environmentVariables>
 						</configuration>
