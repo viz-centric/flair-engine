@@ -208,7 +208,7 @@ public class ConnectionGrpcServiceIntTest extends AbstractIntegrationTest {
 		StreamObserver<UpdateConnectionResponse> streamObserver = Mockito.mock(StreamObserver.class);
 
 		ConnectionDTO dto = new ConnectionDTO();
-		dto.setConnectionType(connectionTypeService.findOne(1L));
+		dto.setConnectionType(connectionTypeService.findOne(1L).get());
 		dto.setConnectionPassword("pwd");
 		dto.setConnectionUsername("usr");
 		dto.setName("test db local");
@@ -245,7 +245,7 @@ public class ConnectionGrpcServiceIntTest extends AbstractIntegrationTest {
 		StreamObserver<GetConnectionResponse> streamObserver = Mockito.mock(StreamObserver.class);
 
 		ConnectionDTO dto = new ConnectionDTO();
-		dto.setConnectionType(connectionTypeService.findOne(1L));
+		dto.setConnectionType(connectionTypeService.findOne(1L).get());
 		dto.setConnectionPassword("pwd");
 		dto.setConnectionUsername("usr");
 		dto.setName("test db local");
@@ -281,7 +281,7 @@ public class ConnectionGrpcServiceIntTest extends AbstractIntegrationTest {
 		StreamObserver<GetConnectionResponse> streamObserver = Mockito.mock(StreamObserver.class);
 
 		ConnectionDTO dto = new ConnectionDTO();
-		dto.setConnectionType(connectionTypeService.findOne(1L));
+		dto.setConnectionType(connectionTypeService.findOne(1L).get());
 		dto.setConnectionPassword("pwd");
 		dto.setConnectionUsername("usr");
 		dto.setName("test db local");
@@ -328,7 +328,7 @@ public class ConnectionGrpcServiceIntTest extends AbstractIntegrationTest {
 		StreamObserver<DeleteConnectionResponse> streamObserver = Mockito.mock(StreamObserver.class);
 
 		ConnectionDTO dto = new ConnectionDTO();
-		dto.setConnectionType(connectionTypeService.findOne(1L));
+		dto.setConnectionType(connectionTypeService.findOne(1L).get());
 		dto.setConnectionPassword("pwd");
 		dto.setConnectionUsername("usr");
 		dto.setName("test db local");
@@ -354,7 +354,7 @@ public class ConnectionGrpcServiceIntTest extends AbstractIntegrationTest {
 		verify(streamObserver, times(0)).onError(any(Throwable.class));
 		verify(streamObserver, times(1)).onCompleted();
 
-		assertEquals(DELETED, connectionService.findOne(dto.getId()).getStatus());
+		assertEquals(DELETED, connectionService.findOne(dto.getId()).get().getStatus());
 
 		Map<String, String> parameters = connectionParameterService.getParametersByLinkId(dto.getLinkId());
 		assertEquals(0, parameters.size());

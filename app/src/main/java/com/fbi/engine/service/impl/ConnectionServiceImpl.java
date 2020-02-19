@@ -1,6 +1,7 @@
 package com.fbi.engine.service.impl;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
@@ -68,11 +69,9 @@ public class ConnectionServiceImpl implements ConnectionService {
 	 */
 	@Override
 	@Transactional(readOnly = true)
-	public ConnectionDTO findOne(Long id) {
+	public Optional<ConnectionDTO> findOne(Long id) {
 		log.debug("Request to get Connection : {}", id);
-		Connection connection = connectionRepository.findById(id)
-				.orElseThrow(() -> new RuntimeException("Connection cannot be found!"));
-		return connectionMapper.toDto(connection);
+		return connectionRepository.findById(id).map(connectionMapper::toDto);
 	}
 
 	/**

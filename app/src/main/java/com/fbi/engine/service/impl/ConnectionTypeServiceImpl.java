@@ -1,5 +1,7 @@
 package com.fbi.engine.service.impl;
 
+import java.util.Optional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -62,11 +64,9 @@ public class ConnectionTypeServiceImpl implements ConnectionTypeService {
 	 */
 	@Override
 	@Transactional(readOnly = true)
-	public ConnectionTypeDTO findOne(Long id) {
+	public Optional<ConnectionTypeDTO> findOne(Long id) {
 		log.debug("Request to get ConnectionType : {}", id);
-		ConnectionType connectionType = connectionTypeRepository.findById(id)
-				.orElseThrow(() -> new RuntimeException("Connection type cannot be found!"));
-		return connectionTypeMapper.toDto(connectionType);
+		return connectionTypeRepository.findById(id).map(connectionTypeMapper::toDto);
 	}
 
 	/**

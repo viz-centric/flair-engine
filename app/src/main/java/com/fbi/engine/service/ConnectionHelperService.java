@@ -3,7 +3,6 @@ package com.fbi.engine.service;
 import org.springframework.stereotype.Service;
 
 import com.fbi.engine.service.dto.ConnectionDTO;
-import com.fbi.engine.service.dto.ConnectionTypeDTO;
 import com.fbi.engine.service.mapper.ConnectionDetailsMapper;
 import com.fbi.engine.service.mapper.ConnectionMapper;
 
@@ -28,9 +27,7 @@ public class ConnectionHelperService {
 		c.setName(connection.getName());
 		c.setLinkId(connection.getLinkId());
 
-		ConnectionTypeDTO connectionTypeDTO = connectionTypeService.findOne(connection.getConnectionType());
-		c.setConnectionType(connectionTypeDTO);
-
+		connectionTypeService.findOne(connection.getConnectionType()).ifPresent(c::setConnectionType);
 		c.setDetails(connectionDetailsMapper.mapToEntity(connection.getDetailsMap()));
 
 		return connectionMapper.toEntity(c);

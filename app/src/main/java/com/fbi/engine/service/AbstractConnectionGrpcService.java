@@ -59,7 +59,7 @@ public abstract class AbstractConnectionGrpcService extends ConnectionServiceGrp
 		if (StringUtils.isNotEmpty(request.getLinkId())) {
 			connection = connectionService.findByConnectionLinkIdAsDto(request.getLinkId());
 		} else if (request.getId() != 0) {
-			connection = connectionService.findOne(request.getId());
+			connection = connectionService.findOne(request.getId()).orElse(null);
 		}
 
 		if (connection == null) {
@@ -150,7 +150,7 @@ public abstract class AbstractConnectionGrpcService extends ConnectionServiceGrp
 		dto.setConnectionUsername(request.getConnection().getConnectionUsername());
 		dto.setConnectionPassword(request.getConnection().getConnectionPassword());
 		dto.setLinkId(request.getConnection().getLinkId());
-		dto.setConnectionType(connectionTypeService.findOne(request.getConnection().getConnectionType()));
+		connectionTypeService.findOne(request.getConnection().getConnectionType()).ifPresent(dto::setConnectionType);
 		dto.setDetails(connectionDetailsMapper.mapToEntity(request.getConnection().getDetailsMap()));
 
 		log.info("Saving connection {}", dto);
@@ -187,7 +187,7 @@ public abstract class AbstractConnectionGrpcService extends ConnectionServiceGrp
 		dto.setConnectionUsername(request.getConnection().getConnectionUsername());
 		dto.setConnectionPassword(request.getConnection().getConnectionPassword());
 		dto.setLinkId(request.getConnection().getLinkId());
-		dto.setConnectionType(connectionTypeService.findOne(request.getConnection().getConnectionType()));
+		connectionTypeService.findOne(request.getConnection().getConnectionType()).ifPresent(dto::setConnectionType);
 		dto.setDetails(connectionDetailsMapper.mapToEntity(request.getConnection().getDetailsMap()));
 
 		log.info("Updating connection {}", dto);

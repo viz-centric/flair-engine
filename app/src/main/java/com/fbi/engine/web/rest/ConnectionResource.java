@@ -119,8 +119,7 @@ public class ConnectionResource {
 	@GetMapping("/connections/{id}")
 	public ResponseEntity<ConnectionDTO> getConnection(@PathVariable Long id) {
 		log.debug("REST request to get Connection : {}", id);
-		ConnectionDTO connectionDTO = connectionService.findOne(id);
-		return ResponseUtil.wrapOrNotFound(Optional.ofNullable(connectionDTO));
+		return ResponseUtil.wrapOrNotFound(connectionService.findOne(id));
 	}
 
 	/**

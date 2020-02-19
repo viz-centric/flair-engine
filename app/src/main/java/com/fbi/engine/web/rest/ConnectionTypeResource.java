@@ -114,8 +114,7 @@ public class ConnectionTypeResource {
 	@GetMapping("/connection-types/{id}")
 	public ResponseEntity<ConnectionTypeDTO> getConnectionType(@PathVariable Long id) {
 		log.debug("REST request to get ConnectionType : {}", id);
-		ConnectionTypeDTO connectionTypeDTO = connectionTypeService.findOne(id);
-		return ResponseUtil.wrapOrNotFound(Optional.ofNullable(connectionTypeDTO));
+		return ResponseUtil.wrapOrNotFound(connectionTypeService.findOne(id));
 	}
 
 	/**
