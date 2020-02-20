@@ -16,6 +16,11 @@
 	<name>flair-engine-distribution</name>
 	<packaging>pom</packaging>
 
+	<properties>
+		<docker.image.tag>latest</docker.image.tag>
+		<git-commit-id-plugin.version>4.0.0</git-commit-id-plugin.version>
+	</properties>
+
 
 	<dependencies>
 		<dependency>
@@ -100,7 +105,28 @@
 
 	<build>
 		<plugins>
-
+			<plugin>
+				<groupId>pl.project13.maven</groupId>
+				<artifactId>git-commit-id-plugin</artifactId>
+				<version>${git-commit-id-plugin.version}</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>revision</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<failOnNoGitDirectory>false</failOnNoGitDirectory>
+					<failOnUnableToExtractRepoInfo>false</failOnUnableToExtractRepoInfo>
+					<generateGitPropertiesFile>true</generateGitPropertiesFile>
+					<includeOnlyProperties>
+						<includeOnlyProperty>^git.commit.id.abbrev$</includeOnlyProperty>
+						<includeOnlyProperty>^git.commit.id.describe$</includeOnlyProperty>
+						<includeOnlyProperty>^git.branch$</includeOnlyProperty>
+					</includeOnlyProperties>
+				</configuration>
+			</plugin>
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<executions>
@@ -146,112 +172,63 @@
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<groupId>io.fabric8</groupId>
+				<artifactId>docker-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>build-dockerfile</id>
+						<phase>package</phase>
+						<goals>
+							<goal>build</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>push-images</id>
+						<phase>deploy</phase>
+						<goals>
+							<goal>push</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<images>
+						<image>
+							<name>flairbi/flair-engine</name>
+							<build>
+								<tags>
+									<tag>${docker.image.tag}</tag>
+								</tags>
+								<dockerFileDir>${project.build.directory}</dockerFileDir>
+							</build>
+						</image>
+						<image>
+							<name>flairbi/flair-engine-pgsql</name>
+							<build>
+								<tags>
+									<tag>${docker.image.tag}</tag>
+								</tags>
+								<dockerFileDir>${project.build.directory}/flair-engine-pgsql</dockerFileDir>
+							</build>
+						</image>
+					</images>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
-
 	<profiles>
 		<profile>
 			<id>prod</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>io.fabric8</groupId>
-						<artifactId>docker-maven-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>build-dockerfile</id>
-								<phase>package</phase>
-								<goals>
-									<goal>build</goal>
-								</goals>
-							</execution>
-							<execution>
-								<id>push-images</id>
-								<phase>deploy</phase>
-								<goals>
-									<goal>push</goal>
-								</goals>
-							</execution>
-						</executions>
-						<configuration>
-							<images>
-								<image>
-									<name>flairbi/flair-engine</name>
-									<build>
-										<tags>
-											<tag>latest</tag>
-											<tag>v${project.version}</tag>
-										</tags>
-										<dockerFileDir>${project.build.directory}</dockerFileDir>
-									</build>
-								</image>
-								<image>
-									<name>flairbi/flair-engine-pgsql</name>
-									<build>
-										<tags>
-											<tag>latest</tag>
-											<tag>v${project.version}</tag>
-										</tags>
-										<dockerFileDir>${project.build.directory}/flair-engine-pgsql</dockerFileDir>
-									</build>
-								</image>
-							</images>
-						</configuration>
-					</plugin>
-				</plugins>
-			</build>
+			<properties>
+				<docker.image.tag>v${project.version}</docker.image.tag>
+			</properties>
 		</profile>
 		<profile>
 			<id>jenkins</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>io.fabric8</groupId>
-						<artifactId>docker-maven-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>build-dockerfile</id>
-								<phase>package</phase>
-								<goals>
-									<goal>build</goal>
-								</goals>
-							</execution>
-							<execution>
-								<id>push-images</id>
-								<phase>deploy</phase>
-								<goals>
-									<goal>push</goal>
-								</goals>
-							</execution>
-						</executions>
-						<configuration>
-							<images>
-								<image>
-									<name>flairbi/flair-engine</name>
-									<build>
-										<tags>
-											<tag>v${project.version}.${revision}</tag>
-										</tags>
-										<dockerFileDir>${project.build.directory}</dockerFileDir>
-									</build>
-								</image>
-								<image>
-									<name>flairbi/flair-engine-pgsql</name>
-									<build>
-										<tags>
-											<tag>v${project.version}.${revision}</tag>
-										</tags>
-										<dockerFileDir>${project.build.directory}/flair-engine-pgsql</dockerFileDir>
-									</build>
-								</image>
-							</images>
-						</configuration>
-					</plugin>
-				</plugins>
-			</build>
+			<properties>
+				<revision>${git.commit.id.abbrev}</revision>
+				<docker.image.tag>v${project.version}.${revision}</docker.image.tag>
+			</properties>
 		</profile>
 	</profiles>
-
-
-
 </project>

@@ -44,7 +44,7 @@ COPY --from=builder /dist/ssl/cachecertsgen/client.pem /app/cacheClientPrivateKe
 COPY --from=builder /dist/ssl/cachecertsgen/ca.crt /app/cacheTrustCertCollectionFile.crt
 
 COPY --from=builder /dist/plugins/ /app/plugins
-COPY --from=builder /dist/*.war /app/app.war
+COPY --from=builder /dist/*.jar /app/app.jar
 
 RUN chown -R flairuser:flairuser /app
 RUN chmod -R 755 /app
