@@ -615,10 +615,173 @@
 			<artifactId>mockito-junit-jupiter</artifactId>
 			<scope>test</scope>
 		</dependency>
+
+
+		<!-- plugins:begin -->
+		<dependency>
+			<groupId>com.fbi.engine</groupId>
+			<artifactId>flair-engine-snowflake-plugin</artifactId>
+			<version>3.0.0-SNAPSHOT</version>
+			<classifier>bundle</classifier>
+			<type>zip</type>
+		</dependency>
+		<dependency>
+			<groupId>com.fbi.engine</groupId>
+			<artifactId>flair-engine-redshift-plugin</artifactId>
+			<version>3.0.0-SNAPSHOT</version>
+			<classifier>bundle</classifier>
+			<type>zip</type>
+		</dependency>
+		<dependency>
+			<groupId>com.fbi.engine</groupId>
+			<artifactId>flair-engine-postgres-plugin</artifactId>
+			<version>3.0.0-SNAPSHOT</version>
+			<classifier>bundle</classifier>
+			<type>zip</type>
+		</dependency>
+		<dependency>
+			<groupId>com.fbi.engine</groupId>
+			<artifactId>flair-engine-spark-plugin</artifactId>
+			<version>3.0.0-SNAPSHOT</version>
+			<classifier>bundle</classifier>
+			<type>zip</type>
+		</dependency>
+		<dependency>
+			<groupId>com.fbi.engine</groupId>
+			<artifactId>flair-engine-athena-plugin</artifactId>
+			<version>3.0.0-SNAPSHOT</version>
+			<classifier>bundle</classifier>
+			<type>zip</type>
+		</dependency>
+		<dependency>
+			<groupId>com.fbi.engine</groupId>
+			<artifactId>flair-engine-cockroachdb-plugin</artifactId>
+			<version>3.0.0-SNAPSHOT</version>
+			<classifier>bundle</classifier>
+			<type>zip</type>
+		</dependency>
+		<dependency>
+			<groupId>com.fbi.engine</groupId>
+			<artifactId>flair-engine-kafka-plugin</artifactId>
+			<version>3.0.0-SNAPSHOT</version>
+			<classifier>bundle</classifier>
+			<type>zip</type>
+		</dependency>
+		<dependency>
+			<groupId>com.fbi.engine</groupId>
+			<artifactId>flair-engine-mysql-plugin</artifactId>
+			<version>3.0.0-SNAPSHOT</version>
+			<classifier>bundle</classifier>
+			<type>zip</type>
+		</dependency>
+		<dependency>
+			<groupId>com.fbi.engine</groupId>
+			<artifactId>flair-engine-oracle-plugin</artifactId>
+			<version>3.0.0-SNAPSHOT</version>
+			<classifier>bundle</classifier>
+			<type>zip</type>
+		</dependency>
+		<dependency>
+			<groupId>com.fbi.engine</groupId>
+			<artifactId>flair-engine-mongodb-plugin</artifactId>
+			<version>3.0.0-SNAPSHOT</version>
+			<classifier>bundle</classifier>
+			<type>zip</type>
+		</dependency>
+		<!-- plugins:end -->
 	</dependencies>
 	<build>
+		<sourceDirectory>src/main/java</sourceDirectory>
 		<defaultGoal>spring-boot:run</defaultGoal>
 		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>3.1.1</version>
+				<executions>
+					<execution>
+						<id>copy</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>copy</goal>
+						</goals>
+						<configuration>
+							<artifactItems>
+								<artifactItem>
+									<groupId>com.fbi.engine</groupId>
+									<artifactId>flair-engine-snowflake-plugin</artifactId>
+									<outputDirectory>${project.build.directory}/plugins</outputDirectory>
+									<classifier>bundle</classifier>
+									<type>zip</type>
+								</artifactItem>
+								<artifactItem>
+									<groupId>com.fbi.engine</groupId>
+									<artifactId>flair-engine-redshift-plugin</artifactId>
+									<outputDirectory>${project.build.directory}/plugins</outputDirectory>
+									<classifier>bundle</classifier>
+									<type>zip</type>
+								</artifactItem>
+								<artifactItem>
+									<groupId>com.fbi.engine</groupId>
+									<artifactId>flair-engine-postgres-plugin</artifactId>
+									<outputDirectory>${project.build.directory}/plugins</outputDirectory>
+									<classifier>bundle</classifier>
+									<type>zip</type>
+								</artifactItem>
+								<artifactItem>
+									<groupId>com.fbi.engine</groupId>
+									<artifactId>flair-engine-spark-plugin</artifactId>
+									<outputDirectory>${project.build.directory}/plugins</outputDirectory>
+									<classifier>bundle</classifier>
+									<type>zip</type>
+								</artifactItem>
+								<artifactItem>
+									<groupId>com.fbi.engine</groupId>
+									<artifactId>flair-engine-athena-plugin</artifactId>
+									<outputDirectory>${project.build.directory}/plugins</outputDirectory>
+									<classifier>bundle</classifier>
+									<type>zip</type>
+								</artifactItem>
+								<artifactItem>
+									<groupId>com.fbi.engine</groupId>
+									<artifactId>flair-engine-cockroachdb-plugin</artifactId>
+									<outputDirectory>${project.build.directory}/plugins</outputDirectory>
+									<classifier>bundle</classifier>
+									<type>zip</type>
+								</artifactItem>
+								<artifactItem>
+									<groupId>com.fbi.engine</groupId>
+									<artifactId>flair-engine-kafka-plugin</artifactId>
+									<outputDirectory>${project.build.directory}/plugins</outputDirectory>
+									<classifier>bundle</classifier>
+									<type>zip</type>
+								</artifactItem>
+								<artifactItem>
+									<groupId>com.fbi.engine</groupId>
+									<artifactId>flair-engine-mysql-plugin</artifactId>
+									<outputDirectory>${project.build.directory}/plugins</outputDirectory>
+									<classifier>bundle</classifier>
+									<type>zip</type>
+								</artifactItem>
+								<artifactItem>
+									<groupId>com.fbi.engine</groupId>
+									<artifactId>flair-engine-oracle-plugin</artifactId>
+									<outputDirectory>${project.build.directory}/plugins</outputDirectory>
+									<classifier>bundle</classifier>
+									<type>zip</type>
+								</artifactItem>
+								<artifactItem>
+									<groupId>com.fbi.engine</groupId>
+									<artifactId>flair-engine-mongodb-plugin</artifactId>
+									<outputDirectory>${project.build.directory}/plugins</outputDirectory>
+									<classifier>bundle</classifier>
+									<type>zip</type>
+								</artifactItem>
+							</artifactItems>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -741,6 +904,10 @@
 					</execution>
 				</executions>
 				<configuration>
+					<systemPropertyVariables>
+						<pf4j.pluginsDir>${project.build.directory}/plugins</pf4j.pluginsDir>
+						<pf4j.mode>development</pf4j.mode>
+					</systemPropertyVariables>
 					<mainClass>${start-class}</mainClass>
 					<fork>true</fork>
 					<!-- Enable the line below to have remote debugging of your application 
@@ -1026,6 +1193,26 @@
 										<excludes>
 											<exclude>config/*.yml</exclude>
 										</excludes>
+									</resource>
+								</resources>
+							</configuration>
+						</execution>
+						<execution>
+							<id>plugin-resources</id>
+							<phase>validate</phase>
+							<goals>
+								<goal>copy-resources</goal>
+							</goals>
+							<configuration>
+								<outputDirectory>${project.build.directory}/plugins</outputDirectory>
+								<resources>
+									<resource>
+										<directory>src/main/resources/</directory>
+										<filtering>false</filtering>
+										<includes>
+											<include>enabled.txt</include>
+											<include>disabled.txt</include>
+										</includes>
 									</resource>
 								</resources>
 							</configuration>

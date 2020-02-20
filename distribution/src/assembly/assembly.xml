@@ -42,7 +42,7 @@
 			<useTransitiveDependencies>false</useTransitiveDependencies>
 			<unpack>false</unpack>
 			<includes>
-				<include>*:war</include>
+				<include>*:jar</include>
 			</includes>
 			<outputDirectory />
 		</dependencySet>

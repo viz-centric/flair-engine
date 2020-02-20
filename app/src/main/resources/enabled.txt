@@ -1,0 +1,10 @@
+snowflake-plugin
+redshift-plugin
+postgres-plugin
+spark-plugin
+athena-plugin
+cockroachdb-plugin
+kafka-plugin
+mysql-plugin
+oracle-plugin
+mongodb-plugin
