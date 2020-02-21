@@ -4,96 +4,26 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
+	<parent>
+		<groupId>com.fbi.engine</groupId>
+		<artifactId>flair-engine-parent</artifactId>
+		<version>3.0.0-SNAPSHOT</version>
+	</parent>
+
 	<groupId>com.fbi.engine</groupId>
 	<artifactId>flair-engine</artifactId>
 	<version>3.0.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>flair-engine</name>
-	<scm>
-		<connection>scm:git:https://github.com/viz-centric/flair-engine.git</connection>
-		<developerConnection>scm:git:https://github.com/viz-centric/flair-engine.git</developerConnection>
-		<tag>HEAD</tag>
-		<url>https://github.com/viz-centric/flair-engine.git</url>
-	</scm>
-	<distributionManagement>
-		<repository>
-			<id>dev-azure-com-vizcentric-flair-engine</id>
-			<url>https://pkgs.dev.azure.com/VizCentric/_packaging/flair-engine/maven/v1</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-	</distributionManagement>
-	<repositories>
-		<repository>
-			<id>dev-azure-com-vizcentric-flair-engine</id>
-			<url>https://pkgs.dev.azure.com/VizCentric/_packaging/flair-engine/maven/v1</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-		<repository>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-			<id>dev-azure-com-vizcentric-flair-commons</id>
-			<url>https://pkgs.dev.azure.com/VizCentric/_packaging/flair-commons/maven/v1</url>
-		</repository>
-		<repository>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-			<id>dev-azure-com-vizcentric-flair-protobuf-messages</id>
-			<url>https://pkgs.dev.azure.com/VizCentric/_packaging/flair-protobuf-messages/maven/v1</url>
-		</repository>
-		<repository>
-			<id>dev-azure-com-vizcentric-flair-query-language</id>
-			<url>https://pkgs.dev.azure.com/VizCentric/_packaging/flair-query-language/maven/v1</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-		<repository>
-			<id>dev-azure-com-vizcentric-oracle-driver</id>
-			<url>https://pkgs.dev.azure.com/VizCentric/_packaging/oracle-driver/maven/v1</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-		<repository>
-			<id>redshift</id>
-			<url>http://redshift-maven-repository.s3-website-us-east-1.amazonaws.com/release</url>
-		</repository>
-		<repository>
-			<id>local-maven-repo</id>
-			<url>file:///${project.basedir}/libs</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-	</repositories>
+
 	<properties>
+
+		<docker.postgres.host>localhost</docker.postgres.host>
+		<docker.postgres.username>postgres</docker.postgres.username>
+		<docker.postgres.password>admin</docker.postgres.password>
+		<docker.postgres.db>fbiengine</docker.postgres.db>
+		<log.msg>(?s)init process complete[\s\S]*database system is ready</log.msg>
+
 		<bc.version>1.59</bc.version>
 		<jzlib.version>1.1.3</jzlib.version>
 		<postgresql.version>42.2.10</postgresql.version>
@@ -574,16 +504,6 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
-			<exclusions>
-				<exclusion>
-					<groupId>com.vaadin.external.google</groupId>
-					<artifactId>android-json</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>junit</groupId>
-					<artifactId>junit</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -691,7 +611,6 @@
 		<!-- plugins:end -->
 	</dependencies>
 	<build>
-		<sourceDirectory>src/main/java</sourceDirectory>
 		<defaultGoal>spring-boot:run</defaultGoal>
 		<plugins>
 			<plugin>
@@ -945,6 +864,99 @@
 							<outputDirectory>target/generated-sources/java</outputDirectory>
 							<processor>com.querydsl.apt.jpa.JPAAnnotationProcessor</processor>
 						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-failsafe-plugin</artifactId>
+				<version>${maven-failsafe-plugin.version}</version>
+				<configuration>
+					<!-- Due to spring-boot repackage, without adding this property test 
+						classes are not found See https://github.com/spring-projects/spring-boot/issues/6254 -->
+					<classesDirectory>${project.build.outputDirectory}</classesDirectory>
+					<!-- Force alphabetical order to have a reproducible build -->
+					<runOrder>alphabetical</runOrder>
+					<reportsDirectory>${junit.itReportFolder}</reportsDirectory>
+					<excludes>
+						<exclude>none</exclude>
+					</excludes>
+					<includes>
+						<include>**/*IntegrationTest*</include>
+						<include>**/*IntTest*</include>
+					</includes>
+					<environmentVariables>
+						<TEST_DATASOURCE_URL>jdbc:postgresql://${docker.postgres.host}:${it-database.port}/${docker.postgres.db}?ssl=false</TEST_DATASOURCE_URL>
+						<IT_EUREKA_PORT>${it-registry.port}</IT_EUREKA_PORT>
+					</environmentVariables>
+				</configuration>
+				<executions>
+					<execution>
+						<id>integration-test</id>
+						<goals>
+							<goal>integration-test</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>verify</id>
+						<goals>
+							<goal>verify</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>io.fabric8</groupId>
+				<artifactId>docker-maven-plugin</artifactId>
+				<version>${docker-maven-plugin.version}</version>
+				<executions>
+					<execution>
+						<id>prepare-it-database</id>
+						<phase>pre-integration-test</phase>
+						<goals>
+							<goal>start</goal>
+						</goals>
+						<configuration>
+							<images>
+								<image>
+									<name>postgres:9.6.12</name>
+									<alias>it-postgres-database</alias>
+									<run>
+										<env>
+											<POSTGRES_USER>${docker.postgres.username}</POSTGRES_USER>
+											<POSTGRES_PASSWORD>${docker.postgres.password}</POSTGRES_PASSWORD>
+											<POSTGRES_DB>${docker.postgres.db}</POSTGRES_DB>
+										</env>
+										<network>
+											<name>jenkins</name>
+											<mode>custom</mode>
+											<alias>it-postgres-database</alias>
+										</network>
+										<ports>
+											<port>it-database.port:5432</port>
+										</ports>
+										<wait>
+											<!-- leave it as one liner -->
+											<log>${log.msg}</log>
+											<time>10000</time>
+										</wait>
+										<log>
+											<enabled>false</enabled>
+											<prefix>PG</prefix>
+											<date>default</date>
+											<color>cyan</color>
+										</log>
+									</run>
+								</image>
+							</images>
+						</configuration>
+					</execution>
+					<execution>
+						<id>remove-it-database</id>
+						<phase>post-integration-test</phase>
+						<goals>
+							<goal>stop</goal>
+						</goals>
 					</execution>
 				</executions>
 			</plugin>
@@ -1449,109 +1461,7 @@
 			<id>jenkins</id>
 			<properties>
 				<docker.postgres.host>it-postgres-database</docker.postgres.host>
-				<docker.postgres.username>postgres</docker.postgres.username>
-				<docker.postgres.password>admin</docker.postgres.password>
-				<docker.postgres.db>fbiengine</docker.postgres.db>
-				<docker.postgres.host>it-postgres-database</docker.postgres.host>
-				<log.msg>(?s)init process complete[\s\S]*database system is ready</log.msg>
 			</properties>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-failsafe-plugin</artifactId>
-						<version>${maven-failsafe-plugin.version}</version>
-						<configuration>
-							<!-- Due to spring-boot repackage, without adding this property test 
-								classes are not found See https://github.com/spring-projects/spring-boot/issues/6254 -->
-							<classesDirectory>${project.build.outputDirectory}</classesDirectory>
-							<!-- Force alphabetical order to have a reproducible build -->
-							<runOrder>alphabetical</runOrder>
-							<reportsDirectory>${junit.itReportFolder}</reportsDirectory>
-							<excludes>
-								<exclude>none</exclude>
-							</excludes>
-							<includes>
-								<include>**/*IntegrationTest*</include>
-								<include>**/*IntTest*</include>
-							</includes>
-							<environmentVariables>
-								<TEST_DATASOURCE_URL>jdbc:postgresql://${docker.postgres.host}:${it-database.port}/${docker.postgres.db}?ssl=false</TEST_DATASOURCE_URL>
-								<IT_EUREKA_PORT>${it-registry.port}</IT_EUREKA_PORT>
-							</environmentVariables>
-						</configuration>
-						<executions>
-							<execution>
-								<id>integration-test</id>
-								<goals>
-									<goal>integration-test</goal>
-								</goals>
-							</execution>
-							<execution>
-								<id>verify</id>
-								<goals>
-									<goal>verify</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-					<plugin>
-						<groupId>io.fabric8</groupId>
-						<artifactId>docker-maven-plugin</artifactId>
-						<version>${docker-maven-plugin.version}</version>
-						<executions>
-							<execution>
-								<id>prepare-it-database</id>
-								<phase>pre-integration-test</phase>
-								<goals>
-									<goal>start</goal>
-								</goals>
-								<configuration>
-									<images>
-										<image>
-											<name>postgres:9.6.12</name>
-											<alias>it-postgres-database</alias>
-											<run>
-												<env>
-													<POSTGRES_USER>${docker.postgres.username}</POSTGRES_USER>
-													<POSTGRES_PASSWORD>${docker.postgres.password}</POSTGRES_PASSWORD>
-													<POSTGRES_DB>${docker.postgres.db}</POSTGRES_DB>
-												</env>
-												<network>
-													<name>jenkins</name>
-													<mode>custom</mode>
-													<alias>it-postgres-database</alias>
-												</network>
-												<ports>
-													<port>it-database.port:5432</port>
-												</ports>
-												<wait>
-													<!-- leave it as one liner -->
-													<log>${log.msg}</log>
-													<time>10000</time>
-												</wait>
-												<log>
-													<enabled>false</enabled>
-													<prefix>PG</prefix>
-													<date>default</date>
-													<color>cyan</color>
-												</log>
-											</run>
-										</image>
-									</images>
-								</configuration>
-							</execution>
-							<execution>
-								<id>remove-it-database</id>
-								<phase>post-integration-test</phase>
-								<goals>
-									<goal>stop</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
 		</profile>
 	</profiles>
 </project>

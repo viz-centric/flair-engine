@@ -153,13 +153,11 @@
 				<artifactId>project-bi-common</artifactId>
 				<version>${project-bi-common.version}</version>
 			</dependency>
-
 			<dependency>
 				<groupId>com.project.bi</groupId>
 				<artifactId>flair-query-language</artifactId>
 				<version>${flair-query-language.version}</version>
 			</dependency>
-
 			<dependency>
 				<groupId>com.project.bi</groupId>
 				<artifactId>flair-messages</artifactId>
