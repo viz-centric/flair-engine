@@ -1,6 +1,7 @@
 package com.fbi.engine.plugins.mongodb;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Writer;
 import java.sql.Driver;
 import java.util.List;
@@ -37,7 +38,11 @@ public class MongoDBQueryExecutor extends SqlQueryExecutor {
 
 	@Override
 	protected DataSourceDriver getDefaultDriver() {
-		return DataSourceDriverImpl.of("mongo-java-driver-3.7.1.jar", "mongo-java-driver", "org.mongodb", "3.7.1");
+		try (InputStream is = this.getClass().getClassLoader().getResourceAsStream("mongo-java-driver-3.7.1.jar")) {
+			return DataSourceDriverImpl.of(is, "mongo-java-driver", "org.mongodb", "3.7.1");
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override

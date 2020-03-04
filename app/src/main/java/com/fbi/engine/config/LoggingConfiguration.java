@@ -1,9 +1,14 @@
 package com.fbi.engine.config;
 
-import ch.qos.logback.classic.LoggerContext;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.github.jhipster.config.JHipsterProperties;
+import static io.github.jhipster.config.logging.LoggingUtils.addContextListener;
+import static io.github.jhipster.config.logging.LoggingUtils.addJsonConsoleAppender;
+import static io.github.jhipster.config.logging.LoggingUtils.addLogstashTcpSocketAppender;
+import static io.github.jhipster.config.logging.LoggingUtils.setMetricsMarkerLogbackFilter;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.lognet.springboot.grpc.autoconfigure.GRpcServerProperties;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,10 +16,11 @@ import org.springframework.boot.info.BuildProperties;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.HashMap;
-import java.util.Map;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-import static io.github.jhipster.config.logging.LoggingUtils.*;
+import ch.qos.logback.classic.LoggerContext;
+import io.github.jhipster.config.JHipsterProperties;
 
 /*
  * Configures the console and Logstash log appenders from the app properties
@@ -25,13 +31,17 @@ public class LoggingConfiguration {
 
 	public LoggingConfiguration(@Value("${spring.application.name}") String appName,
 			@Value("${server.port}") String serverPort, JHipsterProperties jHipsterProperties,
-			ObjectProvider<BuildProperties> buildProperties, ObjectMapper mapper) throws JsonProcessingException {
+			ObjectProvider<BuildProperties> buildProperties, ObjectMapper mapper,
+			GRpcServerProperties grpcServerProperties) throws JsonProcessingException {
 
 		LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
 
 		Map<String, String> map = new HashMap<>();
 		map.put("app_name", appName);
 		map.put("app_port", serverPort);
+		if (grpcServerProperties.isEnabled()) {
+			map.put("grpc_port", String.valueOf(grpcServerProperties.getPort()));
+		}
 		buildProperties.ifAvailable(it -> map.put("version", it.getVersion()));
 		String customFields = mapper.writeValueAsString(map);
 

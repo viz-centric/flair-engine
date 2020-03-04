@@ -93,7 +93,6 @@
 			<classifier>bundle</classifier>
 			<type>zip</type>
 		</dependency>
-
 		<dependency>
 			<groupId>com.fbi.engine</groupId>
 			<artifactId>flair-engine</artifactId>

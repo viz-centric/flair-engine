@@ -4,8 +4,6 @@ import javax.persistence.Embeddable;
 import javax.persistence.Lob;
 import javax.validation.constraints.NotNull;
 
-import org.hibernate.annotations.Type;
-
 import com.fbi.engine.api.DataSourceDriver;
 
 import lombok.EqualsAndHashCode;

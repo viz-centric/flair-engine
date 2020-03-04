@@ -1,5 +1,7 @@
 package com.fbi.engine.plugins.cockroachdb;
 
+import java.io.InputStream;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fbi.engine.api.DataSourceConnection;
 import com.fbi.engine.api.DataSourceDriver;
@@ -21,7 +23,11 @@ public class CockroachDBQueryExecutor extends SqlQueryExecutor {
 
 	@Override
 	protected DataSourceDriver getDefaultDriver() {
-		return DataSourceDriverImpl.of("postgresql-9.4.1212.jar", "postgresql", "org.postgresql", "9.4.1212");
+		try (InputStream is = this.getClass().getClassLoader().getResourceAsStream("postgresql-9.4.1212.jar")) {
+			return DataSourceDriverImpl.of(is, "postgresql", "org.postgresql", "9.4.1212");
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 }

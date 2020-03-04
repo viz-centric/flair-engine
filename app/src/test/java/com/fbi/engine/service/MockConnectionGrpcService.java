@@ -7,7 +7,7 @@ import com.fbi.engine.service.mapper.ConnectionDetailsMapper;
 
 @Profile("test")
 @Service
-public class MockConnectionGrpcService extends AbstractConnectionGrpcService {
+public class MockConnectionGrpcService extends ConnectionGrpcService {
 
 	public MockConnectionGrpcService(ConnectionService connectionService,
 			ConnectionParameterService connectionParameterService, ConnectionTypeService connectionTypeService,

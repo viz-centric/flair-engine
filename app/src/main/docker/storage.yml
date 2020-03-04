@@ -9,4 +9,4 @@ services:
         - POSTGRES_DB=fbiengine
         # command: -c ssl=on -c ssl_cert_file=/etc/pki/tls/certs/fbiengine-psql.pem -c ssl_key_file=/etc/pki/tls/private/fbiengine-psql.key
         ports:
-        - 5432:5432
+        - 5430:5432

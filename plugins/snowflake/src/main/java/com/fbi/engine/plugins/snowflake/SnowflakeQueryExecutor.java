@@ -1,5 +1,7 @@
 package com.fbi.engine.plugins.snowflake;
 
+import java.io.InputStream;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fbi.engine.api.DataSourceConnection;
 import com.fbi.engine.api.DataSourceDriver;
@@ -21,8 +23,11 @@ public class SnowflakeQueryExecutor extends SqlQueryExecutor {
 
 	@Override
 	protected DataSourceDriver getDefaultDriver() {
-		return DataSourceDriverImpl.of("snowflake-jdbc-3.11.0.jar", "snowflake-jdbc",
-				"net.snowflake", "3.11.0");
+		try (InputStream is = this.getClass().getClassLoader().getResourceAsStream("snowflake-jdbc-3.11.0.jar")) {
+			return DataSourceDriverImpl.of(is, "snowflake-jdbc", "net.snowflake", "3.11.0");
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 }

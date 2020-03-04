@@ -1,8 +1,5 @@
 spring:
-    application:
-        name: flair-engine-grpc
-eureka:
-    instance:
-        nonSecurePort: ${grpc.port}
-        securePort: ${grpc.port}
-        securePortEnabled: true
+  application:
+    name: flair-engine-grpc
+grpc:
+  enabled: true

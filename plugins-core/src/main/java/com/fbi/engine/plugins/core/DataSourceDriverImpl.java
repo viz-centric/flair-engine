@@ -52,7 +52,24 @@ public class DataSourceDriverImpl implements DataSourceDriver {
 	 */
 	public static DataSourceDriverImpl of(String file, String artifactId, String groupId, String version) {
 		try (final InputStream is = DataSourceDriverImpl.class.getClassLoader().getResourceAsStream(file)) {
-			byte[] content = IOUtils.toByteArray(is);
+			return DataSourceDriverImpl.of(is, artifactId, groupId, version);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * Construct driver based on input stream.
+	 * 
+	 * @param stream
+	 * @param artifactId
+	 * @param groupId
+	 * @param version
+	 * @return
+	 */
+	public static DataSourceDriverImpl of(InputStream stream, String artifactId, String groupId, String version) {
+		try {
+			byte[] content = IOUtils.toByteArray(stream);
 			return new DataSourceDriverImpl(content, artifactId, groupId, version);
 		} catch (IOException e) {
 			throw new RuntimeException(e);

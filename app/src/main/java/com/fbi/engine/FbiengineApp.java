@@ -8,6 +8,7 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 
+import org.lognet.springboot.grpc.autoconfigure.GRpcServerProperties;
 import org.pf4j.spring.SpringPluginManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
@@ -73,17 +74,31 @@ public class FbiengineApp {
 		SpringApplication app = new SpringApplication(FbiengineApp.class);
 		DefaultProfileUtil.addDefaultProfile(app);
 		Environment env = app.run(args).getEnvironment();
-		String protocol = "http";
-		if (env.getProperty("server.ssl.key-store") != null) {
-			protocol = "https";
+
+		if (Arrays.asList(env.getActiveProfiles()).contains("grpc")) {
+			String protocol = "grpc";
+			log.info(
+					"\n----------------------------------------------------------\n\t"
+							+ "Application '{}' is running! Access URLs:\n\t" + "Local: \t\t{}://localhost:{}\n\t"
+							+ "External: \t{}://{}:{}\n\t"
+							+ "Profile(s): \t{}\n----------------------------------------------------------",
+					env.getProperty("spring.application.name"), protocol, env.getProperty("grpc.port"), protocol,
+					InetAddress.getLocalHost().getHostAddress(), env.getProperty("grpc.port"), env.getActiveProfiles());
+		} else {
+			String protocol = "http";
+			if (env.getProperty("server.ssl.key-store") != null) {
+				protocol = "https";
+			}
+			log.info(
+					"\n----------------------------------------------------------\n\t"
+							+ "Application '{}' is running! Access URLs:\n\t" + "Local: \t\t{}://localhost:{}\n\t"
+							+ "External: \t{}://{}:{}\n\t"
+							+ "Profile(s): \t{}\n----------------------------------------------------------",
+					env.getProperty("spring.application.name"), protocol, env.getProperty("server.port"), protocol,
+					InetAddress.getLocalHost().getHostAddress(), env.getProperty("server.port"),
+					env.getActiveProfiles());
+
 		}
-		log.info(
-				"\n----------------------------------------------------------\n\t"
-						+ "Application '{}' is running! Access URLs:\n\t" + "Local: \t\t{}://localhost:{}\n\t"
-						+ "External: \t{}://{}:{}\n\t"
-						+ "Profile(s): \t{}\n----------------------------------------------------------",
-				env.getProperty("spring.application.name"), protocol, env.getProperty("server.port"), protocol,
-				InetAddress.getLocalHost().getHostAddress(), env.getProperty("server.port"), env.getActiveProfiles());
 	}
 
 	@Bean

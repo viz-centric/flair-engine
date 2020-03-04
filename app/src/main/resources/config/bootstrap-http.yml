@@ -1,6 +1,5 @@
 spring:
     application:
         name: fbiengine
-eureka:
-    instance:
-        nonSecurePort: 8080
+grpc:
+  enabled: false

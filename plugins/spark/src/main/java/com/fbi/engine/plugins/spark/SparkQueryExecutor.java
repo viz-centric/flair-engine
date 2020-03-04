@@ -1,6 +1,6 @@
 package com.fbi.engine.plugins.spark;
 
-import java.io.File;
+import java.io.InputStream;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fbi.engine.api.DataSourceConnection;
@@ -23,7 +23,11 @@ public class SparkQueryExecutor extends SqlQueryExecutor {
 
 	@Override
 	protected DataSourceDriver getDefaultDriver() {
-		return DataSourceDriverImpl.of(new File("hive-jdbc-1.2.1.jar"), "hive-jdbc", "org.apache.hive", "1.2.1");
+		try (InputStream is = this.getClass().getClassLoader().getResourceAsStream("hive-jdbc-1.2.1.jar")) {
+			return DataSourceDriverImpl.of(is, "hive-jdbc", "org.apache.hive", "1.2.1");
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 }

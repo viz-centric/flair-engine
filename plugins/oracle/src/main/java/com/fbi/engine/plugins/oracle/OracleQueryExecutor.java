@@ -1,5 +1,8 @@
 package com.fbi.engine.plugins.oracle;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fbi.engine.api.DataSourceConnection;
 import com.fbi.engine.api.DataSourceDriver;
@@ -21,7 +24,11 @@ public class OracleQueryExecutor extends SqlQueryExecutor {
 
 	@Override
 	protected DataSourceDriver getDefaultDriver() {
-		return DataSourceDriverImpl.of("ojdbc6-11.2.0.3.jar", "ojdbc6", "oracle", "11.2.0.3");
+		try (InputStream resource = this.getClass().getClassLoader().getResourceAsStream("ojdbc6-11.2.0.3.jar");) {
+			return DataSourceDriverImpl.of(resource, "ojdbc6", "oracle", "11.2.0.3");
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 }

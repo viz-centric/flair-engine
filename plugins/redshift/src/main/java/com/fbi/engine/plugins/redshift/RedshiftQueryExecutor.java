@@ -1,5 +1,7 @@
 package com.fbi.engine.plugins.redshift;
 
+import java.io.InputStream;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fbi.engine.api.DataSourceConnection;
 import com.fbi.engine.api.DataSourceDriver;
@@ -21,8 +23,12 @@ public class RedshiftQueryExecutor extends SqlQueryExecutor {
 
 	@Override
 	protected DataSourceDriver getDefaultDriver() {
-		return DataSourceDriverImpl.of("redshift-jdbc42-no-awssdk-1.2.32.1056.jar",
-				"redshift-jdbc42-no-awssdk", "com.amazon.redshift", "1.2.32.1056");
+		try (InputStream is = this.getClass().getClassLoader()
+				.getResourceAsStream("redshift-jdbc42-no-awssdk-1.2.32.1056.jar")) {
+			return DataSourceDriverImpl.of(is, "redshift-jdbc42-no-awssdk", "com.amazon.redshift", "1.2.32.1056");
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 }

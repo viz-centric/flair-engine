@@ -25,35 +25,35 @@ import java.io.File;
 @Profile("grpc")
 public class GrpcConfig extends GRpcServerBuilderConfigurer {
 
-    @Autowired
-    private GrpcProperties grpcProperties;
+	@Autowired
+	private GrpcProperties grpcProperties;
 
-    @Override
-    public void configure(ServerBuilder<?> serverBuilder) {
-        log.info("Grpc config: Configuring grpc {}", grpcProperties.getTls());
-        if (grpcProperties.getTls().isEnabled()) {
-            NettyServerBuilder nsb = (NettyServerBuilder) serverBuilder;
-            try {
-                nsb.sslContext(getSslContextBuilder().build());
-            } catch (Exception e) {
-                log.error("Grpc config: Error configuring ssl", e);
-            }
-        }
-    }
+	@Override
+	public void configure(ServerBuilder<?> serverBuilder) {
+		log.info("Grpc config: Configuring grpc {}", grpcProperties.getTls());
 
-    private SslContextBuilder getSslContextBuilder() {
-        log.info("Grpc config: Configuring ssl cert {} key {} trust {}",
-                grpcProperties.getTls().getCertChainFile(), grpcProperties.getTls().getPrivateKeyFile(), grpcProperties.getTls().getTrustCertCollectionFile());
+		if (grpcProperties.getTls().isEnabled()) {
+			NettyServerBuilder nsb = (NettyServerBuilder) serverBuilder;
+			try {
+				nsb.sslContext(getSslContextBuilder().build());
+			} catch (Exception e) {
+				log.error("Grpc config: Error configuring ssl", e);
+			}
+		}
+	}
 
-        SslContextBuilder sslClientContextBuilder = SslContextBuilder.forServer(
-                new File(grpcProperties.getTls().getCertChainFile()),
-                new File(grpcProperties.getTls().getPrivateKeyFile())
-        );
+	private SslContextBuilder getSslContextBuilder() {
+		log.info("Grpc config: Configuring ssl cert {} key {} trust {}", grpcProperties.getTls().getCertChainFile(),
+				grpcProperties.getTls().getPrivateKeyFile(), grpcProperties.getTls().getTrustCertCollectionFile());
 
-        if (grpcProperties.getTls().getTrustCertCollectionFile() != null) {
-            sslClientContextBuilder.trustManager(new File(grpcProperties.getTls().getTrustCertCollectionFile()));
-            sslClientContextBuilder.clientAuth(ClientAuth.REQUIRE);
-        }
-        return GrpcSslContexts.configure(sslClientContextBuilder, SslProvider.OPENSSL);
-    }
+		SslContextBuilder sslClientContextBuilder = SslContextBuilder.forServer(
+				new File(grpcProperties.getTls().getCertChainFile()),
+				new File(grpcProperties.getTls().getPrivateKeyFile()));
+
+		if (grpcProperties.getTls().getTrustCertCollectionFile() != null) {
+			sslClientContextBuilder.trustManager(new File(grpcProperties.getTls().getTrustCertCollectionFile()));
+			sslClientContextBuilder.clientAuth(ClientAuth.REQUIRE);
+		}
+		return GrpcSslContexts.configure(sslClientContextBuilder, SslProvider.OPENSSL);
+	}
 }

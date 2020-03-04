@@ -1,5 +1,7 @@
 package com.fbi.engine.plugins.athena;
 
+import java.io.InputStream;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fbi.engine.api.DataSourceConnection;
 import com.fbi.engine.api.DataSourceDriver;
@@ -21,7 +23,11 @@ public class AthenaQueryExecutor extends SqlQueryExecutor {
 
 	@Override
 	protected DataSourceDriver getDefaultDriver() {
-		return DataSourceDriverImpl.of("AthenaJDBC42-2.0.7.jar", "AthenaJDBC42", "com.amazonaws.athena.jdbc", "2.0.7");
+		try (InputStream is = this.getClass().getClassLoader().getResourceAsStream("AthenaJDBC42-2.0.7.jar")) {
+			return DataSourceDriverImpl.of(is, "AthenaJDBC42", "com.amazonaws.athena.jdbc", "2.0.7");
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 }

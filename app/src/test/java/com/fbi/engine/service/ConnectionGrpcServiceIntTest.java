@@ -60,7 +60,7 @@ public class ConnectionGrpcServiceIntTest extends AbstractIntegrationTest {
 	private ConnectionTypeService connectionTypeService;
 
 	@Autowired
-	private AbstractConnectionGrpcService connectionGrpcService;
+	private ConnectionGrpcService connectionGrpcService;
 
 	@Autowired
 	private ConnectionParameterService connectionParameterService;

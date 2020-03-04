@@ -41,7 +41,7 @@ public abstract class SqlQueryExecutor implements QueryExecutor {
 
 	protected Driver initDriver() throws ExecutionException {
 		try {
-			final Driver d = strategy.loadDriver(getDriverClassName(), driver);
+			final Driver d = strategy.loadDriver(getDriverClassName(), driver == null ? getDefaultDriver() : driver);
 			log.info("Driver successfully registered: {}", getDriverClassName());
 			return d;
 		} catch (DriverLoadingException e) {

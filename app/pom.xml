@@ -17,7 +17,6 @@
 	<name>flair-engine</name>
 
 	<properties>
-
 		<docker.postgres.host>localhost</docker.postgres.host>
 		<docker.postgres.username>postgres</docker.postgres.username>
 		<docker.postgres.password>admin</docker.postgres.password>
@@ -43,6 +42,7 @@
 		<profile.no-liquibase />
 		<profile.swagger />
 		<profile.tls />
+		<profile.jenkins />
 
 		<!-- Dependency versions -->
 		<jhipster-dependencies.version>3.3.0</jhipster-dependencies.version>
@@ -57,7 +57,7 @@
 		<javassist.version>3.23.2-GA</javassist.version>
 		<!-- The liquibase version should match the one managed by https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-dependencies/${spring-boot.version} -->
 		<liquibase.version>3.8.6</liquibase.version>
-		<liquibase-hibernate5.version>3.6</liquibase-hibernate5.version>
+		<liquibase-hibernate5.version>3.8</liquibase-hibernate5.version>
 
 		<!-- The hibernate version to be used to override default version of liquibase 
 			maven plugin -->
@@ -103,19 +103,15 @@
 		<assertj.version>3.6.2</assertj.version>
 		<!-- Overridden to get metrics-jcache -->
 
-		<!-- These remain empty unless the corresponding profile is active -->
-		<profile.no-liquibase />
-		<profile.swagger />
-		<profile.jenkins />
 
-		<grpc-spring-boot-starter.version>3.5.1</grpc-spring-boot-starter.version>
+		<grpc-spring-boot-starter.version>3.5.2</grpc-spring-boot-starter.version>
 		<project.scm.id>github-credentials</project.scm.id>
 
 		<!-- our dependencies -->
 		<flair-messages.version>0.2.1</flair-messages.version>
 		<flair-query-language.version>1.6.9</flair-query-language.version>
 		<project-bi-common.version>1.4.0</project-bi-common.version>
-		<all-grpc.version>1.27.0</all-grpc.version>
+		<all-grpc.version>1.27.2</all-grpc.version>
 		<lombok.version>1.18.8</lombok.version>
 
 	</properties>
@@ -154,17 +150,14 @@
 		<dependency>
 			<groupId>com.project.bi</groupId>
 			<artifactId>project-bi-common</artifactId>
-			<version>${project-bi-common.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.project.bi</groupId>
 			<artifactId>flair-query-language</artifactId>
-			<version>${flair-query-language.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.project.bi</groupId>
 			<artifactId>flair-messages</artifactId>
-			<version>${flair-messages.version}</version>
 			<exclusions>
 				<exclusion>
 					<groupId>io.grpc</groupId>
@@ -487,7 +480,6 @@
 		<dependency>
 			<groupId>org.pf4j</groupId>
 			<artifactId>pf4j-spring</artifactId>
-			<version>${pf4j-spring.version}</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.slf4j</groupId>
@@ -630,71 +622,61 @@
 									<groupId>com.fbi.engine</groupId>
 									<artifactId>flair-engine-snowflake-plugin</artifactId>
 									<outputDirectory>${project.build.directory}/plugins</outputDirectory>
-									<classifier>bundle</classifier>
-									<type>zip</type>
+									<type>jar</type>
 								</artifactItem>
 								<artifactItem>
 									<groupId>com.fbi.engine</groupId>
 									<artifactId>flair-engine-redshift-plugin</artifactId>
 									<outputDirectory>${project.build.directory}/plugins</outputDirectory>
-									<classifier>bundle</classifier>
-									<type>zip</type>
+									<type>jar</type>
 								</artifactItem>
 								<artifactItem>
 									<groupId>com.fbi.engine</groupId>
 									<artifactId>flair-engine-postgres-plugin</artifactId>
 									<outputDirectory>${project.build.directory}/plugins</outputDirectory>
-									<classifier>bundle</classifier>
-									<type>zip</type>
+									<type>jar</type>
 								</artifactItem>
 								<artifactItem>
 									<groupId>com.fbi.engine</groupId>
 									<artifactId>flair-engine-spark-plugin</artifactId>
 									<outputDirectory>${project.build.directory}/plugins</outputDirectory>
-									<classifier>bundle</classifier>
-									<type>zip</type>
+									<type>jar</type>
 								</artifactItem>
 								<artifactItem>
 									<groupId>com.fbi.engine</groupId>
 									<artifactId>flair-engine-athena-plugin</artifactId>
 									<outputDirectory>${project.build.directory}/plugins</outputDirectory>
-									<classifier>bundle</classifier>
-									<type>zip</type>
+									<type>jar</type>
 								</artifactItem>
 								<artifactItem>
 									<groupId>com.fbi.engine</groupId>
 									<artifactId>flair-engine-cockroachdb-plugin</artifactId>
 									<outputDirectory>${project.build.directory}/plugins</outputDirectory>
-									<classifier>bundle</classifier>
-									<type>zip</type>
+									<type>jar</type>
 								</artifactItem>
 								<artifactItem>
 									<groupId>com.fbi.engine</groupId>
 									<artifactId>flair-engine-kafka-plugin</artifactId>
 									<outputDirectory>${project.build.directory}/plugins</outputDirectory>
-									<classifier>bundle</classifier>
-									<type>zip</type>
+									<type>jar</type>
 								</artifactItem>
 								<artifactItem>
 									<groupId>com.fbi.engine</groupId>
 									<artifactId>flair-engine-mysql-plugin</artifactId>
 									<outputDirectory>${project.build.directory}/plugins</outputDirectory>
-									<classifier>bundle</classifier>
-									<type>zip</type>
+									<type>jar</type>
 								</artifactItem>
 								<artifactItem>
 									<groupId>com.fbi.engine</groupId>
 									<artifactId>flair-engine-oracle-plugin</artifactId>
 									<outputDirectory>${project.build.directory}/plugins</outputDirectory>
-									<classifier>bundle</classifier>
-									<type>zip</type>
+									<type>jar</type>
 								</artifactItem>
 								<artifactItem>
 									<groupId>com.fbi.engine</groupId>
 									<artifactId>flair-engine-mongodb-plugin</artifactId>
 									<outputDirectory>${project.build.directory}/plugins</outputDirectory>
-									<classifier>bundle</classifier>
-									<type>zip</type>
+									<type>jar</type>
 								</artifactItem>
 							</artifactItems>
 						</configuration>
@@ -908,7 +890,6 @@
 			<plugin>
 				<groupId>io.fabric8</groupId>
 				<artifactId>docker-maven-plugin</artifactId>
-				<version>${docker-maven-plugin.version}</version>
 				<executions>
 					<execution>
 						<id>prepare-it-database</id>
