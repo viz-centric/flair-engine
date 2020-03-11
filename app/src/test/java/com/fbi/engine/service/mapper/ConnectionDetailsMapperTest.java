@@ -80,11 +80,12 @@ public class ConnectionDetailsMapperTest {
 
 	@Test
 	public void entityToMapWorks() {
-		Map<String, String> map = mapper.entityToMap(new PostgresConnectionDetails("localhost", 1212, "datasource"));
+		Map<String, String> map = mapper.entityToMap(new PostgresConnectionDetails("localhost", 1212, "datasource", "param1=test"));
 
 		assertEquals("localhost", map.get("serverIp"));
 		assertEquals("1212", map.get("serverPort"));
 		assertEquals("datasource", map.get("databaseName"));
+		assertEquals("param1=test", map.get("connectionParams"));
 		assertEquals("Postgres", map.get("@type"));
 	}
 

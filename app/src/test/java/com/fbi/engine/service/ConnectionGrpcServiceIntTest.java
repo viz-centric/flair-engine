@@ -212,7 +212,7 @@ public class ConnectionGrpcServiceIntTest extends AbstractIntegrationTest {
 		dto.setConnectionPassword("pwd");
 		dto.setConnectionUsername("usr");
 		dto.setName("test db local");
-		dto.setDetails(new PostgresConnectionDetails("localhost", 1111, "dbname"));
+		dto.setDetails(new PostgresConnectionDetails("localhost", 1111, "dbname", "param1=test"));
 		ConnectionDTO savedConnectionDto = connectionService.save(dto);
 
 		doAnswer(invocationOnMock -> {
@@ -249,7 +249,7 @@ public class ConnectionGrpcServiceIntTest extends AbstractIntegrationTest {
 		dto.setConnectionPassword("pwd");
 		dto.setConnectionUsername("usr");
 		dto.setName("test db local");
-		dto.setDetails(new PostgresConnectionDetails("localhost", 1111, "dbname"));
+		dto.setDetails(new PostgresConnectionDetails("localhost", 1111, "dbname", "param1=test"));
 
 		dto = connectionService.save(dto);
 
@@ -285,7 +285,7 @@ public class ConnectionGrpcServiceIntTest extends AbstractIntegrationTest {
 		dto.setConnectionPassword("pwd");
 		dto.setConnectionUsername("usr");
 		dto.setName("test db local");
-		dto.setDetails(new PostgresConnectionDetails("localhost", 1111, "dbname"));
+		dto.setDetails(new PostgresConnectionDetails("localhost", 1111, "dbname", "param1=test"));
 
 		dto = connectionService.save(dto);
 
@@ -333,7 +333,7 @@ public class ConnectionGrpcServiceIntTest extends AbstractIntegrationTest {
 		dto.setConnectionUsername("usr");
 		dto.setName("test db local");
 		dto.setLinkId("1234");
-		dto.setDetails(new PostgresConnectionDetails("localhost", 1111, "dbname"));
+		dto.setDetails(new PostgresConnectionDetails("localhost", 1111, "dbname", "param1=test"));
 
 		dto = connectionService.save(dto);
 

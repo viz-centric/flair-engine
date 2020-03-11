@@ -1,20 +1,24 @@
 package com.fbi.engine.domain.details;
 
+import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.util.Properties;
-
+@Data
+@NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class PostgresConnectionDetails extends ConnectionDetails implements Serializable {
 
 	private static final long serialVersionUID = -3202396803334508134L;
 
-	public PostgresConnectionDetails() {
-	}
+	private String connectionParams;
 
-	public PostgresConnectionDetails(String serverIp, Integer serverPort, String databaseName) {
+
+	public PostgresConnectionDetails(String serverIp, Integer serverPort, String databaseName, String connectionParams) {
 		super(serverIp, serverPort, databaseName);
+		this.connectionParams = connectionParams;
 	}
 
 	/**
@@ -40,6 +44,11 @@ public class PostgresConnectionDetails extends ConnectionDetails implements Seri
 			connectionString.append("/");
 		}
 		connectionString.append(getDatabaseName());
+
+		if (getConnectionParams() != null) {
+            connectionString.append("?")
+                    .append(getConnectionParams());
+        }
 
 		return connectionString.toString();
 	}

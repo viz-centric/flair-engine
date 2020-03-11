@@ -69,7 +69,7 @@ public class Connection implements Serializable, DataSourceConnection {
 	private String connectionUsername;
 
 	@NotNull
-	@Size(min = 1, max = 255)
+	@Size(max = 255)
 	@JsonIgnore
 	@Convert(converter = StringCryptoConverter.class)
 	@Column(name = "connection_password", nullable = false)

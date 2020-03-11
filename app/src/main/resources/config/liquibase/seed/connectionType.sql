@@ -3,7 +3,7 @@ INSERT INTO connection_type VALUES
    '1',
    'Postgres',
    'com.fbi.engine.query.factory.impl.PostgresFlairFactory',
-   '{ "connectionDetailsType": "Postgres", "imagePath": "#postgresdb", "connectionDetailsClass": "com.fbi.engine.domain.details.PostgresConnectionDetails", "connectionProperties":[ { "displayName": "Server address", "fieldName": "serverIp", "order": 0, "fieldType": "String", "defaultValue": "localhost", "required": true }, { "displayName": "Port", "fieldName": "serverPort", "order" : 1, "fieldType": "Integer", "defaultValue": null, "required": true }, { "displayName": "Database name", "fieldName": "databaseName", "order": 2, "fieldType": "String", "defaultValue": null, "required": true }] }'
+   '{ "connectionDetailsType": "Postgres", "imagePath": "#postgresdb", "connectionDetailsClass": "com.fbi.engine.domain.details.PostgresConnectionDetails", "connectionProperties":[ { "displayName": "Server address", "fieldName": "serverIp", "order": 0, "fieldType": "String", "defaultValue": "localhost", "required": true }, { "displayName": "Port", "fieldName": "serverPort", "order" : 1, "fieldType": "Integer", "defaultValue": null, "required": true }, { "displayName": "Database name", "fieldName": "databaseName", "order": 2, "fieldType": "String", "defaultValue": null, "required": true }, { "displayName": "Connection params", "fieldName": "connectionParams", "order": 3, "fieldType": "String", "defaultValue": null, "required": false }] }'
 );
 INSERT INTO connection_type VALUES
 (
@@ -38,7 +38,7 @@ INSERT INTO connection_type VALUES
    '6',
    'Cockroachdb',
    'com.fbi.engine.query.factory.impl.CockroachdbFlairFactory',
-   '{ "connectionDetailsType": "Cockroachdb", "imagePath": "#cockroach-lab", "connectionDetailsClass": "com.fbi.engine.domain.details.CockroachdbConnectionDetails", "connectionProperties":[ { "displayName": "Server address", "fieldName": "serverIp", "order": 0, "fieldType": "String", "defaultValue": "localhost", "required": true }, { "displayName": "Port", "fieldName": "serverPort", "order" : 1, "fieldType": "Integer", "defaultValue": null, "required": true }, { "displayName": "Database name", "fieldName": "databaseName", "order": 2, "fieldType": "String", "defaultValue": null, "required": true }] }'
+   '{ "connectionDetailsType": "Cockroachdb", "imagePath": "#cockroach-lab", "connectionDetailsClass": "com.fbi.engine.domain.details.CockroachdbConnectionDetails", "connectionProperties":[ { "displayName": "Server address", "fieldName": "serverIp", "order": 0, "fieldType": "String", "defaultValue": "localhost", "required": true }, { "displayName": "Port", "fieldName": "serverPort", "order" : 1, "fieldType": "Integer", "defaultValue": null, "required": true }, { "displayName": "Database name", "fieldName": "databaseName", "order": 2, "fieldType": "String", "defaultValue": null, "required": true }, { "displayName": "Connection params", "fieldName": "connectionParams", "order": 3, "fieldType": "String", "defaultValue": null, "required": false }] }'
 );
 INSERT INTO connection_type VALUES
 (

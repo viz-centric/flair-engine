@@ -127,6 +127,7 @@ public class ConnectionResourceIntTest extends AbstractIntegrationTest {
 		testConnection.setDetails(connectionDTO.getDetails());
 		testConnection.setName(connectionDTO.getName());
 		testConnection.setDriver(connectionDTO.getDriver());
+		testConnection.setLinkId(connectionDTO.getLinkId());
 
 		restConnectionMockMvc.perform(post("/api/connections").contentType(TestUtil.APPLICATION_JSON_UTF8)
 				.content(TestUtil.convertObjectToJsonBytes(testConnection))).andExpect(status().isCreated());
@@ -181,23 +182,6 @@ public class ConnectionResourceIntTest extends AbstractIntegrationTest {
 		int databaseSizeBeforeTest = connectionRepository.findAll().size();
 		// set the field null
 		connection.setConnectionUsername(null);
-
-		// Create the Connection, which fails.
-		ConnectionDTO connectionDTO = connectionMapper.toDto(connection);
-
-		restConnectionMockMvc.perform(post("/api/connections").contentType(TestUtil.APPLICATION_JSON_UTF8)
-				.content(TestUtil.convertObjectToJsonBytes(connectionDTO))).andExpect(status().isBadRequest());
-
-		List<Connection> connectionList = connectionRepository.findAll();
-		assertThat(connectionList).hasSize(databaseSizeBeforeTest);
-	}
-
-	@Test
-	@Transactional
-	public void checkConnectionPasswordIsRequired() throws Exception {
-		int databaseSizeBeforeTest = connectionRepository.findAll().size();
-		// set the field null
-		connection.setConnectionPassword(null);
 
 		// Create the Connection, which fails.
 		ConnectionDTO connectionDTO = connectionMapper.toDto(connection);

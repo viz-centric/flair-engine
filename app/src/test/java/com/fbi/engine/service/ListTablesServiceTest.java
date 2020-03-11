@@ -110,6 +110,6 @@ public class ListTablesServiceTest {
 				.thenReturn(new CacheMetadata().setResult("{\"data\":[{\""));
 
 		Set<String> result = service.listTables("", "table_", 10, connection);
-		assertNull(result);
+		assertEquals(0, result.size());
 	}
 }
