@@ -15,10 +15,11 @@ import org.springframework.context.annotation.Profile;
 
 import java.io.File;
 
+import com.fbi.engine.ApplicationProperties;
+
 /**
  * Created by reddys on 02/07/2018.
  */
-
 @Configuration
 @RequiredArgsConstructor
 @Slf4j
@@ -26,27 +27,30 @@ import java.io.File;
 public class GrpcConfig extends GRpcServerBuilderConfigurer {
 
 	@Autowired
-	private GrpcProperties grpcProperties;
+	private ApplicationProperties properties;
 
 	@Override
-	public void configure(ServerBuilder<?> serverBuilder) {
+	public void configure(final ServerBuilder<?> serverBuilder) {
+		final GrpcServerProperties grpcProperties = properties.getGrpc();
 		log.info("Grpc config: Configuring grpc {}", grpcProperties.getTls());
 
 		if (grpcProperties.getTls().isEnabled()) {
-			NettyServerBuilder nsb = (NettyServerBuilder) serverBuilder;
+			final NettyServerBuilder nsb = (NettyServerBuilder) serverBuilder;
 			try {
 				nsb.sslContext(getSslContextBuilder().build());
-			} catch (Exception e) {
+			} catch (final Exception e) {
 				log.error("Grpc config: Error configuring ssl", e);
 			}
 		}
 	}
 
 	private SslContextBuilder getSslContextBuilder() {
+		final GrpcServerProperties grpcProperties = properties.getGrpc();
 		log.info("Grpc config: Configuring ssl cert {} key {} trust {}", grpcProperties.getTls().getCertChainFile(),
 				grpcProperties.getTls().getPrivateKeyFile(), grpcProperties.getTls().getTrustCertCollectionFile());
 
-		SslContextBuilder sslClientContextBuilder = SslContextBuilder.forServer(
+		final SslContextBuilder sslClientContextBuilder = SslContextBuilder
+				.forServer(
 				new File(grpcProperties.getTls().getCertChainFile()),
 				new File(grpcProperties.getTls().getPrivateKeyFile()));
 

@@ -1,14 +1,15 @@
 package com.fbi.engine.config;
 
-import lombok.Data;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
+import lombok.Getter;
+import lombok.Setter;
 
-@Component
-@Data
-@ConfigurationProperties("flair-cache")
+
+@Getter
+@Setter
 public class FlairCachingConfig {
 
     private boolean enabled;
+
+    private final GrpcClientProperties grpc = new GrpcClientProperties();
 
 }

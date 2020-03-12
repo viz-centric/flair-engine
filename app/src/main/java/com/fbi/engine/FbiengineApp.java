@@ -8,7 +8,6 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 
-import org.lognet.springboot.grpc.autoconfigure.GRpcServerProperties;
 import org.pf4j.spring.SpringPluginManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
@@ -25,6 +24,7 @@ import org.springframework.core.env.Environment;
 
 import com.fbi.engine.api.FlairFactory;
 import com.fbi.engine.config.DefaultProfileUtil;
+import com.fbi.engine.config.FlairCachingConfig;
 
 import io.github.jhipster.config.JHipsterConstants;
 import lombok.RequiredArgsConstructor;
@@ -50,7 +50,7 @@ public class FbiengineApp {
 	 */
 	@PostConstruct
 	public void initApplication() {
-		Collection<String> activeProfiles = Arrays.asList(env.getActiveProfiles());
+		final Collection<String> activeProfiles = Arrays.asList(env.getActiveProfiles());
 		if (activeProfiles.contains(JHipsterConstants.SPRING_PROFILE_DEVELOPMENT)
 				&& activeProfiles.contains(JHipsterConstants.SPRING_PROFILE_PRODUCTION)) {
 			log.error("You have misconfigured your application! It should not run "
@@ -70,40 +70,53 @@ public class FbiengineApp {
 	 * @throws UnknownHostException if the local host name could not be resolved
 	 *                              into an address
 	 */
-	public static void main(String[] args) throws UnknownHostException {
-		SpringApplication app = new SpringApplication(FbiengineApp.class);
+	public static void main(final String[] args) throws UnknownHostException {
+		final SpringApplication app = new SpringApplication(FbiengineApp.class);
 		DefaultProfileUtil.addDefaultProfile(app);
-		Environment env = app.run(args).getEnvironment();
+		final Environment env = app.run(args).getEnvironment();
 
 		if (Arrays.asList(env.getActiveProfiles()).contains("grpc")) {
-			String protocol = "grpc";
-			log.info(
-					"\n----------------------------------------------------------\n\t"
-							+ "Application '{}' is running! Access URLs:\n\t" + "Local: \t\t{}://localhost:{}\n\t"
-							+ "External: \t{}://{}:{}\n\t"
-							+ "Profile(s): \t{}\n----------------------------------------------------------",
-					env.getProperty("spring.application.name"), protocol, env.getProperty("grpc.port"), protocol,
-					InetAddress.getLocalHost().getHostAddress(), env.getProperty("grpc.port"), env.getActiveProfiles());
+			final String protocol = "grpc";
+			logServerInfo(env.getProperty("spring.application.name"), protocol, env.getProperty("grpc.port"),
+					InetAddress.getLocalHost().getHostAddress(), env.getActiveProfiles());
 		} else {
 			String protocol = "http";
 			if (env.getProperty("server.ssl.key-store") != null) {
 				protocol = "https";
 			}
-			log.info(
-					"\n----------------------------------------------------------\n\t"
-							+ "Application '{}' is running! Access URLs:\n\t" + "Local: \t\t{}://localhost:{}\n\t"
-							+ "External: \t{}://{}:{}\n\t"
-							+ "Profile(s): \t{}\n----------------------------------------------------------",
-					env.getProperty("spring.application.name"), protocol, env.getProperty("server.port"), protocol,
-					InetAddress.getLocalHost().getHostAddress(), env.getProperty("server.port"),
-					env.getActiveProfiles());
+			logServerInfo(env.getProperty("spring.application.name"), protocol, env.getProperty("server.port"),
+					InetAddress.getLocalHost().getHostAddress(), env.getActiveProfiles());
 
 		}
+	}
+
+	/**
+	 * Log server information on startup.
+	 * 
+	 * @param appName
+	 * @param protocol
+	 * @param port
+	 * @param host
+	 * @param profiles
+	 */
+	private static void logServerInfo(final String appName, final String protocol, final String port, final String host,
+			final String[] profiles) {
+		log.info(
+				"\n----------------------------------------------------------\n\t"
+						+ "Application '{}' is running! Access URLs:\n\t" + "Local: \t\t{}://localhost:{}\n\t"
+						+ "External: \t{}://{}:{}\n\t"
+						+ "Profile(s): \t{}\n----------------------------------------------------------",
+				appName, protocol, port, protocol, host, port, profiles);
 	}
 
 	@Bean
 	public SpringPluginManager pluginManager() {
 		return new SpringPluginManager();
+	}
+
+	@Bean
+	public FlairCachingConfig cachingConfig(final ApplicationProperties properties) {
+		return properties.getFlairCache();
 	}
 
 	@Bean
@@ -114,7 +127,7 @@ public class FbiengineApp {
 			private SpringPluginManager springPluginManager;
 
 			@Override
-			public void run(ApplicationArguments args) throws Exception {
+			public void run(final ApplicationArguments args) throws Exception {
 				final List<FlairFactory> plugins = springPluginManager.getExtensions(FlairFactory.class);
 				log.info(String.format("Number of plugins found: %d", plugins.size()));
 				plugins.forEach(x -> {

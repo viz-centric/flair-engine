@@ -8,6 +8,7 @@ import javax.net.ssl.SSLException;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
+import com.fbi.engine.ApplicationProperties;
 import com.fbi.engine.service.grpc.ManagedChannelFactory;
 import com.netflix.appinfo.InstanceInfo;
 import com.netflix.discovery.EurekaClient;
@@ -26,23 +27,25 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class ClientGrpcConfig {
 
+	private final static String CHANNEL_SERVICE_NAME = "flair-cache";
 	private final EurekaClient client;
-	private final GrpcProperties properties;
+	private final ApplicationProperties appProperties;
 
 	@Bean(name = "cacheChannelFactory")
 	public ManagedChannelFactory cacheChannelFactory() {
-		return createManagedChannelFactory("flair-cache", properties.getTls().isEnabled(),
+		final GrpcClientProperties properties = appProperties.getFlairCache().getGrpc();
+		return createManagedChannelFactory(CHANNEL_SERVICE_NAME, properties.getTls().isEnabled(),
 				properties.getTls().getCacheTrustCertCollectionFile(),
 				properties.getTls().getCacheClientCertChainFile(), properties.getTls().getCacheClientPrivateKeyFile());
 	}
 
-	private ManagedChannelFactory createManagedChannelFactory(String serviceName, boolean tlsEnabled,
-			String trustCertCollectionFile, String clientCertChainFile, String clientPrivateKeyFile) {
-		Supplier<ManagedChannel> dynamicManagedChannel = () -> {
+	private ManagedChannelFactory createManagedChannelFactory(final String serviceName, final boolean tlsEnabled,
+			final String trustCertCollectionFile, final String clientCertChainFile, final String clientPrivateKeyFile) {
+		final Supplier<ManagedChannel> dynamicManagedChannel = () -> {
 
 			final InstanceInfo instanceInfo = client.getNextServerFromEureka(serviceName, false);
 
-			NettyChannelBuilder nettyChannelBuilder = NettyChannelBuilder.forAddress(
+			final NettyChannelBuilder nettyChannelBuilder = NettyChannelBuilder.forAddress(
 					tlsEnabled ? instanceInfo.getHostName() : instanceInfo.getIPAddr(), instanceInfo.getPort());
 
 			log.info("GRPC config: Hostname {} IP {} port {} secure port {} secure vip {}", instanceInfo.getHostName(),
@@ -58,7 +61,7 @@ public class ClientGrpcConfig {
 				try {
 					nettyChannelBuilder.sslContext(
 							buildSslContext(trustCertCollectionFile, clientCertChainFile, clientPrivateKeyFile));
-				} catch (SSLException e) {
+				} catch (final SSLException e) {
 					log.error("GRPC config: error", e);
 				}
 			} else {
@@ -69,9 +72,9 @@ public class ClientGrpcConfig {
 		return new ManagedChannelFactory(dynamicManagedChannel);
 	}
 
-	private static SslContext buildSslContext(String trustCertCollectionFilePath, String clientCertChainFilePath,
-			String clientPrivateKeyFilePath) throws SSLException {
-		SslContextBuilder builder = GrpcSslContexts.forClient();
+	private static SslContext buildSslContext(final String trustCertCollectionFilePath,
+			final String clientCertChainFilePath, final String clientPrivateKeyFilePath) throws SSLException {
+		final SslContextBuilder builder = GrpcSslContexts.forClient();
 		if (trustCertCollectionFilePath != null) {
 			builder.trustManager(new File(trustCertCollectionFilePath));
 		}

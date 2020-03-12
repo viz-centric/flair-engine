@@ -8,16 +8,7 @@
 		<sqlFile encoding="UTF-8"
 			path="config/liquibase/seed/connectionType.sql" />
 
-		<loadData tableName="connection"
-			file="config/liquibase/seed/connection.csv">
-			<column name="id" type="numeric" />
-			<column name="name" type="string" />
-			<column name="connection_username" type="string" />
-			<column name="connection_password" type="string" />
-			<column name="connection_type_id" type="numeric" />
-			<column name="link_id" type="uuid" />
-			<column name="details" type="string" />
-		</loadData>
-
+		<sqlFile encoding="UTF-8"
+			path="config/liquibase/seed/connection.sql" />
 	</changeSet>
 </databaseChangeLog>

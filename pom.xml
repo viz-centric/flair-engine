@@ -123,16 +123,6 @@
 			<id>redshift</id>
 			<url>http://redshift-maven-repository.s3-website-us-east-1.amazonaws.com/release</url>
 		</repository>
-		<repository>
-			<id>local-maven-repo</id>
-			<url>file:///${project.basedir}/libs</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
 	</repositories>
 
 	<dependencyManagement>

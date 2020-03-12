@@ -1,5 +1,7 @@
 package com.fbi.engine;
 
+import com.fbi.engine.config.FlairCachingConfig;
+import com.fbi.engine.config.GrpcServerProperties;
 import com.fbi.engine.crypto.kdf.KdfType;
 import com.fbi.engine.crypto.symmetric.SymmetricCipherType;
 import lombok.Getter;
@@ -24,6 +26,10 @@ public class ApplicationProperties {
     private final Authentication authentication = new Authentication();
 
     private final Configuration configuration = new Configuration();
+
+    private final GrpcServerProperties grpc = new GrpcServerProperties();
+
+    private final FlairCachingConfig flairCache = new FlairCachingConfig();
 
     @Getter
     @Setter
