@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.fbi.engine.AbstractGrpcTest;
 import com.fbi.engine.AbstractIntegrationTest;
 import com.fbi.engine.domain.details.PostgresConnectionDetails;
 import com.fbi.engine.domain.schema.ConnectionPropertiesSchema;
@@ -54,7 +55,7 @@ import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
 
 @Transactional
-public class ConnectionGrpcServiceIntTest extends AbstractIntegrationTest {
+public class ConnectionGrpcServiceIntTest extends AbstractGrpcTest {
 
 	@Autowired
 	private ConnectionTypeService connectionTypeService;

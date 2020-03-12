@@ -29,6 +29,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.lognet.springboot.grpc.GRpcService;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
@@ -44,6 +45,7 @@ import static java.util.stream.Collectors.toList;
 @GRpcService
 @Slf4j
 @RequiredArgsConstructor
+@ConditionalOnProperty(value = "grpc.enabled", havingValue = "true")
 public class ConnectionGrpcService extends ConnectionServiceGrpc.ConnectionServiceImplBase {
 
 	private final ConnectionService connectionService;

@@ -8,7 +8,6 @@ import static io.github.jhipster.config.logging.LoggingUtils.setMetricsMarkerLog
 import java.util.HashMap;
 import java.util.Map;
 
-import org.lognet.springboot.grpc.autoconfigure.GRpcServerProperties;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,24 +28,21 @@ import io.github.jhipster.config.JHipsterProperties;
 @RefreshScope
 public class LoggingConfiguration {
 
-	public LoggingConfiguration(@Value("${spring.application.name}") String appName,
-			@Value("${server.port}") String serverPort, JHipsterProperties jHipsterProperties,
-			ObjectProvider<BuildProperties> buildProperties, ObjectMapper mapper,
-			GRpcServerProperties grpcServerProperties) throws JsonProcessingException {
+	public LoggingConfiguration(@Value("${spring.application.name}") final String appName,
+			@Value("${server.port}") final String serverPort, final JHipsterProperties jHipsterProperties,
+			final ObjectProvider<BuildProperties> buildProperties, final ObjectMapper mapper)
+			throws JsonProcessingException {
 
-		LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
+		final LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
 
-		Map<String, String> map = new HashMap<>();
+		final Map<String, String> map = new HashMap<>();
 		map.put("app_name", appName);
 		map.put("app_port", serverPort);
-		if (grpcServerProperties.isEnabled()) {
-			map.put("grpc_port", String.valueOf(grpcServerProperties.getPort()));
-		}
 		buildProperties.ifAvailable(it -> map.put("version", it.getVersion()));
-		String customFields = mapper.writeValueAsString(map);
+		final String customFields = mapper.writeValueAsString(map);
 
-		JHipsterProperties.Logging loggingProperties = jHipsterProperties.getLogging();
-		JHipsterProperties.Logging.Logstash logstashProperties = loggingProperties.getLogstash();
+		final JHipsterProperties.Logging loggingProperties = jHipsterProperties.getLogging();
+		final JHipsterProperties.Logging.Logstash logstashProperties = loggingProperties.getLogstash();
 
 		if (loggingProperties.isUseJsonFormat()) {
 			addJsonConsoleAppender(context, customFields);

@@ -29,7 +29,8 @@ import io.grpc.netty.NettyChannelBuilder;
 import io.grpc.testing.GrpcCleanupRule;
 
 @Profile("grpc")
-@SpringBootTest(classes = FbiengineApp.class, webEnvironment = WebEnvironment.RANDOM_PORT)
+@SpringBootTest(classes = FbiengineApp.class, webEnvironment = WebEnvironment.RANDOM_PORT, properties = {
+		"grpc.enabled=true" })
 @Transactional
 public abstract class AbstractGrpcTest extends AbstractIntegrationTest {
 

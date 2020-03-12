@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.lognet.springboot.grpc.GRpcServerBuilderConfigurer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
@@ -23,7 +24,7 @@ import com.fbi.engine.ApplicationProperties;
 @Configuration
 @RequiredArgsConstructor
 @Slf4j
-@Profile("grpc")
+@ConditionalOnProperty(value = "grpc.enabled", havingValue = "true")
 public class GrpcConfig extends GRpcServerBuilderConfigurer {
 
 	@Autowired
@@ -49,8 +50,7 @@ public class GrpcConfig extends GRpcServerBuilderConfigurer {
 		log.info("Grpc config: Configuring ssl cert {} key {} trust {}", grpcProperties.getTls().getCertChainFile(),
 				grpcProperties.getTls().getPrivateKeyFile(), grpcProperties.getTls().getTrustCertCollectionFile());
 
-		final SslContextBuilder sslClientContextBuilder = SslContextBuilder
-				.forServer(
+		final SslContextBuilder sslClientContextBuilder = SslContextBuilder.forServer(
 				new File(grpcProperties.getTls().getCertChainFile()),
 				new File(grpcProperties.getTls().getPrivateKeyFile()));
 

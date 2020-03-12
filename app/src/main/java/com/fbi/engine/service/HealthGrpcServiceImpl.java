@@ -1,9 +1,9 @@
 package com.fbi.engine.service;
 
 import org.lognet.springboot.grpc.GRpcService;
-import org.springframework.context.annotation.Profile;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 
 @GRpcService
-@Profile("!test")
+@ConditionalOnProperty(value = "grpc.enabled", havingValue = "true")
 public class HealthGrpcServiceImpl extends AbstractHealthGrpcService {
 }
