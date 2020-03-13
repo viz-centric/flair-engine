@@ -16,7 +16,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
@@ -107,6 +109,6 @@ public class ListTablesServiceTest {
             .thenReturn(new CacheMetadata().setResult("{\"data\":[{\""));
 
         Set<String> result = service.listTables("", "table_", 10, connection);
-        assertNull(result);
+        assertEquals(0, result.size());
     }
 }

@@ -9,7 +9,7 @@
     </parent>
     <groupId>com.fbi.engine</groupId>
     <artifactId>flair-engine</artifactId>
-    <version>2.2.5-SNAPSHOT</version>
+    <version>2.4.1-SNAPSHOT</version>
     <packaging>war</packaging>
     <name>flair-engine</name>
     <scm>
@@ -195,8 +195,8 @@
 
         <!-- our dependencies -->
         <flair-messages.version>0.3.10</flair-messages.version>
-        <flair-query-language.version>1.6.11</flair-query-language.version>
-        <project-bi-common.version>1.4.0</project-bi-common.version>
+        <flair-query-language.version>1.6.19</flair-query-language.version>
+        <project-bi-common.version>1.4.4</project-bi-common.version>
         <all-grpc.version>1.23.0</all-grpc.version>
         <lombok.version>1.18.8</lombok.version>
 
