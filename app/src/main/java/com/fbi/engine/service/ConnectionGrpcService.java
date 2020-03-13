@@ -57,7 +57,8 @@ public class ConnectionGrpcService extends ConnectionServiceGrpc.ConnectionServi
 	private final ConnectionHelperService connectionHelperService;
 
 	@Override
-	public void getConnection(GetConnectionRequest request, StreamObserver<GetConnectionResponse> responseObserver) {
+	public void getConnection(final GetConnectionRequest request,
+			final StreamObserver<GetConnectionResponse> responseObserver) {
 		log.info("Get connection request: {}", request);
 		ConnectionDTO connection = null;
 		if (StringUtils.isNotEmpty(request.getLinkId())) {
@@ -67,10 +68,9 @@ public class ConnectionGrpcService extends ConnectionServiceGrpc.ConnectionServi
 		}
 
 		if (connection == null) {
-			responseObserver
-					.onError(Status.INVALID_ARGUMENT.withDescription(CONNECTION_NOT_FOUND).asRuntimeException());
+			responseObserver.onError(Status.NOT_FOUND.withDescription(CONNECTION_NOT_FOUND).asRuntimeException());
 		} else {
-			Map<String, String> connectionParameters = connectionParameterService
+			final Map<String, String> connectionParameters = connectionParameterService
 					.getParametersByLinkId(connection.getLinkId());
 			responseObserver.onNext(GetConnectionResponse.newBuilder()
 					.setConnection(toConnectionProto(connection, connectionParameters)).build());
@@ -79,11 +79,11 @@ public class ConnectionGrpcService extends ConnectionServiceGrpc.ConnectionServi
 	}
 
 	@Override
-	public void deleteConnection(DeleteConnectionRequest request,
-			StreamObserver<DeleteConnectionResponse> responseObserver) {
+	public void deleteConnection(final DeleteConnectionRequest request,
+			final StreamObserver<DeleteConnectionResponse> responseObserver) {
 		log.info("Delete connection {}", request);
 
-		ConnectionDTO connectionDTO = connectionService.findById(request.getConnectionId());
+		final ConnectionDTO connectionDTO = connectionService.findById(request.getConnectionId());
 
 		connectionService.delete(request.getConnectionId());
 		connectionParameterService.deleteByLinkId(connectionDTO.getLinkId());
@@ -96,12 +96,13 @@ public class ConnectionGrpcService extends ConnectionServiceGrpc.ConnectionServi
 	}
 
 	@Override
-	public void getAllConnections(EmptyConnection request, StreamObserver<ConnectionResponses> responseObserver) {
+	public void getAllConnections(final EmptyConnection request,
+			final StreamObserver<ConnectionResponses> responseObserver) {
 		log.debug("Getting all connections");
-		List<ConnectionDTO> connections = connectionService.findAllAsDto();
-		ConnectionResponses responses = ConnectionResponses.newBuilder()
+		final List<ConnectionDTO> connections = connectionService.findAllAsDto();
+		final ConnectionResponses responses = ConnectionResponses.newBuilder()
 				.addAllConnection(connections.stream().map(connection -> {
-					Map<String, String> connectionParameters = connectionParameterService
+					final Map<String, String> connectionParameters = connectionParameterService
 							.getParametersByLinkId(connection.getLinkId());
 					return toConnectionProto(connection, connectionParameters);
 				}).collect(toList())).build();
@@ -110,11 +111,11 @@ public class ConnectionGrpcService extends ConnectionServiceGrpc.ConnectionServi
 	}
 
 	@Override
-	public void getConnectionTypes(GetAllConnectionTypesRequest request,
-			StreamObserver<ConnectionTypesResponses> responseObserver) {
+	public void getConnectionTypes(final GetAllConnectionTypesRequest request,
+			final StreamObserver<ConnectionTypesResponses> responseObserver) {
 		log.debug("Get connection types");
-		Page<ConnectionTypeDTO> all = connectionTypeService.findAll(PageRequest.of(0, Integer.MAX_VALUE));
-		List<ConnectionTypeDTO> connectionTypeDTOList = all.getContent();
+		final Page<ConnectionTypeDTO> all = connectionTypeService.findAll(PageRequest.of(0, Integer.MAX_VALUE));
+		final List<ConnectionTypeDTO> connectionTypeDTOList = all.getContent();
 
 		responseObserver
 				.onNext(ConnectionTypesResponses.newBuilder()
@@ -125,13 +126,14 @@ public class ConnectionGrpcService extends ConnectionServiceGrpc.ConnectionServi
 	}
 
 	@Override
-	public void testConnection(TestConnectionRequest request, StreamObserver<TestConnectionResponse> responseObserver) {
+	public void testConnection(final TestConnectionRequest request,
+			final StreamObserver<TestConnectionResponse> responseObserver) {
 		log.debug("Test connection connection {}", request.getConnection());
 
-		String result = connectionTestService
+		final String result = connectionTestService
 				.testConnection(connectionHelperService.toConnectionEntity(request.getConnection()));
 
-		TestConnectionResponse.Builder builder = TestConnectionResponse.newBuilder();
+		final TestConnectionResponse.Builder builder = TestConnectionResponse.newBuilder();
 
 		if (result != null) {
 			builder.setResult(result);
@@ -142,14 +144,15 @@ public class ConnectionGrpcService extends ConnectionServiceGrpc.ConnectionServi
 	}
 
 	@Override
-	public void saveConnection(SaveConnectionRequest request, StreamObserver<SaveConnectionResponse> responseObserver) {
+	public void saveConnection(final SaveConnectionRequest request,
+			final StreamObserver<SaveConnectionResponse> responseObserver) {
 		if (request.getConnection().getId() != 0) {
 			log.info("Cannot create a connection if ID is already present {}", request.getConnection().getId());
-			responseObserver.onError(Status.INVALID_ARGUMENT.withDescription(CONNECTION_EXISTS).asRuntimeException());
+			responseObserver.onError(Status.ALREADY_EXISTS.withDescription(CONNECTION_EXISTS).asRuntimeException());
 			return;
 		}
 
-		ConnectionDTO dto = new ConnectionDTO();
+		final ConnectionDTO dto = new ConnectionDTO();
 		dto.setName(request.getConnection().getName());
 		dto.setConnectionUsername(request.getConnection().getConnectionUsername());
 		dto.setConnectionPassword(request.getConnection().getConnectionPassword());
@@ -159,13 +162,13 @@ public class ConnectionGrpcService extends ConnectionServiceGrpc.ConnectionServi
 
 		log.info("Saving connection {}", dto);
 
-		ConnectionDTO createdConnection = connectionService.save(dto);
+		final ConnectionDTO createdConnection = connectionService.save(dto);
 
 		log.debug("Saved connection {}", createdConnection);
 
 		connectionParameterService.save(createdConnection.getLinkId(),
 				request.getConnection().getConnectionParametersMap());
-		Map<String, String> connectionParameters = connectionParameterService
+		final Map<String, String> connectionParameters = connectionParameterService
 				.getParametersByLinkId(createdConnection.getLinkId());
 
 		log.debug("Saved connection parameters {}", connectionParameters);
@@ -176,8 +179,8 @@ public class ConnectionGrpcService extends ConnectionServiceGrpc.ConnectionServi
 	}
 
 	@Override
-	public void updateConnection(UpdateConnectionRequest request,
-			StreamObserver<UpdateConnectionResponse> responseObserver) {
+	public void updateConnection(final UpdateConnectionRequest request,
+			final StreamObserver<UpdateConnectionResponse> responseObserver) {
 		if (request.getConnection().getId() == 0) {
 			log.info("Cannot update a connection if ID is not present {}", request.getConnection().getId());
 			responseObserver
@@ -185,7 +188,7 @@ public class ConnectionGrpcService extends ConnectionServiceGrpc.ConnectionServi
 			return;
 		}
 
-		UpdateConnectionDTO dto = new UpdateConnectionDTO();
+		final UpdateConnectionDTO dto = new UpdateConnectionDTO();
 		dto.setId(request.getConnection().getId());
 		dto.setName(request.getConnection().getName());
 		dto.setConnectionUsername(request.getConnection().getConnectionUsername());
@@ -196,13 +199,13 @@ public class ConnectionGrpcService extends ConnectionServiceGrpc.ConnectionServi
 
 		log.info("Updating connection {}", dto);
 
-		ConnectionDTO createdConnection = connectionService.updateConnection(dto);
+		final ConnectionDTO createdConnection = connectionService.updateConnection(dto);
 
 		log.debug("Updated connection {}", createdConnection);
 
 		connectionParameterService.save(createdConnection.getLinkId(),
 				request.getConnection().getConnectionParametersMap());
-		Map<String, String> connectionParameters = connectionParameterService
+		final Map<String, String> connectionParameters = connectionParameterService
 				.getParametersByLinkId(createdConnection.getLinkId());
 
 		log.debug("Updated connection parameters {}", connectionParameters);
@@ -213,34 +216,33 @@ public class ConnectionGrpcService extends ConnectionServiceGrpc.ConnectionServi
 	}
 
 	@Override
-	public void listTables(ListTablesRequest request, StreamObserver<ListTablesResponse> responseObserver) {
+	public void listTables(final ListTablesRequest request, final StreamObserver<ListTablesResponse> responseObserver) {
 		log.info("Listing tables for connection link id {}", request.getConnectionLinkId());
-		Set<String> tables = listTablesService.listTables(request.getConnectionLinkId(), request.getTableNameLike(),
-				request.getMaxEntries(),
+		final Set<String> tables = listTablesService.listTables(request.getConnectionLinkId(),
+				request.getTableNameLike(), request.getMaxEntries(),
 				connectionHelperService.toConnectionEntity(request.hasConnection() ? request.getConnection() : null));
 
 		if (tables == null) {
-			responseObserver
-					.onError(Status.INVALID_ARGUMENT.withDescription(CONNECTION_NOT_FOUND).asRuntimeException());
-			return;
-		}
+			responseObserver.onError(Status.NOT_FOUND.withDescription(CONNECTION_NOT_FOUND).asRuntimeException());
 
-		responseObserver
-				.onNext(ListTablesResponse.newBuilder()
-						.addAllTables(tables.stream()
-								.map(table -> ListTablesResponse.Table.newBuilder().setTableName(table).build())
-								.collect(Collectors.toList()))
-						.build());
-		responseObserver.onCompleted();
+		} else {
+			responseObserver.onNext(ListTablesResponse.newBuilder()
+					.addAllTables(tables.stream()
+							.map(table -> ListTablesResponse.Table.newBuilder().setTableName(table).build())
+							.collect(Collectors.toList()))
+					.build());
+			responseObserver.onCompleted();
+		}
 	}
 
-	private ConnectionType toConnectionTypeProto(ConnectionTypeDTO connType) {
+	private ConnectionType toConnectionTypeProto(final ConnectionTypeDTO connType) {
 		return ConnectionType.newBuilder().setBundleClass(connType.getBundleClass())
 				.setConnectionPropertiesSchema(createConnectionPropertiesSchema(connType)).setId(connType.getId())
 				.setName(connType.getName()).build();
 	}
 
-	private ConnectionType.ConnectionPropertiesSchema createConnectionPropertiesSchema(ConnectionTypeDTO connType) {
+	private ConnectionType.ConnectionPropertiesSchema createConnectionPropertiesSchema(
+			final ConnectionTypeDTO connType) {
 		return ConnectionType.ConnectionPropertiesSchema.newBuilder()
 				.setConnectionDetailsClass(connType.getConnectionPropertiesSchema().getConnectionDetailsClass())
 				.setConnectionDetailsType(connType.getConnectionPropertiesSchema().getConnectionDetailsType())
@@ -251,7 +253,7 @@ public class ConnectionGrpcService extends ConnectionServiceGrpc.ConnectionServi
 	}
 
 	private ConnectionType.ConnectionPropertiesSchema.ConnectionProperty createConnectionProperty(
-			ConnectionProperty connProperty) {
+			final ConnectionProperty connProperty) {
 		return ConnectionType.ConnectionPropertiesSchema.ConnectionProperty.newBuilder()
 				.setDisplayName(connProperty.getDisplayName()).setFieldName(connProperty.getFieldName())
 				.setOrder(connProperty.getOrder()).setFieldType(connProperty.getFieldType())
@@ -259,8 +261,8 @@ public class ConnectionGrpcService extends ConnectionServiceGrpc.ConnectionServi
 				.setRequired(connProperty.isRequired()).build();
 	}
 
-	private com.flair.bi.messages.Connection toConnectionProto(ConnectionDTO connection,
-			Map<String, String> connectionParameters) {
+	private com.flair.bi.messages.Connection toConnectionProto(final ConnectionDTO connection,
+			final Map<String, String> connectionParameters) {
 		return com.flair.bi.messages.Connection.newBuilder().setId(connection.getId()).setName(connection.getName())
 				.setConnectionUsername(connection.getConnectionUsername())
 				.setConnectionPassword(connection.getConnectionPassword())
