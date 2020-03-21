@@ -10,7 +10,6 @@ import com.fbi.engine.service.cache.CacheParams;
 import com.fbi.engine.service.cache.FlairCachingService;
 import com.project.bi.exceptions.CompilationException;
 import com.project.bi.exceptions.ExecutionException;
-import com.project.bi.query.FlairCompiler;
 import com.project.bi.query.FlairQuery;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -47,6 +46,12 @@ public class QueryServiceImpl implements QueryService {
         return result.orElseGet(() -> queryAndPutToCache(connection, flairQuery, cacheParams));
     }
 
+    @Override
+    public Query compileQuery(Connection connection, FlairQuery flairQuery) {
+        FlairFactory flairFactory = queryAbstractFactory.getQueryFactory(connection.getConnectionType().getBundleClass());
+        return compileQuery(flairQuery, flairFactory);
+    }
+
     private CacheMetadata queryAndPutToCache(Connection connection, FlairQuery flairQuery, CacheParams cacheParams) {
         boolean cachingEnabled = flairCachingConfig.isEnabled() && cacheParams.isWriteToCache();
         CacheMetadata queryResult = queryDatasource(connection, flairQuery);
@@ -63,17 +68,7 @@ public class QueryServiceImpl implements QueryService {
     private CacheMetadata queryDatasource(Connection connection, FlairQuery flairQuery) {
         FlairFactory flairFactory = queryAbstractFactory.getQueryFactory(connection.getConnectionType().getBundleClass());
 
-        FlairCompiler compiler = flairFactory.getCompiler();
-
-        StringWriter writer = new StringWriter();
-
-        try {
-            compiler.compile(flairQuery, writer);
-        } catch (CompilationException e) {
-            throw new RuntimeException(e);
-        }
-
-        final Query query = flairFactory.getQuery(flairQuery, writer.toString());
+        final Query query = compileQuery(flairQuery, flairFactory);
 
         log.info("Interpreted Query: {}", query.getQuery());
 
@@ -90,6 +85,18 @@ public class QueryServiceImpl implements QueryService {
         cacheMetadata.setResult(writer2.toString());
         cacheMetadata.setStale(false);
         return cacheMetadata;
+    }
+
+    private Query compileQuery(FlairQuery flairQuery, FlairFactory flairFactory) {
+        StringWriter writer = new StringWriter();
+
+        try {
+            flairFactory.getCompiler().compile(flairQuery, writer);
+        } catch (CompilationException e) {
+            throw new RuntimeException(e);
+        }
+
+        return flairFactory.getQuery(flairQuery, writer.toString());
     }
 
 }
