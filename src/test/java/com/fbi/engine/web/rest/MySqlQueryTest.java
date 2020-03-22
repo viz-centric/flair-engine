@@ -427,7 +427,7 @@ public class MySqlQueryTest {
 	       
 		    queryDto.setSource("ecommerce");
 	    		
-	    	expectedQuery="SELECT month(order_date) as month, hour(order_date) as hr, quarter(order_date) as qt, EXTRACT(YEAR_MONTH FROM order_date) as ym, yearWeek(order_date) as yw, CONCAT(YEAR(order_date),'-',QUARTER(order_date)) as yq FROM ecommerce";
+	    	expectedQuery="SELECT EXTRACT(month FROM STR_TO_DATE(order_date,'%Y-%m-%d H:%i:%s')) as month, hour(order_date) as hr, EXTRACT(quarter FROM STR_TO_DATE(order_date,'%Y-%m-%d H:%i:%s')) as qt, CONCAT(EXTRACT(YEAR FROM STR_TO_DATE(order_date,'%Y-%m-%d H:%i:%s')), '-', EXTRACT(MONTH FROM STR_TO_DATE(order_date,'%Y-%m-%d H:%i:%s'))) as ym, CONCAT(EXTRACT(YEAR FROM STR_TO_DATE(order_date,'%Y-%m-%d H:%i:%s')), '-', EXTRACT(WEEK FROM STR_TO_DATE(order_date,'%Y-%m-%d H:%i:%s'))) as yw, CONCAT(EXTRACT(YEAR FROM STR_TO_DATE(order_date,'%Y-%m-%d H:%i:%s')), '-', EXTRACT(QUARTER FROM STR_TO_DATE(order_date,'%Y-%m-%d H:%i:%s'))) as yq FROM ecommerce";
 
 			FlairQuery query = new FlairQuery(queryDto.interpret(), queryDto.isMetaRetrieved());
 
