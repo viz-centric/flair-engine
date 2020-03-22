@@ -405,7 +405,7 @@ public class AthenaQueryTest {
 
         queryDto.setSource("ecommerce");
 
-        expectedQuery="SELECT month(order_date) as month, hour(order_date) as hr, quarter(order_date) as qt, EXTRACT(YEAR_MONTH FROM order_date) as ym, yearWeek(order_date) as yw, CONCAT(YEAR(order_date),'-',QUARTER(order_date)) as yq FROM ecommerce";
+        expectedQuery="SELECT EXTRACT(month FROM parse_datetime(order_date,'yyyy-MM-dd HH:mm:ss')) as month, hour(order_date) as hr, EXTRACT(quarter FROM parse_datetime(order_date,'yyyy-MM-dd HH:mm:ss')) as qt, CONCAT(EXTRACT(YEAR FROM parse_datetime(order_date,'yyyy-MM-dd HH:mm:ss')), '-', EXTRACT(MONTH FROM parse_datetime(order_date,'yyyy-MM-dd HH:mm:ss'))) as ym, CONCAT(EXTRACT(YEAR FROM parse_datetime(order_date,'yyyy-MM-dd HH:mm:ss')), '-', EXTRACT(WEEK FROM parse_datetime(order_date,'yyyy-MM-dd HH:mm:ss'))) as yw, CONCAT(EXTRACT(YEAR FROM parse_datetime(order_date,'yyyy-MM-dd HH:mm:ss')), '-', EXTRACT(QUARTER FROM parse_datetime(order_date,'yyyy-MM-dd HH:mm:ss'))) as yq FROM ecommerce";
 
         FlairQuery query = new FlairQuery(queryDto.interpret(), queryDto.isMetaRetrieved());
 

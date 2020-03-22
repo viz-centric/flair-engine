@@ -3,9 +3,10 @@ package com.fbi.engine.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fbi.engine.domain.Connection;
-import com.fbi.engine.query.QueryServiceImpl;
+import com.fbi.engine.query.QueryService;
 import com.fbi.engine.service.cache.CacheMetadata;
 import com.fbi.engine.service.cache.CacheParams;
+import com.fbi.engine.service.dto.CompileQueryResultDTO;
 import com.fbi.engine.service.dto.ConnectionParameters;
 import com.fbi.engine.service.dto.RunQueryResultDTO;
 import com.fbi.engine.service.util.QueryGrpcUtils;
@@ -39,7 +40,7 @@ public abstract class AbstractQueryGrpcService extends QueryServiceGrpc.QuerySer
 
     private final ConnectionService connectionService;
 
-    private final QueryServiceImpl queryService;
+    private final QueryService queryService;
 
     private final QueryValidator queryValidator;
 
@@ -97,10 +98,13 @@ public abstract class AbstractQueryGrpcService extends QueryServiceGrpc.QuerySer
         QueryDTO queryDTO = QueryGrpcUtils.mapToQueryDTO(query);
         QueryValidationResult queryValidationResult = queryValidator.validate(queryDTO);
 
+        CompileQueryResultDTO result = queryRunnerService.compileQuery(queryDTO, query.getSourceId());
+        String rawQuery = result.getRawQuery();
+
         QueryValidationResponse queryValidationResponse = QueryValidationResponse.newBuilder()
             .setQueryId(query.getQueryId())
             .setUserId(query.getUserId())
-            .setRawQuery(queryDTO.interpret())
+            .setRawQuery(rawQuery)
             .setValidationResult(QueryValidationResponse.ValidationResult.newBuilder()
                 .setType(queryValidationResult.isError() ?
                     QueryValidationResponse.ValidationResult.ValidationResultType.INVALID :
