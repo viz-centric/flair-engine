@@ -21,6 +21,7 @@ import com.fbi.engine.query.QueryServiceImpl;
 import com.fbi.engine.service.cache.CacheMetadata;
 import com.fbi.engine.service.cache.CacheParams;
 import com.fbi.engine.service.constant.GrpcErrors;
+import com.fbi.engine.service.dto.CompileQueryResultDTO;
 import com.fbi.engine.service.dto.ConnectionParameters;
 import com.fbi.engine.service.dto.RunQueryResultDTO;
 import com.fbi.engine.service.validators.QueryValidationResult;
@@ -86,6 +87,8 @@ public class QueryGrpcServiceTest {
 
 		when(connectionService.findByConnectionLinkId("123")).thenReturn(new Connection());
 		when(queryValidator.validate(any(QueryDTO.class))).thenReturn(new QueryValidationResult());
+		when(queryRunService.compileQuery(any(QueryDTO.class), any(String.class)))
+				.thenReturn(new CompileQueryResultDTO("select * from;"));
 
 		doAnswer(invocationOnMock -> {
 			QueryValidationResponse queryValidationResponse = invocationOnMock.getArgument(0);

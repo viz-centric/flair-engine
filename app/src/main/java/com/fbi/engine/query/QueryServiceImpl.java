@@ -67,17 +67,7 @@ public class QueryServiceImpl implements QueryService {
 		final FlairFactory flairFactory = queryAbstractFactory
 				.getQueryFactory(connection.getConnectionType().getBundleClass());
 
-		final FlairCompiler compiler = flairFactory.getCompiler();
-
-		StringWriter writer = new StringWriter();
-
-		try {
-			compiler.compile(flairQuery, writer);
-		} catch (CompilationException e) {
-			throw new RuntimeException(e);
-		}
-
-		final Query query = new GenericQuery(writer.toString(), flairQuery.isPullMeta());
+		final Query query = compileQuery(flairQuery, flairFactory);
 
 		log.debug("Interpreted Query: {}", query.getQuery());
 
@@ -94,6 +84,23 @@ public class QueryServiceImpl implements QueryService {
 		cacheMetadata.setResult(writer2.toString());
 		cacheMetadata.setStale(false);
 		return cacheMetadata;
+	}
+
+	@Override
+	public Query compileQuery(Connection sources, FlairQuery query) {
+		FlairFactory flairFactory = queryAbstractFactory.getQueryFactory(sources.getConnectionType().getBundleClass());
+		return compileQuery(query, flairFactory);
+	}
+
+	private Query compileQuery(FlairQuery flairQuery, FlairFactory flairFactory) {
+		StringWriter writer = new StringWriter();
+
+		try {
+			flairFactory.getCompiler().compile(flairQuery, writer);
+		} catch (CompilationException e) {
+			throw new RuntimeException(e);
+		}
+		return new GenericQuery(writer.toString(), flairQuery.isPullMeta());
 	}
 
 }
