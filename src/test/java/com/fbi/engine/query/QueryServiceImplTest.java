@@ -24,7 +24,12 @@ import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class QueryServiceImplTest {
@@ -42,7 +47,7 @@ public class QueryServiceImplTest {
 
     @Before
     public void setUp() throws Exception {
-        service = new QueryServiceImpl(queryAbstractFactory, flairCachingService, flairCachingConfig);
+        service = new QueryServiceImpl(queryAbstractFactory, flairCachingService, flairCachingConfig, 1);
         when(flairCachingConfig.isEnabled()).thenReturn(true);
     }
 

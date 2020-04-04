@@ -47,7 +47,7 @@ public abstract class SqlQueryExecutor implements QueryExecutor {
                 log.debug("Connection closed");
             } else {
                 log.error("Failed to make connection!");
-                throw new ExecutionException("Failed to create a connection");
+                throw new ExecutionException("Failed to create a connection  " + connectionString);
             }
 
         } catch (SQLException e) {
