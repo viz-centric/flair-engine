@@ -47,7 +47,7 @@ public class QueryServiceImplTest {
 
     @Before
     public void setUp() throws Exception {
-        service = new QueryServiceImpl(queryAbstractFactory, flairCachingService, flairCachingConfig, 1);
+        service = new QueryServiceImpl(queryAbstractFactory, flairCachingService, flairCachingConfig);
         when(flairCachingConfig.isEnabled()).thenReturn(true);
     }
 

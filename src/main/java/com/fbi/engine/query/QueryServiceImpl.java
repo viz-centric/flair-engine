@@ -11,34 +11,21 @@ import com.fbi.engine.service.cache.FlairCachingService;
 import com.project.bi.exceptions.CompilationException;
 import com.project.bi.exceptions.ExecutionException;
 import com.project.bi.query.FlairQuery;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.StringWriter;
 import java.util.Optional;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class QueryServiceImpl implements QueryService {
 
-    private final ExecutorService executorService;
     private final QueryAbstractFactory queryAbstractFactory;
     private final FlairCachingService flairCachingService;
     private final FlairCachingConfig flairCachingConfig;
-
-    public QueryServiceImpl(QueryAbstractFactory queryAbstractFactory,
-                            FlairCachingService flairCachingService,
-                            FlairCachingConfig flairCachingConfig,
-                            @Value("${query-management.max-threads:10}") Integer maxQueryThreads) {
-        this.queryAbstractFactory = queryAbstractFactory;
-        this.flairCachingService = flairCachingService;
-        this.flairCachingConfig = flairCachingConfig;
-        this.executorService = Executors.newFixedThreadPool(maxQueryThreads);
-    }
 
     @Override
     public CacheMetadata executeQuery(final Connection connection, final FlairQuery flairQuery) {
@@ -85,30 +72,17 @@ public class QueryServiceImpl implements QueryService {
 
         log.info("Interpreted Query: {}", query.getQuery());
 
-        String result;
+        StringWriter writer2 = new StringWriter();
         try {
             QueryExecutor executor = flairFactory.getExecutor(connection);
-            log.debug("Pre-running a query {}", query.getQuery());
-            Future<String> future = executorService.submit(() -> {
-                log.debug("Executing a query {}", query.getQuery());
-                StringWriter writer = new StringWriter();
-                executor.execute(query, writer);
-                return writer.toString();
-            });
-            result = future.get();
-        } catch (InterruptedException e) {
-            throw new RuntimeException("Interruption happened while invoking query " + e.getMessage(), e);
-        } catch (java.util.concurrent.ExecutionException e) {
-            Throwable cause = e.getCause();
-            if (cause instanceof ExecutionException) {
-                log.error("Error happened while invoking query " + query.getQuery(), cause);
-                return new CacheMetadata();
-            }
-            throw new RuntimeException("Error happened while invoking query " + query.getQuery(), e);
+            executor.execute(query, writer2);
+        } catch (ExecutionException e) {
+            log.error("Error executing statement " + query.getQuery(), e);
+            return new CacheMetadata();
         }
 
         CacheMetadata cacheMetadata = new CacheMetadata();
-        cacheMetadata.setResult(result);
+        cacheMetadata.setResult(writer2.toString());
         cacheMetadata.setStale(false);
         return cacheMetadata;
     }
