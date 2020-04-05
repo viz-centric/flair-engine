@@ -2,6 +2,7 @@ package com.fbi.engine.query.executor;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fbi.engine.domain.Connection;
+import com.fbi.engine.domain.details.ConnectionDetails;
 import com.fbi.engine.domain.query.Query;
 import com.fbi.engine.query.QueryExecutor;
 import com.fbi.engine.query.convert.impl.ResultSetConverter;
@@ -20,6 +21,7 @@ import java.sql.SQLException;
 import java.sql.SQLTransientConnectionException;
 import java.sql.Statement;
 import java.util.Map;
+import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 
 
@@ -33,14 +35,23 @@ public abstract class SqlQueryExecutor implements QueryExecutor {
     private static final Map<ConnectionDataKey, ConnectionDataValue> connections = new ConcurrentHashMap<>();
     protected final Connection connection;
     protected final ObjectMapper objectMapper;
+    private final Properties connectionProperties = new Properties();
 
     @Override
     public void execute(Query query, Writer writer) throws ExecutionException {
-        String connectionString = this.connection.getDetails().getConnectionString();
+        invokeQuery(query, writer);
+    }
+
+    protected void invokeQuery(Query query, Writer writer) throws ExecutionException {
         String connectionUsername = this.connection.getConnectionUsername();
         String connectionPassword = this.connection.getConnectionPassword();
+        ConnectionDetails details = this.connection.getDetails();
 
-        ConnectionDataValue connectionDataValue = getConnection(connectionString, connectionUsername, connectionPassword);
+        ConnectionDataValue connectionDataValue = getConnection(
+                details,
+                connectionUsername,
+                connectionPassword
+        );
 
         try (java.sql.Connection c = connectionDataValue.getDataSource().getConnection()) {
             log.debug("Connection obtained, executing query {}", query.getQuery());
@@ -62,26 +73,35 @@ public abstract class SqlQueryExecutor implements QueryExecutor {
         }
     }
 
-    private static ConnectionDataValue getConnection(String jdbcUrl, String username, String password) {
+    private ConnectionDataValue getConnection(ConnectionDetails connectionDetails, String username, String password) {
         return connections.computeIfAbsent(
-                new ConnectionDataKey(jdbcUrl, username, password),
+                new ConnectionDataKey(connectionDetails, username, password),
                 connectionData -> createConnectionValue(connectionData)
         );
     }
 
-    private static ConnectionDataValue createConnectionValue(ConnectionDataKey connectionData) {
-        return new ConnectionDataValue(createHikariConnection(connectionData));
+    private ConnectionDataValue createConnectionValue(ConnectionDataKey connectionData) {
+        DataSource hikariConnection = createHikariConnection(connectionData, getConnectionProperties());
+        return new ConnectionDataValue(hikariConnection);
     }
 
-    private static DataSource createHikariConnection(ConnectionDataKey connectionData) {
-        log.info("Creating new hikari data source for {}", connectionData.getJdbcUrl());
+    protected Properties getConnectionProperties() {
+        return new Properties();
+    }
+
+    private static DataSource createHikariConnection(ConnectionDataKey connectionData, Properties dataSourceProperties) {
+        String connectionString = connectionData.getConnectionDetails().getConnectionString();
+
+        log.info("Creating new hikari data source for {}", connectionString);
+
         HikariConfig config = new HikariConfig();
+        config.setDataSourceProperties(dataSourceProperties);
         config.setReadOnly(true);
         config.setConnectionTimeout(30_000);
         config.setMaximumPoolSize(50);
         config.setMinimumIdle(1);
         config.setIdleTimeout(60_000);
-        config.setJdbcUrl(connectionData.getJdbcUrl());
+        config.setJdbcUrl(connectionString);
         config.setUsername(connectionData.getUsername());
         config.setPassword(connectionData.getPassword());
         return new HikariDataSource(config);
@@ -90,7 +110,7 @@ public abstract class SqlQueryExecutor implements QueryExecutor {
     @Data
     @RequiredArgsConstructor
     private static class ConnectionDataKey {
-        private final String jdbcUrl;
+        private final ConnectionDetails connectionDetails;
         private final String username;
         private final String password;
     }
