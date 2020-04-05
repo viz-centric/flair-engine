@@ -2,19 +2,27 @@ package com.fbi.engine.query.executor;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fbi.engine.domain.Connection;
+import com.fbi.engine.domain.details.ConnectionDetails;
 import com.fbi.engine.domain.query.Query;
 import com.fbi.engine.query.QueryExecutor;
 import com.fbi.engine.query.convert.impl.ResultSetConverter;
 import com.project.bi.exceptions.ExecutionException;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.Writer;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLTransientConnectionException;
 import java.sql.Statement;
+import java.util.Map;
+import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 /**
@@ -24,38 +32,92 @@ import java.sql.Statement;
 @RequiredArgsConstructor
 public abstract class SqlQueryExecutor implements QueryExecutor {
 
+    private static final Map<ConnectionDataKey, ConnectionDataValue> connections = new ConcurrentHashMap<>();
     protected final Connection connection;
-
     protected final ObjectMapper objectMapper;
+    private final Properties connectionProperties = new Properties();
 
     @Override
     public void execute(Query query, Writer writer) throws ExecutionException {
-        String connectionString = this.connection.getDetails().getConnectionString();
+        invokeQuery(query, writer);
+    }
+
+    protected void invokeQuery(Query query, Writer writer) throws ExecutionException {
         String connectionUsername = this.connection.getConnectionUsername();
         String connectionPassword = this.connection.getConnectionPassword();
-        try (java.sql.Connection c = DriverManager.getConnection(
-                connectionString,
-                connectionUsername,
-                connectionPassword)) {
-            if (c != null) {
-                try (Statement statement = c.createStatement()) {
-                    statement.execute(query.getQuery());
-                    try (ResultSet resultSet = statement.getResultSet()) {
-                        writer.write(new ResultSetConverter(objectMapper, query.isMetadataRetrieved()).convert(resultSet));
-                    }
-                }
-                log.debug("Connection closed");
-            } else {
-                log.error("Failed to make connection!");
-                throw new ExecutionException("Failed to create a connection");
-            }
+        ConnectionDetails details = this.connection.getDetails();
 
+        ConnectionDataValue connectionDataValue = getConnection(
+                details,
+                connectionUsername,
+                connectionPassword
+        );
+
+        try (java.sql.Connection c = connectionDataValue.getDataSource().getConnection()) {
+            log.debug("Connection obtained, executing query {}", query.getQuery());
+            try (Statement statement = c.createStatement()) {
+                statement.execute(query.getQuery());
+                try (ResultSet resultSet = statement.getResultSet()) {
+                    writer.write(new ResultSetConverter(objectMapper, query.isMetadataRetrieved()).convert(resultSet));
+                }
+            }
+        } catch (SQLTransientConnectionException e) {
+            log.error("Connection to database timed out, stacktrace: {}", e.getMessage());
+            throw new ExecutionException("Database timed out", e);
         } catch (SQLException e) {
             log.error("Connection to database failed, stacktrace: {}", e.getMessage());
             throw new ExecutionException("Database threw an exception", e);
         } catch (IOException e) {
-            log.error("Reading data failed, message: {}", e.getMessage());
+            log.error("Deserialization of data failed, message: {}", e.getMessage());
             throw new ExecutionException("Reading data failed", e);
         }
+    }
+
+    private ConnectionDataValue getConnection(ConnectionDetails connectionDetails, String username, String password) {
+        return connections.computeIfAbsent(
+                new ConnectionDataKey(connectionDetails, username, password),
+                connectionData -> createConnectionValue(connectionData)
+        );
+    }
+
+    private ConnectionDataValue createConnectionValue(ConnectionDataKey connectionData) {
+        DataSource hikariConnection = createHikariConnection(connectionData, getConnectionProperties());
+        return new ConnectionDataValue(hikariConnection);
+    }
+
+    protected Properties getConnectionProperties() {
+        return new Properties();
+    }
+
+    private static DataSource createHikariConnection(ConnectionDataKey connectionData, Properties dataSourceProperties) {
+        String connectionString = connectionData.getConnectionDetails().getConnectionString();
+
+        log.info("Creating new hikari data source for {}", connectionString);
+
+        HikariConfig config = new HikariConfig();
+        config.setDataSourceProperties(dataSourceProperties);
+        config.setReadOnly(true);
+        config.setConnectionTimeout(30_000);
+        config.setMaximumPoolSize(50);
+        config.setMinimumIdle(1);
+        config.setIdleTimeout(60_000);
+        config.setJdbcUrl(connectionString);
+        config.setUsername(connectionData.getUsername());
+        config.setPassword(connectionData.getPassword());
+        return new HikariDataSource(config);
+    }
+
+    @Data
+    @RequiredArgsConstructor
+    private static class ConnectionDataKey {
+        private final ConnectionDetails connectionDetails;
+        private final String username;
+        private final String password;
+    }
+
+    @Data
+    @RequiredArgsConstructor
+    private static class ConnectionDataValue {
+        private final DataSource dataSource;
     }
 }

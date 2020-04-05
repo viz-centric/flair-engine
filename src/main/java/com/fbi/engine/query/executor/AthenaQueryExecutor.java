@@ -4,16 +4,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fbi.engine.domain.Connection;
 import com.fbi.engine.domain.details.AthenaConnectionDetails;
 import com.fbi.engine.domain.query.Query;
-import com.fbi.engine.query.convert.impl.ResultSetConverter;
 import com.project.bi.exceptions.ExecutionException;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.IOException;
 import java.io.Writer;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Properties;
 
 @Slf4j
@@ -25,6 +19,11 @@ public class AthenaQueryExecutor extends SqlQueryExecutor {
 
     @Override
     public void execute(Query query, Writer writer) throws ExecutionException {
+        invokeQuery(query, writer);
+    }
+
+    @Override
+    protected Properties getConnectionProperties() {
         Properties info = new Properties();
         if (this.connection.getConnectionUsername() != null) {
             info.put("user", this.connection.getConnectionUsername());
@@ -37,29 +36,6 @@ public class AthenaQueryExecutor extends SqlQueryExecutor {
         info.put("S3OutputLocation", details.getS3OutputLocation());
         info.put("Workgroup", details.getWorkgroup());
         info.put("Schema", details.getDatabaseName());
-
-        try (java.sql.Connection c = DriverManager.getConnection(details.getConnectionString(), info)) {
-            if (c != null) {
-                try (Statement statement = c.createStatement()) {
-                    String rawQuery = query.getQuery();
-                    log.info("Executing raw query {}", rawQuery);
-                    statement.execute(rawQuery);
-                    try (ResultSet resultSet = statement.getResultSet()) {
-                        writer.write(new ResultSetConverter(objectMapper, query.isMetadataRetrieved()).convert(resultSet));
-                    }
-                }
-                log.debug("Connection closed");
-            } else {
-                log.error("Failed to make connection!");
-                throw new ExecutionException("Failed to create a connection");
-            }
-
-        } catch (SQLException e) {
-            log.error("Connection to database failed, stacktrace: {}", e.getMessage());
-            throw new ExecutionException("Database threw an exception", e);
-        } catch (IOException e) {
-            log.error("Reading data failed, message: {}", e.getMessage());
-            throw new ExecutionException("Reading data failed", e);
-        }
+        return info;
     }
 }
