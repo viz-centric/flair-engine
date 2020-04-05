@@ -42,15 +42,15 @@ public abstract class SqlQueryExecutor implements QueryExecutor {
 
         ConnectionDataValue connectionDataValue = getConnection(connectionString, connectionUsername, connectionPassword);
 
-        try {
-            java.sql.Connection c = connectionDataValue.getDataSource().getConnection();
+        try (java.sql.Connection c = connectionDataValue.getDataSource().getConnection()) {
+            log.debug("Connection obtained, executing query {}", query.getQuery());
             try (Statement statement = c.createStatement()) {
                 statement.execute(query.getQuery());
                 try (ResultSet resultSet = statement.getResultSet()) {
                     writer.write(new ResultSetConverter(objectMapper, query.isMetadataRetrieved()).convert(resultSet));
                 }
             }
-        } catch(SQLTransientConnectionException e ) {
+        } catch (SQLTransientConnectionException e) {
             log.error("Connection to database timed out, stacktrace: {}", e.getMessage());
             throw new ExecutionException("Database timed out", e);
         } catch (SQLException e) {
@@ -77,16 +77,13 @@ public abstract class SqlQueryExecutor implements QueryExecutor {
         log.info("Creating new hikari data source for {}", connectionData.getJdbcUrl());
         HikariConfig config = new HikariConfig();
         config.setReadOnly(true);
-        config.setConnectionTimeout(300_000);
+        config.setConnectionTimeout(30_000);
         config.setMaximumPoolSize(50);
         config.setMinimumIdle(1);
         config.setIdleTimeout(60_000);
         config.setJdbcUrl(connectionData.getJdbcUrl());
         config.setUsername(connectionData.getUsername());
         config.setPassword(connectionData.getPassword());
-        config.addDataSourceProperty("cachePrepStmts", "true");
-        config.addDataSourceProperty("prepStmtCacheSize", "250");
-        config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
         return new HikariDataSource(config);
     }
 
