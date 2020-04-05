@@ -616,11 +616,11 @@
             <artifactId>mysql-connector-java</artifactId>
             <version>${mysql-connector.version}</version>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>com.amazon.redshift</groupId>-->
-<!--            <artifactId>redshift-jdbc42-no-awssdk</artifactId>-->
-<!--            <version>1.2.37.1061</version>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>com.amazon.redshift</groupId>
+            <artifactId>redshift-jdbc42-no-awssdk</artifactId>
+            <version>1.2.37.1061</version>
+        </dependency>
         <dependency>
             <groupId>org.apache.hive</groupId>
             <artifactId>hive-jdbc</artifactId>

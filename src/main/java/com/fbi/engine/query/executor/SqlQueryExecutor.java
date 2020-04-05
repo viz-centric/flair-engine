@@ -16,6 +16,8 @@ import lombok.extern.slf4j.Slf4j;
 import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.Writer;
+import java.sql.Driver;
+import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLTransientConnectionException;
@@ -32,10 +34,27 @@ import java.util.concurrent.ConcurrentHashMap;
 @RequiredArgsConstructor
 public abstract class SqlQueryExecutor implements QueryExecutor {
 
+    static {
+        // Put the redshift driver at the end so that it doesn't
+        // conflict with postgres queries
+        java.util.Enumeration<Driver> drivers =  DriverManager.getDrivers();
+        while (drivers.hasMoreElements()) {
+            Driver d = drivers.nextElement();
+            if (d.getClass().getName().equals("com.amazon.redshift.jdbc.Driver")) {
+                try {
+                    DriverManager.deregisterDriver(d);
+                    DriverManager.registerDriver(d);
+                } catch (SQLException e) {
+                    throw new RuntimeException("Could not deregister redshift driver");
+                }
+                break;
+            }
+        }
+    }
+
     private static final Map<ConnectionDataKey, ConnectionDataValue> connections = new ConcurrentHashMap<>();
     protected final Connection connection;
     protected final ObjectMapper objectMapper;
-    private final Properties connectionProperties = new Properties();
 
     @Override
     public void execute(Query query, Writer writer) throws ExecutionException {
