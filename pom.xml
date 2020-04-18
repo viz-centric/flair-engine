@@ -195,7 +195,7 @@
 
         <!-- our dependencies -->
         <flair-messages.version>0.3.11</flair-messages.version>
-        <flair-query-language.version>1.6.21</flair-query-language.version>
+        <flair-query-language.version>1.6.23</flair-query-language.version>
         <project-bi-common.version>1.4.6</project-bi-common.version>
         <all-grpc.version>1.23.0</all-grpc.version>
         <lombok.version>1.18.8</lombok.version>
@@ -794,7 +794,7 @@
         <dependency>
             <groupId>local</groupId>
             <artifactId>AthenaJDBC42</artifactId>
-            <version>2.0.7</version>
+            <version>2.0.9</version>
         </dependency>
         <dependency>
             <groupId>net.snowflake</groupId>
