@@ -181,7 +181,7 @@ public abstract class AbstractQueryGrpcService extends QueryServiceGrpc.QuerySer
                                 .setReadFromCache(connectionParameters.isEnabled())
                                 .setWriteToCache(connectionParameters.isEnabled()));
 
-                log.debug("Query being executed result {}", cacheMetadata);
+                log.debug("Query being executed result {}: {}", cacheMetadata, cacheMetadata.getResult());
 
                 if (cacheMetadata.isStale()) {
                     log.debug("Cache is stale, fetching new data {}", cacheMetadata);
