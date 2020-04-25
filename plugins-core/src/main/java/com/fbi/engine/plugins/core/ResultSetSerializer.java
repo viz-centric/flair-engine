@@ -9,6 +9,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.sql.Types;
+import java.time.format.DateTimeFormatter;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -16,6 +17,8 @@ import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 
 public class ResultSetSerializer extends JsonSerializer<ResultSet> {
+
+	private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS");
 
 	@Override
 	public Class<ResultSet> handledType() {
@@ -122,7 +125,7 @@ public class ResultSetSerializer extends JsonSerializer<ResultSet> {
 						if (rs.wasNull()) {
 							jgen.writeNull();
 						} else {
-							provider.defaultSerializeDateValue(date, jgen);
+							jgen.writeString(DATE_TIME_FORMATTER.format(date.toLocalDate()));
 						}
 						break;
 
@@ -131,7 +134,7 @@ public class ResultSetSerializer extends JsonSerializer<ResultSet> {
 						if (rs.wasNull()) {
 							jgen.writeNull();
 						} else {
-							provider.defaultSerializeDateValue(time, jgen);
+							jgen.writeString(DATE_TIME_FORMATTER.format(time.toLocalDateTime()));
 						}
 						break;
 

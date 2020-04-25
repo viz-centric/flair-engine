@@ -23,8 +23,8 @@ public class AthenaQueryExecutor extends SqlQueryExecutor {
 
 	@Override
 	protected DataSourceDriver getDefaultDriver() {
-		try (InputStream is = this.getClass().getClassLoader().getResourceAsStream("AthenaJDBC42-2.0.7.jar")) {
-			return DataSourceDriverImpl.of(is, "AthenaJDBC42", "com.amazonaws.athena.jdbc", "2.0.7");
+		try (InputStream is = this.getClass().getClassLoader().getResourceAsStream("AthenaJDBC42-2.0.9.jar")) {
+			return DataSourceDriverImpl.of(is, "AthenaJDBC42", "com.amazonaws.athena.jdbc", "2.0.9");
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

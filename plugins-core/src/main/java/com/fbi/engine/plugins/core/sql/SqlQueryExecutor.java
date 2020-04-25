@@ -88,7 +88,7 @@ public abstract class SqlQueryExecutor implements QueryExecutor {
 		final String connectionPassword = this.connection.getConnectionProperties().getProperty(PASSWORD);
 
 		ConnectionDataValue connectionDataValue = getConnection(connectionString, connectionUsername,
-				connectionPassword);
+				connectionPassword, constructConnectionProperties());
 
 		try (final Connection c = connectionDataValue.getDataSource().getConnection()) {
 			if (c != null) {
@@ -118,29 +118,27 @@ public abstract class SqlQueryExecutor implements QueryExecutor {
 		}
 	}
 
-	private static ConnectionDataValue getConnection(String jdbcUrl, String username, String password) {
+	private static ConnectionDataValue getConnection(String jdbcUrl, String username, String password, Properties properties) {
 		return connections.computeIfAbsent(new ConnectionDataKey(jdbcUrl, username, password),
-				connectionData -> createConnectionValue(connectionData));
+				connectionData -> createConnectionValue(connectionData, properties));
 	}
 
-	private static ConnectionDataValue createConnectionValue(ConnectionDataKey connectionData) {
-		return new ConnectionDataValue(createHikariConnection(connectionData));
+	private static ConnectionDataValue createConnectionValue(ConnectionDataKey connectionData, Properties properties) {
+		return new ConnectionDataValue(createHikariConnection(connectionData, properties));
 	}
 
-	private static DataSource createHikariConnection(ConnectionDataKey connectionData) {
+	private static DataSource createHikariConnection(ConnectionDataKey connectionData, Properties properties) {
 		log.info("Creating new hikari data source for {}", connectionData.getJdbcUrl());
 		HikariConfig config = new HikariConfig();
+		config.setDataSourceProperties(properties);
 		config.setReadOnly(true);
-		config.setConnectionTimeout(300_000);
+		config.setConnectionTimeout(30_000);
 		config.setMaximumPoolSize(50);
 		config.setMinimumIdle(1);
 		config.setIdleTimeout(60_000);
 		config.setJdbcUrl(connectionData.getJdbcUrl());
 		config.setUsername(connectionData.getUsername());
 		config.setPassword(connectionData.getPassword());
-		config.addDataSourceProperty("cachePrepStmts", "true");
-		config.addDataSourceProperty("prepStmtCacheSize", "250");
-		config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
 		return new HikariDataSource(config);
 	}
 
