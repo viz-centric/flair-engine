@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fbi.engine.query.factory.FlairFactoryConst;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
@@ -16,9 +17,11 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.sql.Types;
+import java.time.format.DateTimeFormatter;
 
 public class ResultSetSerializer extends JsonSerializer<ResultSet> {
 
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern(FlairFactoryConst.DATASOURCE_TIMESTAMP_FORMAT);
 
     @Override
     public Class<ResultSet> handledType() {
@@ -125,7 +128,7 @@ public class ResultSetSerializer extends JsonSerializer<ResultSet> {
                             if (rs.wasNull()) {
                                 jgen.writeNull();
                             } else {
-                                provider.defaultSerializeDateValue(date, jgen);
+                                jgen.writeString(DATE_TIME_FORMATTER.format(date.toLocalDate()));
                             }
                             break;
 
@@ -134,7 +137,7 @@ public class ResultSetSerializer extends JsonSerializer<ResultSet> {
                             if (rs.wasNull()) {
                                 jgen.writeNull();
                             } else {
-                                provider.defaultSerializeDateValue(time, jgen);
+                                jgen.writeString(DATE_TIME_FORMATTER.format(time.toLocalDateTime()));
                             }
                             break;
 

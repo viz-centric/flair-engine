@@ -427,7 +427,7 @@ public class MySqlQueryTest {
 	       
 		    queryDto.setSource("ecommerce");
 	    		
-	    	expectedQuery="SELECT EXTRACT(month FROM STR_TO_DATE(order_date,'%Y-%m-%d H:%i:%s')) as month, hour(order_date) as hr, EXTRACT(quarter FROM STR_TO_DATE(order_date,'%Y-%m-%d H:%i:%s')) as qt, CONCAT(EXTRACT(YEAR FROM STR_TO_DATE(order_date,'%Y-%m-%d H:%i:%s')), '-', EXTRACT(MONTH FROM STR_TO_DATE(order_date,'%Y-%m-%d H:%i:%s'))) as ym, CONCAT(EXTRACT(YEAR FROM STR_TO_DATE(order_date,'%Y-%m-%d H:%i:%s')), '-', EXTRACT(WEEK FROM STR_TO_DATE(order_date,'%Y-%m-%d H:%i:%s'))) as yw, CONCAT(EXTRACT(YEAR FROM STR_TO_DATE(order_date,'%Y-%m-%d H:%i:%s')), '-', EXTRACT(QUARTER FROM STR_TO_DATE(order_date,'%Y-%m-%d H:%i:%s'))) as yq FROM ecommerce";
+	    	expectedQuery="SELECT EXTRACT(month FROM STR_TO_DATE(order_date,'%Y-%m-%d %H:%i:%s.%f')) as month, hour(order_date) as hr, EXTRACT(quarter FROM STR_TO_DATE(order_date,'%Y-%m-%d %H:%i:%s.%f')) as qt, CONCAT(EXTRACT(YEAR FROM STR_TO_DATE(order_date,'%Y-%m-%d %H:%i:%s.%f')), '-', EXTRACT(MONTH FROM STR_TO_DATE(order_date,'%Y-%m-%d %H:%i:%s.%f'))) as ym, CONCAT(EXTRACT(YEAR FROM STR_TO_DATE(order_date,'%Y-%m-%d %H:%i:%s.%f')), '-', EXTRACT(WEEK FROM STR_TO_DATE(order_date,'%Y-%m-%d %H:%i:%s.%f'))) as yw, CONCAT(EXTRACT(YEAR FROM STR_TO_DATE(order_date,'%Y-%m-%d %H:%i:%s.%f')), '-', EXTRACT(QUARTER FROM STR_TO_DATE(order_date,'%Y-%m-%d %H:%i:%s.%f'))) as yq FROM ecommerce";
 
 			FlairQuery query = new FlairQuery(queryDto.interpret(), queryDto.isMetaRetrieved());
 

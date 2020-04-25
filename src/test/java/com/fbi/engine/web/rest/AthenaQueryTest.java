@@ -405,7 +405,7 @@ public class AthenaQueryTest {
 
         queryDto.setSource("ecommerce");
 
-        expectedQuery="SELECT EXTRACT(month FROM parse_datetime(order_date,'yyyy-MM-dd HH:mm:ss.SSS')) as month, hour(order_date) as hr, EXTRACT(quarter FROM parse_datetime(order_date,'yyyy-MM-dd HH:mm:ss.SSS')) as qt, CONCAT(EXTRACT(YEAR FROM parse_datetime(order_date,'yyyy-MM-dd HH:mm:ss.SSS')), '-', EXTRACT(MONTH FROM parse_datetime(order_date,'yyyy-MM-dd HH:mm:ss.SSS'))) as ym, CONCAT(EXTRACT(YEAR FROM parse_datetime(order_date,'yyyy-MM-dd HH:mm:ss.SSS')), '-', EXTRACT(WEEK FROM parse_datetime(order_date,'yyyy-MM-dd HH:mm:ss.SSS'))) as yw, CONCAT(EXTRACT(YEAR FROM parse_datetime(order_date,'yyyy-MM-dd HH:mm:ss.SSS')), '-', EXTRACT(QUARTER FROM parse_datetime(order_date,'yyyy-MM-dd HH:mm:ss.SSS'))) as yq FROM ecommerce";
+        expectedQuery="SELECT EXTRACT(month FROM parse_datetime(order_date,'yyyy-MM-dd HH:mm:ss.SSSSSS')) as month, hour(order_date) as hr, EXTRACT(quarter FROM parse_datetime(order_date,'yyyy-MM-dd HH:mm:ss.SSSSSS')) as qt, CONCAT(EXTRACT(YEAR FROM parse_datetime(order_date,'yyyy-MM-dd HH:mm:ss.SSSSSS')), '-', EXTRACT(MONTH FROM parse_datetime(order_date,'yyyy-MM-dd HH:mm:ss.SSSSSS'))) as ym, CONCAT(EXTRACT(YEAR FROM parse_datetime(order_date,'yyyy-MM-dd HH:mm:ss.SSSSSS')), '-', EXTRACT(WEEK FROM parse_datetime(order_date,'yyyy-MM-dd HH:mm:ss.SSSSSS'))) as yw, CONCAT(EXTRACT(YEAR FROM parse_datetime(order_date,'yyyy-MM-dd HH:mm:ss.SSSSSS')), '-', EXTRACT(QUARTER FROM parse_datetime(order_date,'yyyy-MM-dd HH:mm:ss.SSSSSS'))) as yq FROM ecommerce";
 
         FlairQuery query = new FlairQuery(queryDto.interpret(), queryDto.isMetaRetrieved());
 
