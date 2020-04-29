@@ -25,6 +25,7 @@ public class ClientGrpcConfig {
 
     private final EurekaClient client;
     private final GrpcProperties properties;
+    private final FlairCachingConfig flairCachingConfig;
 
     @Bean(name = "cacheChannelFactory")
     public ManagedChannelFactory cacheChannelFactory() {
@@ -44,15 +45,23 @@ public class ClientGrpcConfig {
                                                               String clientPrivateKeyFile) {
         Supplier<ManagedChannel> dynamicManagedChannel = () -> {
 
-            final InstanceInfo instanceInfo = client.getNextServerFromEureka(serviceName, false);
+            NettyChannelBuilder nettyChannelBuilder;
 
-            NettyChannelBuilder nettyChannelBuilder = NettyChannelBuilder.forAddress(
-                    tlsEnabled ? instanceInfo.getHostName() : instanceInfo.getIPAddr(),
-                    instanceInfo.getPort());
+            if (flairCachingConfig.getUrl() == null) {
+                InstanceInfo instanceInfo = client.getNextServerFromEureka(serviceName, false);
 
-            log.info("GRPC config: Hostname {} IP {} port {} secure port {} secure vip {}",
-                    instanceInfo.getHostName(), instanceInfo.getIPAddr(), instanceInfo.getPort(), instanceInfo.getSecurePort(),
-                    instanceInfo.getSecureVipAddress());
+                nettyChannelBuilder = NettyChannelBuilder.forAddress(
+                        tlsEnabled ? instanceInfo.getHostName() : instanceInfo.getIPAddr(),
+                        instanceInfo.getPort());
+
+                log.info("GRPC config: Hostname {} IP {} port {} secure port {} secure vip {}",
+                        instanceInfo.getHostName(), instanceInfo.getIPAddr(), instanceInfo.getPort(), instanceInfo.getSecurePort(),
+                        instanceInfo.getSecureVipAddress());
+            } else {
+                nettyChannelBuilder = NettyChannelBuilder.forTarget(flairCachingConfig.getUrl());
+
+                log.info("GRPC config: Hostname url {}", flairCachingConfig.getUrl());
+            }
 
             if (tlsEnabled) {
 
