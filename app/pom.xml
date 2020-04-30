@@ -15,6 +15,7 @@
 	<name>flair-engine</name>
 
 	<properties>
+		<dockerfile.skip>false</dockerfile.skip>
 		<docker.postgres.host>localhost</docker.postgres.host>
 		<docker.postgres.username>postgres</docker.postgres.username>
 		<docker.postgres.password>admin</docker.postgres.password>
@@ -846,6 +847,7 @@
 							<goal>start</goal>
 						</goals>
 						<configuration>
+							<skip>${dockerfile.skip}</skip>
 							<images>
 								<image>
 									<name>postgres:9.6.12</name>
@@ -1389,7 +1391,8 @@
 		<profile>
 			<id>jenkins</id>
 			<properties>
-				<docker.postgres.host>it-postgres-database</docker.postgres.host>
+				<!-- <docker.postgres.host>it-postgres-database</docker.postgres.host> -->
+				<dockerfile.skip>true</dockerfile.skip>
 			</properties>
 		</profile>
 	</profiles>
