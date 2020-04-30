@@ -13,6 +13,8 @@ import com.project.bi.query.dto.SortDTO;
 import com.project.bi.query.expression.condition.ConditionExpression;
 import com.project.bi.query.expression.condition.impl.AndConditionExpression;
 import com.project.bi.query.expression.condition.impl.OrConditionExpression;
+import com.project.bi.query.expression.operations.Operation;
+
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
@@ -46,7 +48,8 @@ public final class QueryGrpcUtils {
 
 	private static List<HavingDTO> getListHavingDTO(List<Query.HavingHolder> havingList) {
 		return havingList.stream()
-				.map(h -> HavingDTO.builder().feature(toFieldDTO(h.getFeature())).value(h.getValue())
+				.map(h -> HavingDTO.builder().feature(toFieldDTO(h.getFeature()))
+				.operation(createOperation(h.getOperation()))
 						.comparatorType(HavingDTO.ComparatorType.valueOf(h.getComparatorType().name())).build())
 				.collect(Collectors.toList());
 	}
@@ -85,6 +88,13 @@ public final class QueryGrpcUtils {
 		}
 		return null;
 	}
+
+	private static Operation createOperation(String operationJson) {
+        return JacksonUtil.fromString(
+                operationJson,
+                Operation.class
+        );
+    }
 
 	private static ConditionExpression createConditionExpression(String conditionExpressionString,
 			Integer expressionType) {
