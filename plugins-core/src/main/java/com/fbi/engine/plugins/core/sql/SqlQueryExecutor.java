@@ -117,6 +117,9 @@ public abstract class SqlQueryExecutor implements QueryExecutor {
 		} catch (HikariPool.PoolInitializationException e) {
 			log.error("Failed to initialize connection pool", e);
 			throw new ExecutionException("Failed to initialize connection pool", e);
+		} catch (Exception e) {
+			log.error("Unknown exception occurred", e);
+			throw new ExecutionException("Unknown exception occurred", e);
 		} finally {
 			closeDriver(driver);
 		}
