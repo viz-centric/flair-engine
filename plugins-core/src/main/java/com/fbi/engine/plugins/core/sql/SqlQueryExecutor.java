@@ -24,6 +24,7 @@ import com.fbi.engine.plugins.core.ResultSetConverter;
 import com.project.bi.exceptions.ExecutionException;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import com.zaxxer.hikari.pool.HikariPool;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -113,12 +114,16 @@ public abstract class SqlQueryExecutor implements QueryExecutor {
 		} catch (IOException e) {
 			log.error("Reading data failed, message: {}", e.getMessage());
 			throw new ExecutionException("Reading data failed", e);
+		} catch (HikariPool.PoolInitializationException e) {
+			log.error("Failed to initialize connection pool", e);
+			throw new ExecutionException("Failed to initialize connection pool", e);
 		} finally {
 			closeDriver(driver);
 		}
 	}
 
-	private static ConnectionDataValue getConnection(String jdbcUrl, String username, String password, Properties properties) {
+	private static ConnectionDataValue getConnection(String jdbcUrl, String username, String password,
+			Properties properties) {
 		return connections.computeIfAbsent(new ConnectionDataKey(jdbcUrl, username, password),
 				connectionData -> createConnectionValue(connectionData, properties));
 	}
