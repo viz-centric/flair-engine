@@ -34,7 +34,8 @@ public class QueryServiceImpl implements QueryService {
 
     @Override
     public CacheMetadata executeQuery(Connection connection, FlairQuery flairQuery, CacheParams cacheParams) {
-        log.info("Executing flair query {}", flairQuery.getStatement());
+        log.info("Executing flair query {} with cache params {} cache enabled {}",
+                flairQuery.getStatement(), cacheParams, flairCachingConfig.isEnabled());
 
         boolean cachingEnabled = flairCachingConfig.isEnabled() && cacheParams.isReadFromCache();
         if (!cachingEnabled) {
@@ -42,6 +43,8 @@ public class QueryServiceImpl implements QueryService {
         }
 
         Optional<CacheMetadata> result = getCachedResult(connection, flairQuery);
+
+        log.info("Cached result found={} for query {}", result.isPresent(), flairQuery.getStatement());
 
         return result.orElseGet(() -> queryAndPutToCache(connection, flairQuery, cacheParams));
     }
