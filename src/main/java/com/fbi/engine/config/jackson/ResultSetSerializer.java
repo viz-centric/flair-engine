@@ -128,7 +128,7 @@ public class ResultSetSerializer extends JsonSerializer<ResultSet> {
                             if (rs.wasNull()) {
                                 jgen.writeNull();
                             } else {
-                                jgen.writeString(DATE_TIME_FORMATTER.format(date.toLocalDate()));
+                                jgen.writeString(DATE_TIME_FORMATTER.format(date.toLocalDate().atStartOfDay()));
                             }
                             break;
 
