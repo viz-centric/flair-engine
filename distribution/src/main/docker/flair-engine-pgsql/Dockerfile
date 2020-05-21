@@ -1,4 +1,4 @@
-FROM postgres:9.6
+FROM postgres:9.4
 
 ENV TLS_DIR /etc/pki/tls
 

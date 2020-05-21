@@ -30,6 +30,7 @@ public class ClientGrpcConfig {
 	private final static String CHANNEL_SERVICE_NAME = "flair-cache";
 	private final EurekaClient client;
 	private final ApplicationProperties appProperties;
+	private final FlairCachingConfig flairCachingConfig;
 
 	@Bean(name = "cacheChannelFactory")
 	public ManagedChannelFactory cacheChannelFactory() {
@@ -43,14 +44,7 @@ public class ClientGrpcConfig {
 			final String trustCertCollectionFile, final String clientCertChainFile, final String clientPrivateKeyFile) {
 		final Supplier<ManagedChannel> dynamicManagedChannel = () -> {
 
-			final InstanceInfo instanceInfo = client.getNextServerFromEureka(serviceName, false);
-
-			final NettyChannelBuilder nettyChannelBuilder = NettyChannelBuilder.forAddress(
-					tlsEnabled ? instanceInfo.getHostName() : instanceInfo.getIPAddr(), instanceInfo.getPort());
-
-			log.info("GRPC config: Hostname {} IP {} port {} secure port {} secure vip {}", instanceInfo.getHostName(),
-					instanceInfo.getIPAddr(), instanceInfo.getPort(), instanceInfo.getSecurePort(),
-					instanceInfo.getSecureVipAddress());
+			final NettyChannelBuilder nettyChannelBuilder = constructBuilder(serviceName, tlsEnabled);
 
 			if (tlsEnabled) {
 
@@ -70,6 +64,23 @@ public class ClientGrpcConfig {
 			return nettyChannelBuilder.build();
 		};
 		return new ManagedChannelFactory(dynamicManagedChannel);
+	}
+
+	private NettyChannelBuilder constructBuilder(String serviceName, boolean tlsEnabled) {
+		if (flairCachingConfig.getUrl() == null) {
+			log.info("GRPC config: Hostname url {}", flairCachingConfig.getUrl());
+			return NettyChannelBuilder.forTarget(flairCachingConfig.getUrl());
+		} else {
+			final InstanceInfo instanceInfo = client.getNextServerFromEureka(serviceName, false);
+
+			final NettyChannelBuilder nettyChannelBuilder = NettyChannelBuilder.forAddress(
+					tlsEnabled ? instanceInfo.getHostName() : instanceInfo.getIPAddr(), instanceInfo.getPort());
+
+			log.info("GRPC config: Hostname {} IP {} port {} secure port {} secure vip {}", instanceInfo.getHostName(),
+					instanceInfo.getIPAddr(), instanceInfo.getPort(), instanceInfo.getSecurePort(),
+					instanceInfo.getSecureVipAddress());
+			return nettyChannelBuilder;
+		}
 	}
 
 	private static SslContext buildSslContext(final String trustCertCollectionFilePath,

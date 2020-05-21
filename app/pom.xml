@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
@@ -24,10 +26,10 @@
 
 		<bc.version>1.59</bc.version>
 		<jzlib.version>1.1.3</jzlib.version>
-		<postgresql.version>42.2.10</postgresql.version>
+		<postgresql.version>9.4.1212</postgresql.version>
 		<!-- Build properties -->
 		<project.testresult.directory>${project.build.directory}/test-results</project.testresult.directory>
-		
+
 		<argLine>-Djava.security.egd=file:/dev/./urandom -Xmx256m</argLine>
 		<m2e.apt.activation>jdt_apt</m2e.apt.activation>
 		<run.addResources>false</run.addResources>
@@ -38,9 +40,9 @@
 		<profile.jenkins />
 
 		<!-- Dependency versions -->
-		<jhipster-dependencies.version>3.3.0</jhipster-dependencies.version>
+		<jhipster-dependencies.version>3.7.1</jhipster-dependencies.version>
 		<!-- The spring-boot version should match the one managed by https://mvnrepository.com/artifact/io.github.jhipster/jhipster-dependencies/${jhipster-dependencies.version} -->
-		<spring-boot.version>2.2.6.RELEASE</spring-boot.version>
+		<spring-boot.version>2.2.7.RELEASE</spring-boot.version>
 		<!-- The spring framework version should match the one managed by https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-dependencies/${spring-boot.version} -->
 		<spring.version>5.2.5.RELEASE</spring.version>
 		<spring-cloud.version>Hoxton.M2</spring-cloud.version>
@@ -49,7 +51,7 @@
 		<!-- The javassist version should match the one managed by https://mvnrepository.com/artifact/org.hibernate/hibernate-core/${hibernate.version} -->
 		<javassist.version>3.23.2-GA</javassist.version>
 		<!-- The liquibase version should match the one managed by https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-dependencies/${spring-boot.version} -->
-		<liquibase.version>3.24.0-GA</liquibase.version>
+		<liquibase.version>3.5.3</liquibase.version>
 		<liquibase-hibernate5.version>3.8</liquibase-hibernate5.version>
 
 		<!-- The hibernate version to be used to override default version of liquibase 
@@ -60,12 +62,11 @@
 		<archunit-junit5.version>0.12.0</archunit-junit5.version>
 		<mapstruct.version>1.3.1.Final</mapstruct.version>
 
-		<!-- Overridden to get metrics-jcache -->
-		<grpc-spring-boot-starter.version>3.5.3</grpc-spring-boot-starter.version>
 		<project.scm.id>github-credentials</project.scm.id>
 
 		<!-- our dependencies -->
-		<all-grpc.version>1.28.1</all-grpc.version>
+		<grpc-spring-boot-starter.version>3.5.3</grpc-spring-boot-starter.version>
+		<all-grpc.version>1.28.0</all-grpc.version>
 
 	</properties>
 	<dependencyManagement>
@@ -145,6 +146,10 @@
 			<version>${grpc-spring-boot-starter.version}</version>
 			<exclusions>
 				<exclusion>
+					<artifactId>grpc-netty</artifactId>
+					<groupId>io.grpc</groupId>
+				</exclusion>
+				<exclusion>
 					<groupId>io.grpc</groupId>
 					<artifactId>grpc-core</artifactId>
 				</exclusion>
@@ -184,6 +189,12 @@
 			<groupId>io.grpc</groupId>
 			<artifactId>grpc-services</artifactId>
 			<version>${all-grpc.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.grpc</groupId>
+			<artifactId>grpc-testing</artifactId>
+			<version>${all-grpc.version}</version>
+			<scope>test</scope>
 		</dependency>
 		<!-- GRPC::END -->
 		<dependency>
@@ -266,12 +277,7 @@
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>io.grpc</groupId>
-			<artifactId>grpc-testing</artifactId>
-			<version>${all-grpc.version}</version>
-			<scope>test</scope>
-		</dependency>
+
 		<dependency>
 			<groupId>com.jcraft</groupId>
 			<artifactId>jzlib</artifactId>
@@ -297,6 +303,7 @@
 		<dependency>
 			<groupId>org.liquibase</groupId>
 			<artifactId>liquibase-core</artifactId>
+			<version>${liquibase.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.postgresql</groupId>
@@ -570,64 +577,56 @@
 								<artifactItem>
 									<groupId>com.fbi.engine</groupId>
 									<artifactId>flair-engine-snowflake-plugin</artifactId>
-									<outputDirectory>${project.build.directory}/plugins</outputDirectory>
 									<type>jar</type>
 								</artifactItem>
 								<artifactItem>
 									<groupId>com.fbi.engine</groupId>
 									<artifactId>flair-engine-redshift-plugin</artifactId>
-									<outputDirectory>${project.build.directory}/plugins</outputDirectory>
 									<type>jar</type>
 								</artifactItem>
 								<artifactItem>
 									<groupId>com.fbi.engine</groupId>
 									<artifactId>flair-engine-postgres-plugin</artifactId>
-									<outputDirectory>${project.build.directory}/plugins</outputDirectory>
 									<type>jar</type>
 								</artifactItem>
 								<artifactItem>
 									<groupId>com.fbi.engine</groupId>
 									<artifactId>flair-engine-spark-plugin</artifactId>
-									<outputDirectory>${project.build.directory}/plugins</outputDirectory>
 									<type>jar</type>
 								</artifactItem>
 								<artifactItem>
 									<groupId>com.fbi.engine</groupId>
 									<artifactId>flair-engine-athena-plugin</artifactId>
-									<outputDirectory>${project.build.directory}/plugins</outputDirectory>
 									<type>jar</type>
 								</artifactItem>
 								<artifactItem>
 									<groupId>com.fbi.engine</groupId>
 									<artifactId>flair-engine-cockroachdb-plugin</artifactId>
-									<outputDirectory>${project.build.directory}/plugins</outputDirectory>
 									<type>jar</type>
 								</artifactItem>
 								<artifactItem>
 									<groupId>com.fbi.engine</groupId>
 									<artifactId>flair-engine-kafka-plugin</artifactId>
-									<outputDirectory>${project.build.directory}/plugins</outputDirectory>
 									<type>jar</type>
 								</artifactItem>
 								<artifactItem>
 									<groupId>com.fbi.engine</groupId>
 									<artifactId>flair-engine-mysql-plugin</artifactId>
-									<outputDirectory>${project.build.directory}/plugins</outputDirectory>
 									<type>jar</type>
 								</artifactItem>
 								<artifactItem>
 									<groupId>com.fbi.engine</groupId>
 									<artifactId>flair-engine-oracle-plugin</artifactId>
-									<outputDirectory>${project.build.directory}/plugins</outputDirectory>
 									<type>jar</type>
 								</artifactItem>
 								<artifactItem>
 									<groupId>com.fbi.engine</groupId>
 									<artifactId>flair-engine-mongodb-plugin</artifactId>
-									<outputDirectory>${project.build.directory}/plugins</outputDirectory>
 									<type>jar</type>
 								</artifactItem>
 							</artifactItems>
+							<overWriteSnapshots>true</overWriteSnapshots>
+							<outputDirectory>${project.build.directory}/plugins</outputDirectory>
 						</configuration>
 					</execution>
 				</executions>
@@ -755,7 +754,7 @@
 				</executions>
 				<configuration>
 					<systemPropertyVariables>
-						<pf4j.pluginsDir>${project.build.directory}/plugins</pf4j.pluginsDir>
+						<!-- <pf4j.pluginsDir>${project.build.directory}/plugins</pf4j.pluginsDir> -->
 						<pf4j.mode>development</pf4j.mode>
 					</systemPropertyVariables>
 					<mainClass>${start-class}</mainClass>

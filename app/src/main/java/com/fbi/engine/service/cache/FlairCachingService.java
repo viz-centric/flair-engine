@@ -96,8 +96,8 @@ public class FlairCachingService {
 	}
 
 	public void putResult(FlairQuery query, String connectionLinkId, String result, CacheParams cacheParams) {
-		log.info("Putting grpc result into a cache request for connection {} query {} result {} cacheParams {}",
-				connectionLinkId, query.getStatement(), result, cacheParams);
+		log.info("Putting grpc result into a cache request for connection {} query {} cacheParams {}",
+                connectionLinkId, query.getStatement(), cacheParams);
 
 		Optional<String> cacheKey = getCacheKey(query);
 

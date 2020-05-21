@@ -1,5 +1,7 @@
 package com.fbi.engine.config;
 
+import java.time.OffsetDateTime;
+import java.util.Optional;
 import java.util.concurrent.Executor;
 
 import javax.sql.DataSource;
@@ -13,6 +15,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.Profiles;
+import org.springframework.data.auditing.DateTimeProvider;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -25,13 +28,18 @@ import lombok.extern.slf4j.Slf4j;
 
 @Configuration
 @EnableJpaRepositories("com.fbi.engine.repository")
-@EnableJpaAuditing(auditorAwareRef = "springSecurityAuditorAware")
+@EnableJpaAuditing(auditorAwareRef = "springSecurityAuditorAware", dateTimeProviderRef = "auditingDateTimeProvider")
 @EnableTransactionManagement
 @Slf4j
 @RequiredArgsConstructor
 public class DatabaseConfiguration {
 
 	private final Environment env;
+
+	@Bean(name = "auditingDateTimeProvider")
+	public DateTimeProvider dateTimeProvider() {
+		return () -> Optional.of(OffsetDateTime.now());
+	}
 
 	@Bean
 	public SpringLiquibase liquibase(@Qualifier("taskExecutor") Executor executor,
@@ -49,15 +57,16 @@ public class DatabaseConfiguration {
 		liquibase.setChangeLog("classpath:config/liquibase/master.xml");
 		liquibase.setContexts(liquibaseProperties.getContexts());
 		liquibase.setDefaultSchema(liquibaseProperties.getDefaultSchema());
-		liquibase.setLiquibaseSchema(liquibaseProperties.getLiquibaseSchema());
-		liquibase.setLiquibaseTablespace(liquibaseProperties.getLiquibaseTablespace());
-		liquibase.setDatabaseChangeLogLockTable(liquibaseProperties.getDatabaseChangeLogLockTable());
-		liquibase.setDatabaseChangeLogTable(liquibaseProperties.getDatabaseChangeLogTable());
+		// TODO will be uncommented after liquibase is updated
+//		liquibase.setLiquibaseSchema(liquibaseProperties.getLiquibaseSchema());
+//		liquibase.setLiquibaseTablespace(liquibaseProperties.getLiquibaseTablespace());
+//		liquibase.setDatabaseChangeLogLockTable(liquibaseProperties.getDatabaseChangeLogLockTable());
+//		liquibase.setDatabaseChangeLogTable(liquibaseProperties.getDatabaseChangeLogTable());
 		liquibase.setDropFirst(liquibaseProperties.isDropFirst());
 		liquibase.setLabels(liquibaseProperties.getLabels());
 		liquibase.setChangeLogParameters(liquibaseProperties.getParameters());
 		liquibase.setRollbackFile(liquibaseProperties.getRollbackFile());
-		liquibase.setTestRollbackOnUpdate(liquibaseProperties.isTestRollbackOnUpdate());
+//		liquibase.setTestRollbackOnUpdate(liquibaseProperties.isTestRollbackOnUpdate());
 		if (env.acceptsProfiles(Profiles.of(JHipsterConstants.SPRING_PROFILE_NO_LIQUIBASE))) {
 			liquibase.setShouldRun(false);
 		} else {

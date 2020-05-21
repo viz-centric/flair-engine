@@ -18,7 +18,8 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 
 public class ResultSetSerializer extends JsonSerializer<ResultSet> {
 
-	private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS");
+	private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter
+			.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS");
 
 	@Override
 	public Class<ResultSet> handledType() {
@@ -125,10 +126,9 @@ public class ResultSetSerializer extends JsonSerializer<ResultSet> {
 						if (rs.wasNull()) {
 							jgen.writeNull();
 						} else {
-							jgen.writeString(DATE_TIME_FORMATTER.format(date.toLocalDate()));
+							jgen.writeString(DATE_TIME_FORMATTER.format(date.toLocalDate().atStartOfDay()));
 						}
 						break;
-
 					case Types.TIMESTAMP:
 						Timestamp time = rs.getTimestamp(i + 1);
 						if (rs.wasNull()) {

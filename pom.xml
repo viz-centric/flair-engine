@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.fbi.engine</groupId>
@@ -27,8 +29,8 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-		
-		<spring-boot.version>2.2.6.RELEASE</spring-boot.version>
+
+		<spring-boot.version>2.2.7.RELEASE</spring-boot.version>
 		<lombok.version>1.18.12</lombok.version>
 
 		<pf4j.version>3.2.0</pf4j.version>
@@ -37,8 +39,8 @@
 		<testcontainers.version>1.14.0</testcontainers.version>
 
 		<flair-messages.version>0.3.13</flair-messages.version>
-		<flair-query-language.version>1.6.25</flair-query-language.version>
-		<project-bi-common.version>1.4.9</project-bi-common.version>
+		<flair-query-language.version>1.6.26</flair-query-language.version>
+		<project-bi-common.version>1.4.10</project-bi-common.version>
 
 		<java.version>1.8</java.version>
 

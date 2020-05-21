@@ -3,13 +3,14 @@ package com.fbi.engine.config;
 import lombok.Getter;
 import lombok.Setter;
 
-
 @Getter
 @Setter
 public class FlairCachingConfig {
 
-    private boolean enabled;
+	private boolean enabled;
 
-    private final GrpcClientProperties grpc = new GrpcClientProperties();
+	private String url;
+
+	private final GrpcClientProperties grpc = new GrpcClientProperties();
 
 }

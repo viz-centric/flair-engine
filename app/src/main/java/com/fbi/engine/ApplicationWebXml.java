@@ -1,6 +1,7 @@
 package com.fbi.engine;
 
 import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 
 import com.fbi.engine.config.DefaultProfileUtil;
 
@@ -9,7 +10,7 @@ import com.fbi.engine.config.DefaultProfileUtil;
  * web.xml. This will be invoked only when the application is deployed to a
  * servlet container like Tomcat, JBoss etc.
  */
-public class ApplicationWebXml extends org.springframework.boot.web.servlet.support.SpringBootServletInitializer {
+public class ApplicationWebXml extends SpringBootServletInitializer {
 
 	@Override
 	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
