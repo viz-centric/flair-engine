@@ -5,12 +5,15 @@
 	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
 
 	<property name="now" value="now()" dbms="h2" />
+
 	<property name="now" value="current_timestamp"
 		dbms="postgresql" />
+
 	<property name="floatType" value="float4"
 		dbms="postgresql, h2" />
 	<property name="floatType" value="float"
 		dbms="mysql, oracle, mssql" />
+
 	<property name="jsonbColumn" value="jsonb" dbms="postgresql" />
 	<property name="jsonbColumn" value="text" dbms="h2" />
 
@@ -32,6 +35,8 @@
 
 			<!-- jhipster-needle-liquibase-add-column - JHipster will add columns 
 				here, do not remove -->
+
+
 			<column name="connection_properties_schema"
 				type="${jsonbColumn}">
 				<constraints nullable="false" />
