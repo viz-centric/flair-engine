@@ -10,8 +10,6 @@ import com.fbi.engine.service.dto.CompileQueryResultDTO;
 import com.fbi.engine.service.dto.ConnectionParameters;
 import com.fbi.engine.service.dto.RunQueryResultDTO;
 import com.fbi.engine.service.util.QueryGrpcUtils;
-import com.fbi.engine.service.validators.QueryValidationResult;
-import com.fbi.engine.service.validators.QueryValidator;
 import com.flair.bi.messages.Query;
 import com.flair.bi.messages.QueryAllRequest;
 import com.flair.bi.messages.QueryAllResponse;
@@ -41,8 +39,6 @@ public abstract class AbstractQueryGrpcService extends QueryServiceGrpc.QuerySer
     private final ConnectionService connectionService;
 
     private final QueryService queryService;
-
-    private final QueryValidator queryValidator;
 
     private final ObjectMapper objectMapper;
 
@@ -96,7 +92,6 @@ public abstract class AbstractQueryGrpcService extends QueryServiceGrpc.QuerySer
         }
 
         QueryDTO queryDTO = QueryGrpcUtils.mapToQueryDTO(query);
-        QueryValidationResult queryValidationResult = queryValidator.validate(queryDTO);
 
         CompileQueryResultDTO result = queryRunnerService.compileQuery(queryDTO, query.getSourceId());
         String rawQuery = result.getRawQuery();
@@ -106,16 +101,11 @@ public abstract class AbstractQueryGrpcService extends QueryServiceGrpc.QuerySer
             .setUserId(query.getUserId())
             .setRawQuery(rawQuery)
             .setValidationResult(QueryValidationResponse.ValidationResult.newBuilder()
-                .setType(queryValidationResult.isError() ?
-                    QueryValidationResponse.ValidationResult.ValidationResultType.INVALID :
-                    QueryValidationResponse.ValidationResult.ValidationResultType.SUCCESS)
-                .setData(queryValidationAsJson(queryValidationResult))
+                .setType(QueryValidationResponse.ValidationResult.ValidationResultType.SUCCESS)
                 .build())
             .build();
 
         responseObserver.onNext(queryValidationResponse);
-
-        log.debug("Sending query validation result: {}", queryValidationResult);
 
         responseObserver.onCompleted();
     }
@@ -150,9 +140,6 @@ public abstract class AbstractQueryGrpcService extends QueryServiceGrpc.QuerySer
                 log.debug("Streaming Request received: {}", query);
                 QueryDTO queryDTO = QueryGrpcUtils.mapToQueryDTO(query);
                 log.debug("Streaming Request DTO  received: {}", queryDTO);
-                if (!validateQuery(queryDTO, responseObserver)) {
-                    return;
-                }
 
                 Connection connection = connectionService.findByConnectionLinkId(query.getSourceId());
                 if (connection == null) {
@@ -247,34 +234,6 @@ public abstract class AbstractQueryGrpcService extends QueryServiceGrpc.QuerySer
             String paramsStr = queryExecutionAsJson(result);
             responseObserver.onError(Status.INTERNAL.withDescription(paramsStr).asRuntimeException());
         }
-    }
-
-    private boolean validateQuery(QueryDTO queryDTO, StreamObserver<?> responseObserver) {
-        QueryValidationResult result = queryValidator.validate(queryDTO);
-        log.debug("Validating query duplicates {}", result);
-        if (result.isError()) {
-            String paramsStr = queryValidationAsJson(result);
-            responseObserver.onError(Status.INVALID_ARGUMENT.withDescription(paramsStr).asRuntimeException());
-            return false;
-        }
-        return true;
-    }
-
-    private String queryValidationAsJson(QueryValidationResult result) {
-        HashMap<String, Object> params = new HashMap<>();
-        if (result.getErrors() != null) {
-            params.put("errorCode", result.getErrors().getErrorCode());
-        }
-        if (result.getFeatureNames() != null) {
-            params.put("features", result.getFeatureNames());
-        }
-        String paramsStr;
-        try {
-            paramsStr = objectMapper.writeValueAsString(params);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException("Error creating a json string from validation query parameters", e);
-        }
-        return paramsStr;
     }
 
     private String queryExecutionAsJson(RunQueryResultDTO result) {
