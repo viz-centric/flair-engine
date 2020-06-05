@@ -38,7 +38,7 @@
 
 		<testcontainers.version>1.14.0</testcontainers.version>
 
-		<flair-messages.version>0.3.13</flair-messages.version>
+		<flair-messages.version>0.3.16</flair-messages.version>
 		<flair-query-language.version>1.6.26</flair-query-language.version>
 		<project-bi-common.version>1.4.10</project-bi-common.version>
 

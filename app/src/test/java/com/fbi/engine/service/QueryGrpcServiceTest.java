@@ -24,8 +24,6 @@ import com.fbi.engine.service.constant.GrpcErrors;
 import com.fbi.engine.service.dto.CompileQueryResultDTO;
 import com.fbi.engine.service.dto.ConnectionParameters;
 import com.fbi.engine.service.dto.RunQueryResultDTO;
-import com.fbi.engine.service.validators.QueryValidationResult;
-import com.fbi.engine.service.validators.QueryValidator;
 import com.flair.bi.messages.Query;
 import com.flair.bi.messages.QueryResponse;
 import com.flair.bi.messages.QueryValidationResponse;
@@ -49,9 +47,6 @@ public class QueryGrpcServiceTest {
 	private QueryServiceImpl queryService;
 
 	@Mock
-	private QueryValidator queryValidator;
-
-	@Mock
 	private QueryRunnerService queryRunService;
 
 	private ObjectMapper objectMapper;
@@ -67,8 +62,8 @@ public class QueryGrpcServiceTest {
 	@BeforeEach
 	public void setUp() {
 		objectMapper = new ObjectMapper();
-		service = new MockQueryGrpcService(connectionService, queryService, queryValidator, objectMapper,
-				queryRunService, connectionParameterService, connectionHelperService);
+		service = new MockQueryGrpcService(connectionService, queryService, objectMapper, queryRunService,
+				connectionParameterService, connectionHelperService);
 	}
 
 	@Test
@@ -86,7 +81,6 @@ public class QueryGrpcServiceTest {
 		StreamObserver<QueryValidationResponse> observer = Mockito.mock(StreamObserver.class);
 
 		when(connectionService.findByConnectionLinkId("123")).thenReturn(new Connection());
-		when(queryValidator.validate(any(QueryDTO.class))).thenReturn(new QueryValidationResult());
 		when(queryRunService.compileQuery(any(QueryDTO.class), any(String.class)))
 				.thenReturn(new CompileQueryResultDTO("select * from;"));
 
@@ -94,7 +88,7 @@ public class QueryGrpcServiceTest {
 			QueryValidationResponse queryValidationResponse = invocationOnMock.getArgument(0);
 			assertEquals(QueryValidationResponse.ValidationResult.ValidationResultType.SUCCESS,
 					queryValidationResponse.getValidationResult().getType());
-			assertEquals("{}", queryValidationResponse.getValidationResult().getData());
+			assertEquals("", queryValidationResponse.getValidationResult().getData());
 			return queryValidationResponse;
 		}).when(observer).onNext(any(QueryValidationResponse.class));
 
@@ -127,42 +121,6 @@ public class QueryGrpcServiceTest {
 		verify(mock, times(0)).onError(any(StatusRuntimeException.class));
 		verify(mock, times(0)).onNext(any(QueryResponse.class));
 		verify(mock, times(1)).onCompleted();
-	}
-
-	@Test
-	public void getDataStreamNextFailsValidation() {
-		StreamObserver<QueryResponse> mock = Mockito.mock(StreamObserver.class);
-		StreamObserver<Query> dataStream = service.getDataStream(mock);
-
-		when(queryValidator.validate(any(QueryDTO.class)))
-				.thenReturn(new QueryValidationResult().setErrors(GrpcErrors.DUPLICATE_FEATURES));
-
-		dataStream.onNext(Query.newBuilder().build());
-
-		verify(mock, times(1)).onError(any(StatusRuntimeException.class));
-		verify(mock, times(0)).onNext(any(QueryResponse.class));
-		verify(mock, times(0)).onCompleted();
-	}
-
-	@Test
-	public void getDataStreamNextSucceedsValidation() {
-		StreamObserver<QueryResponse> mock = Mockito.mock(StreamObserver.class);
-		StreamObserver<Query> dataStream = service.getDataStream(mock);
-
-		when(queryValidator.validate(any(QueryDTO.class))).thenReturn(new QueryValidationResult());
-		Connection connection = new Connection();
-		connection.setLinkId("1234");
-		when(connectionService.findByConnectionLinkId(eq("one"))).thenReturn(connection);
-		when(queryService.executeQuery(any(Connection.class), any(FlairQuery.class), any(CacheParams.class)))
-				.thenReturn(new CacheMetadata().setResult("test"));
-		when(connectionParameterService.getParameters(eq("1234")))
-				.thenReturn(new ConnectionParameters(ImmutableMap.of()));
-
-		dataStream.onNext(Query.newBuilder().setSourceId("one").build());
-
-		verify(mock, times(0)).onError(any(StatusRuntimeException.class));
-		verify(mock, times(1)).onNext(any(QueryResponse.class));
-		verify(mock, times(0)).onCompleted();
 	}
 
 	@Test
