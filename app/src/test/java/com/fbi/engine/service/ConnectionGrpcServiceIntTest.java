@@ -190,7 +190,7 @@ public class ConnectionGrpcServiceIntTest extends AbstractGrpcTest {
 
 		doAnswer(invocationOnMock -> {
 			StatusRuntimeException e = invocationOnMock.getArgument(0);
-			assertEquals(Status.Code.INVALID_ARGUMENT, e.getStatus().getCode());
+			assertEquals(Status.Code.ALREADY_EXISTS, e.getStatus().getCode());
 			assertEquals(CONNECTION_EXISTS, e.getStatus().getDescription());
 			return null;
 		}).when(streamObserver).onError(any(Throwable.class));

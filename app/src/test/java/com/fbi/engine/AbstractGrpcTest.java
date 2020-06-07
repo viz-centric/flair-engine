@@ -30,7 +30,7 @@ import io.grpc.testing.GrpcCleanupRule;
 
 @Profile("grpc")
 @SpringBootTest(classes = FbiengineApp.class, webEnvironment = WebEnvironment.RANDOM_PORT, properties = {
-		"grpc.enabled=true" })
+		"grpc.enabled=true", "grpc.port=9999" })
 @Transactional
 public abstract class AbstractGrpcTest extends AbstractIntegrationTest {
 
