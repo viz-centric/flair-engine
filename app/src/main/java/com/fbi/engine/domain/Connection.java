@@ -54,7 +54,7 @@ public class Connection implements Serializable, DataSourceConnection {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
-	@SequenceGenerator(name = "sequenceGenerator")
+	@SequenceGenerator(name = "sequenceGenerator", sequenceName = "hibernate_sequence", initialValue = 1000, allocationSize = 50)
 	private Long id;
 
 	@NotNull

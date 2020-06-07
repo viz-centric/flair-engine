@@ -27,43 +27,43 @@ import java.io.Serializable;
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @Getter
 @Setter
-@EqualsAndHashCode(of = {"id"}, callSuper = false)
+@EqualsAndHashCode(of = { "id" }, callSuper = false)
 @NoArgsConstructor
 @AllArgsConstructor
 public class ConnectionParameter implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
-    @SequenceGenerator(name = "sequenceGenerator")
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
+	@SequenceGenerator(name = "sequenceGenerator", sequenceName = "hibernate_sequence", initialValue = 1000, allocationSize = 50)
+	private Long id;
 
-    @NotNull
-    @Size(max = 100)
-    @Column(name = "name", length = 100, nullable = false)
-    private String name;
+	@NotNull
+	@Size(max = 100)
+	@Column(name = "name", length = 100, nullable = false)
+	private String name;
 
-    @Size(max = 255)
-    @Column(name = "value")
-    private String value;
+	@Size(max = 255)
+	@Column(name = "value")
+	private String value;
 
-    @Size(max = 255)
-    private String linkId;
+	@Size(max = 255)
+	private String linkId;
 
-    public ConnectionParameter name(String name) {
-        this.name = name;
-        return this;
-    }
+	public ConnectionParameter name(String name) {
+		this.name = name;
+		return this;
+	}
 
-    public ConnectionParameter value(String value) {
-        this.value = value;
-        return this;
-    }
+	public ConnectionParameter value(String value) {
+		this.value = value;
+		return this;
+	}
 
-    public ConnectionParameter linkId(String linkId) {
-        this.linkId = linkId;
-        return this;
-    }
+	public ConnectionParameter linkId(String linkId) {
+		this.linkId = linkId;
+		return this;
+	}
 
 }

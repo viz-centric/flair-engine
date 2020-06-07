@@ -26,31 +26,30 @@ import java.io.Serializable;
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @Getter
 @Setter
-@EqualsAndHashCode(of = {"id"}, callSuper = false)
+@EqualsAndHashCode(of = { "id" }, callSuper = false)
 @NoArgsConstructor
 @AllArgsConstructor
 public class ConnectionType extends BaseEntity implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
-    @SequenceGenerator(name = "sequenceGenerator")
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
+	@SequenceGenerator(name = "sequenceGenerator", sequenceName = "hibernate_sequence", initialValue = 1000, allocationSize = 50)
+	private Long id;
 
-    @NotNull
-    @Size(max = 100)
-    @Column(name = "name", length = 100, nullable = false)
-    private String name;
+	@NotNull
+	@Size(max = 100)
+	@Column(name = "name", length = 100, nullable = false)
+	private String name;
 
-    @NotNull
-    @Column(name = "bundle_class", nullable = false)
-    private String bundleClass;
+	@NotNull
+	@Column(name = "bundle_class", nullable = false)
+	private String bundleClass;
 
-
-    @NotNull
-    @Type(type = "jsonb")
-    @Column(name = "connection_properties_schema", columnDefinition = "jsonb")
-    private ConnectionPropertiesSchema connectionPropertiesSchema;
+	@NotNull
+	@Type(type = "jsonb")
+	@Column(name = "connection_properties_schema", columnDefinition = "jsonb")
+	private ConnectionPropertiesSchema connectionPropertiesSchema;
 
 }
