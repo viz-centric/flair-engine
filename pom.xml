@@ -194,9 +194,9 @@
         <project.scm.id>github-credentials</project.scm.id>
 
         <!-- our dependencies -->
-        <flair-messages.version>0.3.16</flair-messages.version>
-        <flair-query-language.version>1.6.27</flair-query-language.version>
-        <project-bi-common.version>1.4.10</project-bi-common.version>
+        <flair-messages.version>0.3.17</flair-messages.version>
+        <flair-query-language.version>1.6.28</flair-query-language.version>
+        <project-bi-common.version>1.4.11</project-bi-common.version>
         <all-grpc.version>1.23.0</all-grpc.version>
         <lombok.version>1.18.8</lombok.version>
 
