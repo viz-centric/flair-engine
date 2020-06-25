@@ -1,5 +1,8 @@
 package com.fbi.engine.service.util;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.fbi.engine.config.jackson.JacksonUtil;
 import com.fbi.engine.service.constant.GrpcConstants;
 import com.flair.bi.messages.Query;
@@ -9,16 +12,14 @@ import com.project.bi.query.dto.ConditionExpressionDTO;
 import com.project.bi.query.dto.FieldDTO;
 import com.project.bi.query.dto.HavingDTO;
 import com.project.bi.query.dto.QueryDTO;
-import com.project.bi.query.dto.QuerySourceDTO;
+import com.project.bi.query.dto.QuerySource;
 import com.project.bi.query.dto.SortDTO;
 import com.project.bi.query.expression.condition.ConditionExpression;
 import com.project.bi.query.expression.condition.impl.AndConditionExpression;
 import com.project.bi.query.expression.condition.impl.OrConditionExpression;
 import com.project.bi.query.expression.operations.Operation;
-import org.apache.commons.lang3.StringUtils;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import org.apache.commons.lang3.StringUtils;
 
 public final class QueryGrpcUtils {
 
@@ -43,8 +44,11 @@ public final class QueryGrpcUtils {
         return queryDTO;
     }
 
-    private static QuerySourceDTO getQuerySourceDTO(Query.QuerySource querySource) {
-        return new QuerySourceDTO(querySource.getSource(), querySource.getAlias());
+    private static QuerySource getQuerySourceDTO(Query.QuerySource querySource) {
+        if (!StringUtils.isEmpty(querySource.getSource())) {
+            return JacksonUtil.fromString(querySource.getSource(), QuerySource.class);
+        }
+        return null;
     }
 
     private static List<FieldDTO> toFieldDTOs(List<Query.Field> fieldsList) {
