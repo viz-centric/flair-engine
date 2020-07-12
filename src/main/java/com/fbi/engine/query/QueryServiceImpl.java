@@ -8,6 +8,7 @@ import com.fbi.engine.query.factory.FlairFactory;
 import com.fbi.engine.service.cache.CacheMetadata;
 import com.fbi.engine.service.cache.CacheParams;
 import com.fbi.engine.service.cache.FlairCachingService;
+import com.fbi.engine.service.cache.QueryParams;
 import com.project.bi.exceptions.CompilationException;
 import com.project.bi.exceptions.ExecutionException;
 import com.project.bi.query.FlairQuery;
@@ -28,25 +29,38 @@ public class QueryServiceImpl implements QueryService {
     private final FlairCachingConfig flairCachingConfig;
 
     @Override
+    public CacheMetadata executeQuery(Connection connection, FlairQuery flairQuery, CacheParams cacheParams) {
+        return executeQuery(QueryParams.builder()
+                .connection(connection)
+                .flairQuery(flairQuery)
+                .cacheParams(cacheParams)
+                .build());
+    }
+
+    @Override
     public CacheMetadata executeQuery(final Connection connection, final FlairQuery flairQuery) {
         return executeQuery(connection, flairQuery, new CacheParams());
     }
 
     @Override
-    public CacheMetadata executeQuery(Connection connection, FlairQuery flairQuery, CacheParams cacheParams) {
+    public CacheMetadata executeQuery(QueryParams queryParams) {
+        FlairQuery flairQuery = queryParams.getFlairQuery();
+        CacheParams cacheParams = queryParams.getCacheParams();
+        Connection connection = queryParams.getConnection();
+
         log.info("Executing flair query {} with cache params {} cache enabled {}",
                 flairQuery.getStatement(), cacheParams, flairCachingConfig.isEnabled());
 
         boolean cachingEnabled = flairCachingConfig.isEnabled() && cacheParams.isReadFromCache();
         if (!cachingEnabled) {
-            return queryAndPutToCache(connection, flairQuery, cacheParams);
+            return queryAndPutToCache(queryParams);
         }
 
         Optional<CacheMetadata> result = getCachedResult(connection, flairQuery);
 
         log.info("Cached result found={} for query {}", result.isPresent(), flairQuery.getStatement());
 
-        return result.orElseGet(() -> queryAndPutToCache(connection, flairQuery, cacheParams));
+        return result.orElseGet(() -> queryAndPutToCache(queryParams));
     }
 
     @Override
@@ -55,7 +69,10 @@ public class QueryServiceImpl implements QueryService {
         return compileQuery(flairQuery, flairFactory);
     }
 
-    private CacheMetadata queryAndPutToCache(Connection connection, FlairQuery flairQuery, CacheParams cacheParams) {
+    private CacheMetadata queryAndPutToCache(QueryParams queryParams) {
+        FlairQuery flairQuery = queryParams.getFlairQuery();
+        CacheParams cacheParams = queryParams.getCacheParams();
+        Connection connection = queryParams.getConnection();
         boolean cachingEnabled = flairCachingConfig.isEnabled() && cacheParams.isWriteToCache();
         CacheMetadata queryResult = queryDatasource(connection, flairQuery);
         if (cachingEnabled) {

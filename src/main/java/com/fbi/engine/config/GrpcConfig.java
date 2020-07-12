@@ -1,5 +1,6 @@
 package com.fbi.engine.config;
 
+import com.fbi.engine.config.grpc.JwtServerInterceptor;
 import io.grpc.ServerBuilder;
 import io.grpc.netty.shaded.io.grpc.netty.GrpcSslContexts;
 import io.grpc.netty.shaded.io.grpc.netty.NettyServerBuilder;
@@ -9,7 +10,7 @@ import io.grpc.netty.shaded.io.netty.handler.ssl.SslProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.lognet.springboot.grpc.GRpcServerBuilderConfigurer;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
@@ -25,12 +26,14 @@ import java.io.File;
 @Profile("grpc")
 public class GrpcConfig extends GRpcServerBuilderConfigurer {
 
-    @Autowired
-    private GrpcProperties grpcProperties;
+    private final GrpcProperties grpcProperties;
+    @Value("${app.auth.jwt-key:}")
+    private String jwtKey;
 
     @Override
     public void configure(ServerBuilder<?> serverBuilder) {
         log.info("Grpc config: Configuring grpc {}", grpcProperties.getTls());
+        serverBuilder.intercept(new JwtServerInterceptor(jwtKey));
         if (grpcProperties.getTls().isEnabled()) {
             NettyServerBuilder nsb = (NettyServerBuilder) serverBuilder;
             try {

@@ -2,6 +2,7 @@ package com.fbi.engine.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fbi.engine.config.grpc.Constant;
 import com.fbi.engine.domain.Connection;
 import com.fbi.engine.query.QueryService;
 import com.fbi.engine.service.cache.CacheMetadata;
@@ -119,6 +120,8 @@ public abstract class AbstractQueryGrpcService extends QueryServiceGrpc.QuerySer
         } else {
             QueryDTO queryDTO = QueryGrpcUtils.mapToQueryDTO(request);
             log.info("Interpreted query {}", queryDTO.toString());
+            String userName = Constant.USERNAME_CONTEXT_KEY.get();
+            log.debug("Unary Request received for username: {}", userName);
             FlairQuery flairQuery = new FlairQuery(queryDTO.interpret(), queryDTO.isMetaRetrieved());
             String retVal = queryService.executeQuery(connection, flairQuery).getResult();
             responseObserver.onNext(QueryResponse.newBuilder()
@@ -140,6 +143,9 @@ public abstract class AbstractQueryGrpcService extends QueryServiceGrpc.QuerySer
                 log.debug("Streaming Request received: {}", query);
                 QueryDTO queryDTO = QueryGrpcUtils.mapToQueryDTO(query);
                 log.debug("Streaming Request DTO  received: {}", queryDTO);
+
+                String userName = Constant.USERNAME_CONTEXT_KEY.get();
+                log.debug("Streaming Request received for username: {}", userName);
 
                 Connection connection = connectionService.findByConnectionLinkId(query.getSourceId());
                 if (connection == null) {

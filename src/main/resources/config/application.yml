@@ -12,6 +12,10 @@ grpc:
 flair-cache:
   enabled: false
 
+app:
+  auth:
+    jwt-key: "dGhpcyBpcyBhIHRvcCBzZWNyZXQga2V5IDE1MXEtLTI0IyUk"
+
 ---
 spring:
   profiles: dev
