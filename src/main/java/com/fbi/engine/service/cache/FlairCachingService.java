@@ -2,6 +2,7 @@ package com.fbi.engine.service.cache;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fbi.engine.domain.query.Query;
 import com.fbi.engine.service.grpc.ManagedChannelFactory;
 import com.flair.bi.messages.CacheServiceGrpc;
 import com.flair.bi.messages.GetCacheResponse;
@@ -24,7 +25,6 @@ import java.util.Optional;
 public class FlairCachingService {
 
     private final ManagedChannelFactory cacheChannelFactory;
-    private final ObjectMapper objectMapper = new ObjectMapper();
     private volatile CacheServiceGrpc.CacheServiceBlockingStub cacheServiceBlockingStub;
     private volatile ManagedChannel channel;
 
@@ -50,21 +50,14 @@ public class FlairCachingService {
         return channel;
     }
 
-    public Optional<CacheMetadata> getResult(FlairQuery query, String connectionLinkId) {
+    public Optional<CacheMetadata> getResult(String query, String connectionLinkId) {
         log.info("Making a grpc caching request for connection {} query {}",
                 connectionLinkId, query);
-
-        Optional<String> cacheKey = getCacheKey(query);
-
-        if (!cacheKey.isPresent()) {
-            log.error("Error creating a cache key for query " + query + " and connection " + connectionLinkId);
-            return Optional.empty();
-        }
 
         GetCacheResponse cache;
         try {
             cache = getCacheServiceStub().getCache(com.flair.bi.messages.GetCacheRequest.newBuilder()
-                    .setKey(cacheKey.get())
+                    .setKey(query)
                     .setTable(connectionLinkId)
                     .build());
         } catch(StatusRuntimeException e) {
@@ -80,39 +73,25 @@ public class FlairCachingService {
         }
 
         CacheMetadata cacheMetadata = new CacheMetadata();
+        cacheMetadata.setInterpretedQuery(query);
         cacheMetadata.setDateCreated(Instant.ofEpochSecond(cache.getMetadata().getDateCreated()));
         cacheMetadata.setResult(cache.getResult());
         cacheMetadata.setStale(cache.getMetadata().getStale());
         return Optional.of(cacheMetadata);
     }
 
-    private Optional<String> getCacheKey(FlairQuery query) {
-        try {
-            return Optional.of(objectMapper.writeValueAsString(query));
-        } catch (JsonProcessingException e) {
-            return Optional.empty();
-        }
-    }
-
     @Async
-    public void putResultAsync(FlairQuery query, String connectionLinkId, String result, CacheParams cacheParams) {
+    public void putResultAsync(String query, String connectionLinkId, String result, CacheParams cacheParams) {
         putResult(query, connectionLinkId, result, cacheParams);
     }
 
-    public void putResult(FlairQuery query, String connectionLinkId, String result, CacheParams cacheParams) {
+    public void putResult(String query, String connectionLinkId, String result, CacheParams cacheParams) {
         log.info("Putting grpc result into a cache request for connection {} query {} cacheParams {}",
-                connectionLinkId, query.getStatement(), cacheParams);
-
-        Optional<String> cacheKey = getCacheKey(query);
-
-        if (!cacheKey.isPresent()) {
-            log.error("Error creating a cache key for query " + query + " and connection " + connectionLinkId);
-            return;
-        }
+                connectionLinkId, query, cacheParams);
 
         try {
             getCacheServiceStub().putCache(com.flair.bi.messages.PutCacheRequest.newBuilder()
-                    .setKey(cacheKey.get())
+                    .setKey(query)
                     .setTable(connectionLinkId)
                     .setValue(result)
                     .setRefreshAfterDate(Instant.now().plus(cacheParams.getRefreshAfterMinutes(), ChronoUnit.MINUTES).getEpochSecond())

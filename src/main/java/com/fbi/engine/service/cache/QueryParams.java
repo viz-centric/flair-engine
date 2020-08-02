@@ -5,6 +5,8 @@ import com.project.bi.query.FlairQuery;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.Map;
+
 @Data
 @Builder
 public class QueryParams {
@@ -13,5 +15,6 @@ public class QueryParams {
     private final FlairQuery flairQuery;
     private final CacheParams cacheParams;
     private final String username;
+    private final Map<String, Object> metadata;
 
 }

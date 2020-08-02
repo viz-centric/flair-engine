@@ -80,7 +80,7 @@ public class FlairCachingServiceIntTest extends AbstractGrpcTest {
             return null;
         }).when(cacheService).getCache(any(GetCacheRequest.class), any(StreamObserver.class));
 
-        Optional<CacheMetadata> result = flairCachingService.getResult(new FlairQuery("select 1", false), "connectId");
+        Optional<CacheMetadata> result = flairCachingService.getResult("select 1", "connectId");
         assertEquals("test", result.get().getResult());
         assertEquals(dateCreated, result.get().getDateCreated().getEpochSecond());
         assertTrue(result.get().isStale());
@@ -98,7 +98,7 @@ public class FlairCachingServiceIntTest extends AbstractGrpcTest {
             return null;
         }).when(cacheService).getCache(any(GetCacheRequest.class), any(StreamObserver.class));
 
-        Optional<CacheMetadata> result = flairCachingService.getResult(new FlairQuery("select 1", false), "connectId");
+        Optional<CacheMetadata> result = flairCachingService.getResult("select 1", "connectId");
         assertFalse(result.isPresent());
     }
 
@@ -115,7 +115,7 @@ public class FlairCachingServiceIntTest extends AbstractGrpcTest {
             return null;
         }).when(cacheService).putCache(any(PutCacheRequest.class), any(StreamObserver.class));
 
-        flairCachingService.putResult(new FlairQuery("select 1", false), "connectId", "result", new CacheParams());
+        flairCachingService.putResult("select 1", "connectId", "result", new CacheParams());
 
         assertTrue(cacheSaved.get());
     }

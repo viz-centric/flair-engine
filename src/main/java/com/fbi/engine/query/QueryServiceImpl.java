@@ -5,6 +5,8 @@ import com.fbi.engine.domain.Connection;
 import com.fbi.engine.domain.query.Query;
 import com.fbi.engine.query.abstractfactory.QueryAbstractFactory;
 import com.fbi.engine.query.factory.FlairFactory;
+import com.fbi.engine.service.auditlog.QueryAuditLogService;
+import com.fbi.engine.service.auditlog.QueryLogParams;
 import com.fbi.engine.service.cache.CacheMetadata;
 import com.fbi.engine.service.cache.CacheParams;
 import com.fbi.engine.service.cache.FlairCachingService;
@@ -27,6 +29,7 @@ public class QueryServiceImpl implements QueryService {
     private final QueryAbstractFactory queryAbstractFactory;
     private final FlairCachingService flairCachingService;
     private final FlairCachingConfig flairCachingConfig;
+    private final QueryAuditLogService queryAuditLogService;
 
     @Override
     public CacheMetadata executeQuery(Connection connection, FlairQuery flairQuery, CacheParams cacheParams) {
@@ -56,7 +59,7 @@ public class QueryServiceImpl implements QueryService {
             return queryAndPutToCache(queryParams);
         }
 
-        Optional<CacheMetadata> result = getCachedResult(connection, flairQuery);
+        Optional<CacheMetadata> result = getCachedResult(queryParams);
 
         log.info("Cached result found={} for query {}", result.isPresent(), flairQuery.getStatement());
 
@@ -70,27 +73,46 @@ public class QueryServiceImpl implements QueryService {
     }
 
     private CacheMetadata queryAndPutToCache(QueryParams queryParams) {
-        FlairQuery flairQuery = queryParams.getFlairQuery();
         CacheParams cacheParams = queryParams.getCacheParams();
         Connection connection = queryParams.getConnection();
         boolean cachingEnabled = flairCachingConfig.isEnabled() && cacheParams.isWriteToCache();
-        CacheMetadata queryResult = queryDatasource(connection, flairQuery);
+        CacheMetadata queryResult = queryDatasource(queryParams);
         if (cachingEnabled) {
-            flairCachingService.putResultAsync(flairQuery, connection.getLinkId(), queryResult.getResult(), cacheParams);
+            flairCachingService.putResultAsync(queryResult.getInterpretedQuery(), connection.getLinkId(), queryResult.getResult(), cacheParams);
         }
         return queryResult;
     }
 
-    private Optional<CacheMetadata> getCachedResult(Connection connection, FlairQuery flairQuery) {
-        return flairCachingService.getResult(flairQuery, connection.getLinkId());
+    private Optional<CacheMetadata> getCachedResult(QueryParams queryParams) {
+        FlairQuery flairQuery = queryParams.getFlairQuery();
+        Connection connection = queryParams.getConnection();
+        FlairFactory flairFactory = queryAbstractFactory.getQueryFactory(connection.getConnectionType().getBundleClass());
+        Query query = compileQuery(flairQuery, flairFactory);
+
+        queryAuditLogService.recordQuery(QueryLogParams.builder()
+                .connection(connection)
+                .query(query.getQuery())
+                .username(queryParams.getUsername())
+                .meta(queryParams.getMetadata())
+                .build());
+
+        return flairCachingService.getResult(query.getQuery(), connection.getLinkId());
     }
 
-    private CacheMetadata queryDatasource(Connection connection, FlairQuery flairQuery) {
-        FlairFactory flairFactory = queryAbstractFactory.getQueryFactory(connection.getConnectionType().getBundleClass());
+    private CacheMetadata queryDatasource(QueryParams queryParams) {
+        Connection connection = queryParams.getConnection();
+        FlairQuery flairQuery = queryParams.getFlairQuery();
 
-        final Query query = compileQuery(flairQuery, flairFactory);
+        FlairFactory flairFactory = queryAbstractFactory.getQueryFactory(connection.getConnectionType().getBundleClass());
+        Query query = compileQuery(flairQuery, flairFactory);
 
         log.info("Interpreted Query: {}", query.getQuery());
+        queryAuditLogService.recordQuery(QueryLogParams.builder()
+                .connection(connection)
+                .query(query.getQuery())
+                .username(queryParams.getUsername())
+                .meta(queryParams.getMetadata())
+                .build());
 
         StringWriter writer2 = new StringWriter();
         try {
@@ -102,6 +124,7 @@ public class QueryServiceImpl implements QueryService {
         }
 
         CacheMetadata cacheMetadata = new CacheMetadata();
+        cacheMetadata.setInterpretedQuery(query.getQuery());
         cacheMetadata.setResult(writer2.toString());
         cacheMetadata.setStale(false);
         return cacheMetadata;

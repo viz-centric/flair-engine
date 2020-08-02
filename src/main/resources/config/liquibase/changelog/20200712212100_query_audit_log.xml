@@ -6,7 +6,7 @@
 
     <changeSet id="20200712212100" author="ir73">
         <createTable tableName="query_audit_log">
-            <column name="id" type="bigint" autoIncrement="${autoIncrement}">
+            <column name="id" type="bigserial" autoIncrement="${autoIncrement}">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="actor" type="varchar(255)">
