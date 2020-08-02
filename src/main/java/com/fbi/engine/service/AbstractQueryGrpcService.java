@@ -7,6 +7,7 @@ import com.fbi.engine.domain.Connection;
 import com.fbi.engine.query.QueryService;
 import com.fbi.engine.service.cache.CacheMetadata;
 import com.fbi.engine.service.cache.CacheParams;
+import com.fbi.engine.service.cache.QueryParams;
 import com.fbi.engine.service.dto.CompileQueryResultDTO;
 import com.fbi.engine.service.dto.ConnectionParameters;
 import com.fbi.engine.service.dto.RunQueryResultDTO;
@@ -57,6 +58,9 @@ public abstract class AbstractQueryGrpcService extends QueryServiceGrpc.QuerySer
             return;
         }
 
+        String userName = Constant.USERNAME_CONTEXT_KEY.get();
+        log.debug("queryAll for username: {}", userName);
+
         Connection connection;
         if (request.hasConnection()) {
             connection = connectionHelperService.toConnectionEntity(request.getConnection());
@@ -71,7 +75,11 @@ public abstract class AbstractQueryGrpcService extends QueryServiceGrpc.QuerySer
 
         QueryDTO queryDTO = QueryGrpcUtils.mapToQueryDTO(request.getQuery());
         FlairQuery flairQuery = new FlairQuery(queryDTO.interpret(), true, queryDTO.getSource());
-        CacheMetadata result = queryService.executeQuery(connection, flairQuery);
+        CacheMetadata result = queryService.executeQuery(QueryParams.builder()
+                .connection(connection)
+                .flairQuery(flairQuery)
+                .username(userName)
+                .build());
         log.debug("Query all result request {}", flairQuery.getStatement());
         log.info("Query all result result {}", result);
 
@@ -121,9 +129,13 @@ public abstract class AbstractQueryGrpcService extends QueryServiceGrpc.QuerySer
             QueryDTO queryDTO = QueryGrpcUtils.mapToQueryDTO(request);
             log.info("Interpreted query {}", queryDTO.toString());
             String userName = Constant.USERNAME_CONTEXT_KEY.get();
-            log.debug("Unary Request received for username: {}", userName);
+            log.debug("getData for username: {}", userName);
             FlairQuery flairQuery = new FlairQuery(queryDTO.interpret(), queryDTO.isMetaRetrieved());
-            String retVal = queryService.executeQuery(connection, flairQuery).getResult();
+            String retVal = queryService.executeQuery(QueryParams.builder()
+                    .connection(connection)
+                    .flairQuery(flairQuery)
+                    .username(userName)
+                    .build()).getResult();
             responseObserver.onNext(QueryResponse.newBuilder()
                 .setQueryId(request.getQueryId())
                 .setUserId(request.getUserId())
@@ -143,9 +155,6 @@ public abstract class AbstractQueryGrpcService extends QueryServiceGrpc.QuerySer
                 log.debug("Streaming Request received: {}", query);
                 QueryDTO queryDTO = QueryGrpcUtils.mapToQueryDTO(query);
                 log.debug("Streaming Request DTO  received: {}", queryDTO);
-
-                String userName = Constant.USERNAME_CONTEXT_KEY.get();
-                log.debug("Streaming Request received for username: {}", userName);
 
                 Connection connection = connectionService.findByConnectionLinkId(query.getSourceId());
                 if (connection == null) {
@@ -207,7 +216,15 @@ public abstract class AbstractQueryGrpcService extends QueryServiceGrpc.QuerySer
     }
 
     private CacheMetadata queryDataAndSendResult(Query query, FlairQuery flairQuery, Connection connection, StreamObserver<QueryResponse> responseObserver, CacheParams cacheParams) {
-        CacheMetadata cacheMetadata = queryService.executeQuery(connection, flairQuery, cacheParams);
+        String userName = Constant.USERNAME_CONTEXT_KEY.get();
+        log.debug("getDataStream for username: {}", userName);
+
+        CacheMetadata cacheMetadata = queryService.executeQuery(QueryParams.builder()
+                .connection(connection)
+                .flairQuery(flairQuery)
+                .cacheParams(cacheParams)
+                .username(userName)
+                .build());
 
         responseObserver.onNext(QueryResponse.newBuilder()
                 .setQueryId(query.getQueryId())

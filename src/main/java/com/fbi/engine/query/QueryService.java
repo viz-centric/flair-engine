@@ -14,8 +14,10 @@ public interface QueryService {
 
     CacheMetadata executeQuery(QueryParams queryParams);
 
+    @Deprecated
     CacheMetadata executeQuery(Connection sources, FlairQuery query);
 
+    @Deprecated
     CacheMetadata executeQuery(Connection sources, FlairQuery query, CacheParams cacheParams);
 
     Query compileQuery(Connection sources, FlairQuery query);

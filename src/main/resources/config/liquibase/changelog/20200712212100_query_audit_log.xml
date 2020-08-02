@@ -6,18 +6,23 @@
 
     <changeSet id="20200712212100" author="ir73">
         <createTable tableName="query_audit_log">
-            // TODO:
             <column name="id" type="bigint" autoIncrement="${autoIncrement}">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="name" type="varchar(100)">
+            <column name="actor" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="value" type="varchar(255)">
+            <column name="query" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="meta" type="jsonb">
                 <constraints nullable="true"/>
             </column>
-            <column name="link_id" type="varchar(255)">
-                <constraints nullable="true"/>
+            <column name="connection_link_id" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="timestamp">
+                <constraints nullable="false"/>
             </column>
         </createTable>
     </changeSet>
