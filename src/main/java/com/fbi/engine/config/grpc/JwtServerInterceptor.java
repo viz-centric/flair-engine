@@ -12,13 +12,17 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
+import lombok.extern.slf4j.Slf4j;
 
+import java.nio.charset.StandardCharsets;
+
+@Slf4j
 public class JwtServerInterceptor implements ServerInterceptor {
 
     private final JwtParser parser;
 
     public JwtServerInterceptor(String key) {
-        this.parser = Jwts.parser().setSigningKey(key);
+        this.parser = Jwts.parser().setSigningKey(key.getBytes(StandardCharsets.UTF_8));
     }
 
     @Override
@@ -44,8 +48,9 @@ public class JwtServerInterceptor implements ServerInterceptor {
             if (claims != null) {
                 // set client id into current context
                 Claims body = claims.getBody();
+                String subject = body.getSubject();
                 Context ctx = Context.current()
-                        .withValue(Constant.USERNAME_CONTEXT_KEY, body.getSubject());
+                        .withValue(Constant.USERNAME_CONTEXT_KEY, subject);
                 return Contexts.interceptCall(ctx, serverCall, metadata, serverCallHandler);
             }
         }
