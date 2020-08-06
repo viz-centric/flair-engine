@@ -9,7 +9,6 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.util.Map;
 
 @Service
 @Slf4j
@@ -29,13 +28,13 @@ public class QueryAuditLogService {
         queryAuditLogRepository.save(auditLog);
     }
 
-    private QueryAuditLogMetadata toMetadata(Map<String, Object> meta) {
+    private QueryAuditLogMetadata toMetadata(QueryLogMeta meta) {
         if (meta == null) {
             return null;
         }
         QueryAuditLogMetadata metadata = new QueryAuditLogMetadata();
-        metadata.setDashboardId((Long) meta.get("dashboardId"));
-        metadata.setDatasourceId((Long) meta.get("datasourceId"));
+        metadata.setDashboardId(meta.getDashboardId());
+        metadata.setDatasourceId(meta.getDatasourceId());
         return metadata;
     }
 }

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fbi.engine.config.grpc.Constant;
 import com.fbi.engine.domain.Connection;
 import com.fbi.engine.query.QueryService;
+import com.fbi.engine.service.auditlog.QueryLogMeta;
 import com.fbi.engine.service.cache.CacheMetadata;
 import com.fbi.engine.service.cache.CacheParams;
 import com.fbi.engine.service.cache.QueryParams;
@@ -79,6 +80,7 @@ public abstract class AbstractQueryGrpcService extends QueryServiceGrpc.QuerySer
                 .connection(connection)
                 .flairQuery(flairQuery)
                 .username(userName)
+                .metadata(QueryLogMeta.fromMap(request.getQuery().getMetaMap()))
                 .build());
         log.debug("Query all result request {}", flairQuery.getStatement());
         log.info("Query all result result {}", result);
@@ -135,6 +137,7 @@ public abstract class AbstractQueryGrpcService extends QueryServiceGrpc.QuerySer
                     .connection(connection)
                     .flairQuery(flairQuery)
                     .username(userName)
+                    .metadata(QueryLogMeta.fromMap(request.getMetaMap()))
                     .build()).getResult();
             responseObserver.onNext(QueryResponse.newBuilder()
                 .setQueryId(request.getQueryId())
