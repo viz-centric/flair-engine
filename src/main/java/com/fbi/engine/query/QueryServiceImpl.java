@@ -49,7 +49,6 @@ public class QueryServiceImpl implements QueryService {
     public CacheMetadata executeQuery(QueryParams queryParams) {
         FlairQuery flairQuery = queryParams.getFlairQuery();
         CacheParams cacheParams = queryParams.getCacheParams();
-        Connection connection = queryParams.getConnection();
 
         log.info("Executing flair query {} with cache params {} cache enabled {}",
                 flairQuery.getStatement(), cacheParams, flairCachingConfig.isEnabled());

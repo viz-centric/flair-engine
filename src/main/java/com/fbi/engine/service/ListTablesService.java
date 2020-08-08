@@ -72,7 +72,8 @@ public class ListTablesService {
                 .connection(conn)
                 .flairQuery(query)
                 .username(userName)
-                .build()).getResult();
+                .build())
+                .getResult();
 
         log.debug("List tables query executed {}", executeQuery);
 

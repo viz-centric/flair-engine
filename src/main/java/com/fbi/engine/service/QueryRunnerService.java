@@ -4,6 +4,7 @@ import com.fbi.engine.config.grpc.Constant;
 import com.fbi.engine.domain.Connection;
 import com.fbi.engine.domain.query.Query;
 import com.fbi.engine.query.QueryService;
+import com.fbi.engine.service.auditlog.QueryLogMeta;
 import com.fbi.engine.service.cache.CacheMetadata;
 import com.fbi.engine.service.cache.QueryParams;
 import com.fbi.engine.service.dto.CompileQueryResultDTO;
@@ -42,6 +43,7 @@ public class QueryRunnerService {
                 .connection(conn)
                 .flairQuery(query)
                 .username(userName)
+                .metadata(QueryLogMeta.fromMap(queryDTO.getMetadata()))
                 .build());
 
         String executeQuery = cacheMetadata.getResult();

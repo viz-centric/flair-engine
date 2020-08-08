@@ -80,7 +80,7 @@ public abstract class AbstractQueryGrpcService extends QueryServiceGrpc.QuerySer
                 .connection(connection)
                 .flairQuery(flairQuery)
                 .username(userName)
-                .metadata(QueryLogMeta.fromMap(request.getQuery().getMetaMap()))
+                .metadata(QueryLogMeta.fromMap(queryDTO.getMetadata()))
                 .build());
         log.debug("Query all result request {}", flairQuery.getStatement());
         log.info("Query all result result {}", result);
@@ -137,7 +137,7 @@ public abstract class AbstractQueryGrpcService extends QueryServiceGrpc.QuerySer
                     .connection(connection)
                     .flairQuery(flairQuery)
                     .username(userName)
-                    .metadata(QueryLogMeta.fromMap(request.getMetaMap()))
+                    .metadata(QueryLogMeta.fromMap(queryDTO.getMetadata()))
                     .build()).getResult();
             responseObserver.onNext(QueryResponse.newBuilder()
                 .setQueryId(request.getQueryId())
@@ -227,6 +227,7 @@ public abstract class AbstractQueryGrpcService extends QueryServiceGrpc.QuerySer
                 .flairQuery(flairQuery)
                 .cacheParams(cacheParams)
                 .username(userName)
+                .metadata(QueryLogMeta.fromMap(query.getMetaMap()))
                 .build());
 
         responseObserver.onNext(QueryResponse.newBuilder()

@@ -41,7 +41,8 @@ public class QueryResource {
         return ResponseEntity.ok(queryService.executeQuery(QueryParams.builder()
                 .connection(connection)
                 .flairQuery(query)
-                .build()).getResult());
+                .build())
+                .getResult());
     }
 
 }
