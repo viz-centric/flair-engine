@@ -9,13 +9,13 @@
     </parent>
     <groupId>com.fbi.engine</groupId>
     <artifactId>flair-engine</artifactId>
-    <version>2.6.2-SNAPSHOT</version>
+    <version>2.6.2</version>
     <packaging>war</packaging>
     <name>flair-engine</name>
     <scm>
         <connection>scm:git:https://github.com/viz-centric/flair-engine.git</connection>
         <developerConnection>scm:git:https://github.com/viz-centric/flair-engine.git</developerConnection>
-        <tag>HEAD</tag>
+        <tag>v2.6.2</tag>
         <url>https://github.com/viz-centric/flair-engine.git</url>
     </scm>
     <distributionManagement>
