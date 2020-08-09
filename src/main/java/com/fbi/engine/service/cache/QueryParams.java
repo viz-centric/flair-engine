@@ -12,7 +12,8 @@ public class QueryParams {
 
     private final Connection connection;
     private final FlairQuery flairQuery;
-    private final CacheParams cacheParams;
+    @Builder.Default
+    private final CacheParams cacheParams = new CacheParams();
     private final String username;
     private final QueryLogMeta metadata;
 

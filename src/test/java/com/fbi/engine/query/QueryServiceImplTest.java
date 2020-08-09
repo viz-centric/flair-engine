@@ -11,15 +11,14 @@ import com.fbi.engine.service.auditlog.QueryAuditLogService;
 import com.fbi.engine.service.cache.CacheMetadata;
 import com.fbi.engine.service.cache.CacheParams;
 import com.fbi.engine.service.cache.FlairCachingService;
+import com.fbi.engine.service.cache.QueryParams;
 import com.project.bi.query.FlairCompiler;
 import com.project.bi.query.FlairQuery;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.mockito.stubbing.Answer;
 
 import java.io.Writer;
 import java.util.Optional;
@@ -76,7 +75,10 @@ public class QueryServiceImplTest {
 
         when(queryAbstractFactory.getQueryFactory(eq("bundleClass"))).thenReturn(flairFactory);
 
-        service.executeQuery(connection, flairQuery);
+        service.executeQuery(QueryParams.builder()
+                .connection(connection)
+                .flairQuery(flairQuery)
+                .build());
 
         verify(flairCompiler, times(1)).compile(eq(flairQuery), any(Writer.class));
         verify(queryExecutor, times(1)).execute(eq(query), any(Writer.class));
@@ -105,7 +107,11 @@ public class QueryServiceImplTest {
         when(flairCachingService.getResult(eq("statement raw"), eq(connection.getLinkId())))
                 .thenReturn(Optional.of(new CacheMetadata().setResult("result")));
 
-        CacheMetadata cacheMetadata = service.executeQuery(connection, flairQuery, new CacheParams().setReadFromCache(true));
+        CacheMetadata cacheMetadata = service.executeQuery(QueryParams.builder()
+                .connection(connection)
+                .flairQuery(flairQuery)
+                .cacheParams(new CacheParams().setReadFromCache(true))
+                .build());
 
         assertEquals("result", cacheMetadata.getResult());
     }
@@ -138,7 +144,11 @@ public class QueryServiceImplTest {
         when(flairCachingService.getResult(eq("statement raw"), eq(connection.getLinkId())))
                 .thenReturn(Optional.of(new CacheMetadata().setResult("result")));
 
-        CacheMetadata cacheMetadata = service.executeQuery(connection, flairQuery, new CacheParams().setReadFromCache(false).setWriteToCache(true));
+        CacheMetadata cacheMetadata = service.executeQuery(QueryParams.builder()
+                .connection(connection)
+                .flairQuery(flairQuery)
+                .cacheParams(new CacheParams().setReadFromCache(false).setWriteToCache(true))
+                .build());
 
         assertEquals("some result", cacheMetadata.getResult());
         verify(flairCachingService, times(1))
@@ -173,7 +183,11 @@ public class QueryServiceImplTest {
         when(flairCachingService.getResult(eq("statement raw"), eq(connection.getLinkId())))
                 .thenReturn(Optional.empty());
 
-        CacheMetadata cacheMetadata = service.executeQuery(connection, flairQuery, new CacheParams().setReadFromCache(true).setWriteToCache(true));
+        CacheMetadata cacheMetadata = service.executeQuery(QueryParams.builder()
+                .connection(connection)
+                .flairQuery(flairQuery)
+                .cacheParams(new CacheParams().setReadFromCache(true).setWriteToCache(true))
+                .build());
 
         assertEquals("some result", cacheMetadata.getResult());
         verify(flairCachingService, times(1))

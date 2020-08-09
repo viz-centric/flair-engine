@@ -12,6 +12,9 @@ public class QueryLogMeta {
     private String datasourceId;
 
     public static QueryLogMeta fromMap(Map<String, String> map) {
+        if (map == null) {
+            return null;
+        }
         return QueryLogMeta.builder()
                 .datasourceId(map.get("datasourceId"))
                 .dashboardId(map.get("dashboardId"))

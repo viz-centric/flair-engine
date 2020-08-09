@@ -32,20 +32,6 @@ public class QueryServiceImpl implements QueryService {
     private final QueryAuditLogService queryAuditLogService;
 
     @Override
-    public CacheMetadata executeQuery(Connection connection, FlairQuery flairQuery, CacheParams cacheParams) {
-        return executeQuery(QueryParams.builder()
-                .connection(connection)
-                .flairQuery(flairQuery)
-                .cacheParams(cacheParams)
-                .build());
-    }
-
-    @Override
-    public CacheMetadata executeQuery(final Connection connection, final FlairQuery flairQuery) {
-        return executeQuery(connection, flairQuery, new CacheParams());
-    }
-
-    @Override
     public CacheMetadata executeQuery(QueryParams queryParams) {
         FlairQuery flairQuery = queryParams.getFlairQuery();
         CacheParams cacheParams = queryParams.getCacheParams();
