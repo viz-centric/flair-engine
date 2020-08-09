@@ -3,6 +3,7 @@ package com.fbi.engine.web.rest;
 import com.fbi.engine.domain.Connection;
 import com.fbi.engine.query.QueryServiceImpl;
 import com.fbi.engine.service.ConnectionService;
+import com.fbi.engine.service.cache.QueryParams;
 import com.project.bi.query.FlairQuery;
 import com.project.bi.query.dto.QueryDTO;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +38,11 @@ public class QueryResource {
             return ResponseEntity.badRequest().body(null);
         }
         FlairQuery query = new FlairQuery(queryDTO.interpret(), queryDTO.isMetaRetrieved());
-        return ResponseEntity.ok(queryService.executeQuery(connection, query).getResult());
+        return ResponseEntity.ok(queryService.executeQuery(QueryParams.builder()
+                .connection(connection)
+                .flairQuery(query)
+                .build())
+                .getResult());
     }
 
 }

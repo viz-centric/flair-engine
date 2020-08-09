@@ -28,6 +28,7 @@ public final class QueryGrpcUtils {
         if (request.hasQuerySource()) {
             queryDTO.setQuerySource(getQuerySourceDTO(request.getQuerySource()));
         }
+        queryDTO.setMetadata(request.getMetaMap());
         queryDTO.setFields(toFieldDTOs(request.getFieldsList()));
         queryDTO.setGroupBy(toFieldDTOs(request.getGroupByList()));
         if (request.getLimit() != 0) {

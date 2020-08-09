@@ -1,10 +1,12 @@
 package com.fbi.engine.service;
 
+import com.fbi.engine.config.grpc.Constant;
 import com.fbi.engine.domain.Connection;
 import com.fbi.engine.domain.query.Query;
 import com.fbi.engine.query.QueryService;
+import com.fbi.engine.service.auditlog.QueryLogMeta;
 import com.fbi.engine.service.cache.CacheMetadata;
-import com.fbi.engine.service.cache.CacheParams;
+import com.fbi.engine.service.cache.QueryParams;
 import com.fbi.engine.service.dto.CompileQueryResultDTO;
 import com.fbi.engine.service.dto.RunQueryResultDTO;
 import com.project.bi.query.FlairQuery;
@@ -34,7 +36,15 @@ public class QueryRunnerService {
         FlairQuery query = new FlairQuery(queryDTO.interpret(),
                 queryDTO.isMetaRetrieved(), queryDTO.getSource());
 
-        CacheMetadata cacheMetadata = queryService.executeQuery(conn, query, new CacheParams());
+        String userName = Constant.USERNAME_CONTEXT_KEY.get();
+        log.debug("runQuery for username: {}", userName);
+
+        CacheMetadata cacheMetadata = queryService.executeQuery(QueryParams.builder()
+                .connection(conn)
+                .flairQuery(query)
+                .username(userName)
+                .metadata(QueryLogMeta.fromMap(queryDTO.getMetadata()))
+                .build());
 
         String executeQuery = cacheMetadata.getResult();
 

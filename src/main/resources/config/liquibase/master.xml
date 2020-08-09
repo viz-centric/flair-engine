@@ -14,4 +14,5 @@
     <include file="config/liquibase/changelog/20170825142500_added_entity_seed.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20190316212100_connection_parameters.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20190505212100_connection_status.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20200712212100_query_audit_log.xml" relativeToChangelogFile="false"/>
 </databaseChangeLog>

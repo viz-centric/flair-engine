@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fbi.engine.domain.Connection;
 import com.fbi.engine.query.QueryService;
 import com.fbi.engine.service.cache.CacheMetadata;
-import com.project.bi.query.FlairQuery;
+import com.fbi.engine.service.cache.QueryParams;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,7 +20,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -53,7 +52,7 @@ public class ListTablesServiceTest {
     @Test
     public void listTablesReturnsTableNames() {
         Connection connection = new Connection();
-        when(queryService.executeQuery(eq(connection), any(FlairQuery.class)))
+        when(queryService.executeQuery(any(QueryParams.class)))
             .thenReturn(new CacheMetadata().setResult("{\"data\":[{\"tablename\":\"table_first\"},{\"tablename\":\"table_second\"}]}"));
 
         Set<String> result = service.listTables("", "table_", 10, connection);
@@ -66,7 +65,7 @@ public class ListTablesServiceTest {
     @Test
     public void listTablesReturnsTableNamesFiltered() {
         Connection connection = new Connection();
-        when(queryService.executeQuery(eq(connection), any(FlairQuery.class)))
+        when(queryService.executeQuery(any(QueryParams.class)))
             .thenReturn(new CacheMetadata().setResult("{\"data\":[{\"tablename\":\"table_first\"},{\"tablename\":\"table_second\"},{\"tablename\":\"my_table\"},{\"tablename\":\"my_table_\"}]}"));
 
         Set<String> result = service.listTables("", "table_", 10, connection);
@@ -80,7 +79,7 @@ public class ListTablesServiceTest {
     @Test
     public void listTablesReturnsTableNamesThatRepeat() {
         Connection connection = new Connection();
-        when(queryService.executeQuery(eq(connection), any(FlairQuery.class)))
+        when(queryService.executeQuery(any(QueryParams.class)))
             .thenReturn(new CacheMetadata().setResult("{\"data\":[{\"tablename\":\"table_first\"},{\"tablename\":\"table_second\"},{\"tablename\":\"table_second\"}]}"));
 
         Set<String> result = service.listTables("", "table_", 10, connection);
@@ -93,7 +92,7 @@ public class ListTablesServiceTest {
     @Test
     public void listTablesReturnsTableNamesThatRepeatAndOverMaxEntries() {
         Connection connection = new Connection();
-        when(queryService.executeQuery(eq(connection), any(FlairQuery.class)))
+        when(queryService.executeQuery(any(QueryParams.class)))
             .thenReturn(new CacheMetadata().setResult("{\"data\":[{\"tablename\":\"table_first\"},{\"tablename\":\"table_second\"},{\"tablename\":\"table_second\"},{\"tablename\":\"table_third\"},{\"tablename\":\"table_fourth\"}]}"));
 
         Set<String> result = service.listTables("", "table_", 2, connection);
@@ -105,7 +104,7 @@ public class ListTablesServiceTest {
     @Test
     public void listTablesReturnsNullForInvalidJson() {
         Connection connection = new Connection();
-        when(queryService.executeQuery(eq(connection), any(FlairQuery.class)))
+        when(queryService.executeQuery(any(QueryParams.class)))
             .thenReturn(new CacheMetadata().setResult("{\"data\":[{\""));
 
         Set<String> result = service.listTables("", "table_", 10, connection);

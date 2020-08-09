@@ -9,6 +9,7 @@ import java.util.Optional;
 @Data
 @Accessors(chain = true)
 public class CacheMetadata {
+    private String interpretedQuery;
     private String result;
     private Instant dateCreated;
     private boolean isStale;

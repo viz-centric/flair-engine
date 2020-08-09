@@ -2,8 +2,10 @@ package com.fbi.engine.service;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fbi.engine.config.grpc.Constant;
 import com.fbi.engine.domain.Connection;
 import com.fbi.engine.query.QueryService;
+import com.fbi.engine.service.cache.QueryParams;
 import com.project.bi.query.FlairQuery;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -62,8 +64,16 @@ public class ListTablesService {
     }
 
     private Set<String> executeQuery(String tableNameLike, int maxEntries, Connection conn) {
+        String userName = Constant.USERNAME_CONTEXT_KEY.get();
+        log.debug("listTables for username: {}", userName);
+
         FlairQuery query = new FlairQuery("SHOW TABLES LIKE '%" + sanitize(tableNameLike) + "%' LIMIT " + maxEntries, false);
-        String executeQuery = queryService.executeQuery(conn, query).getResult();
+        String executeQuery = queryService.executeQuery(QueryParams.builder()
+                .connection(conn)
+                .flairQuery(query)
+                .username(userName)
+                .build())
+                .getResult();
 
         log.debug("List tables query executed {}", executeQuery);
 
