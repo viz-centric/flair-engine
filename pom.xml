@@ -195,7 +195,7 @@
 
         <!-- our dependencies -->
         <flair-messages.version>0.3.20</flair-messages.version>
-        <flair-query-language.version>1.6.36.1-SNAPSHOT</flair-query-language.version>
+        <flair-query-language.version>1.6.36</flair-query-language.version>
         <project-bi-common.version>1.4.16</project-bi-common.version>
         <all-grpc.version>1.23.0</all-grpc.version>
         <lombok.version>1.18.8</lombok.version>
