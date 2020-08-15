@@ -50,10 +50,7 @@ public class ListTablesService {
 
         log.info("List tables for connection {}", conn.getName());
 
-        HashSet<String> sets = new HashSet<>();
-        sets.addAll(executeQuery(tableNameLike, maxEntries, conn));
-        sets.addAll(executeQuery(tableNameLike.toLowerCase(), maxEntries, conn));
-        sets.addAll(executeQuery(tableNameLike.toUpperCase(), maxEntries, conn));
+        HashSet<String> sets = new HashSet<>(executeQuery(tableNameLike, maxEntries, conn));
         Set<String> strings = sets
                 .stream()
                 .filter(item -> item.toUpperCase().contains(tableNameLike.toUpperCase()))
