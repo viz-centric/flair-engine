@@ -19,6 +19,7 @@ import java.nio.charset.StandardCharsets;
 @Slf4j
 public class JwtServerInterceptor implements ServerInterceptor {
 
+    private static final String GRPC_HEALTH_SERVICE_NAME = "grpc.health.v1.Health";
     private final JwtParser parser;
 
     public JwtServerInterceptor(String key) {
@@ -30,8 +31,12 @@ public class JwtServerInterceptor implements ServerInterceptor {
                                                                  Metadata metadata, ServerCallHandler<ReqT, RespT> serverCallHandler) {
         String value = metadata.get(Constant.AUTHORIZATION_METADATA_KEY);
 
-        Status status = Status.OK;
-        if (value == null) {
+        log.info("Server interceptor {}", serverCall.getMethodDescriptor().getServiceName());
+
+        Status status;
+        if (GRPC_HEALTH_SERVICE_NAME.equals(serverCall.getMethodDescriptor().getServiceName())) {
+            status = Status.OK;
+        } else if (value == null) {
             status = Status.UNAUTHENTICATED.withDescription("Authorization token is missing");
         } else if (!value.startsWith(Constant.BEARER_TYPE)) {
             status = Status.UNAUTHENTICATED.withDescription("Unknown authorization type");
@@ -42,6 +47,7 @@ public class JwtServerInterceptor implements ServerInterceptor {
             try {
                 // verify token signature and parse claims
                 claims = parser.parseClaimsJws(token);
+                status = Status.OK;
             } catch (JwtException e) {
                 status = Status.UNAUTHENTICATED.withDescription(e.getMessage()).withCause(e);
             }
