@@ -15,11 +15,14 @@ import io.jsonwebtoken.Jwts;
 import lombok.extern.slf4j.Slf4j;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 @Slf4j
 public class JwtServerInterceptor implements ServerInterceptor {
 
-    private static final String GRPC_HEALTH_SERVICE_NAME = "grpc.health.v1.Health";
+    private static final Set<String> SKIP_AUTH = new HashSet<>(Arrays.asList("grpc.health.v1.Health"));
     private final JwtParser parser;
 
     public JwtServerInterceptor(String key) {
@@ -34,8 +37,8 @@ public class JwtServerInterceptor implements ServerInterceptor {
         log.info("Server interceptor {}", serverCall.getMethodDescriptor().getServiceName());
 
         Status status;
-        if (GRPC_HEALTH_SERVICE_NAME.equals(serverCall.getMethodDescriptor().getServiceName())) {
-            status = Status.OK;
+        if (skipAuth(serverCall)) {
+            return serverCallHandler.startCall(serverCall, metadata);
         } else if (value == null) {
             status = Status.UNAUTHENTICATED.withDescription("Authorization token is missing");
         } else if (!value.startsWith(Constant.BEARER_TYPE)) {
@@ -65,6 +68,10 @@ public class JwtServerInterceptor implements ServerInterceptor {
         return new ServerCall.Listener<ReqT>() {
             // noop
         };
+    }
+
+    private <ReqT, RespT> boolean skipAuth(ServerCall<ReqT, RespT> serverCall) {
+        return SKIP_AUTH.contains(serverCall.getMethodDescriptor().getServiceName());
     }
 
 }
