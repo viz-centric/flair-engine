@@ -15,11 +15,13 @@ import com.project.bi.query.expression.condition.ConditionExpression;
 import com.project.bi.query.expression.condition.impl.AndConditionExpression;
 import com.project.bi.query.expression.condition.impl.OrConditionExpression;
 import com.project.bi.query.expression.operations.Operation;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 public final class QueryGrpcUtils {
 
     public static QueryDTO mapToQueryDTO(Query request) {
@@ -46,7 +48,11 @@ public final class QueryGrpcUtils {
 
     private static QuerySource getQuerySourceDTO(Query.QuerySource querySource) {
         if (!StringUtils.isEmpty(querySource.getSource())) {
-            return JacksonUtil.fromString(querySource.getSource(), QuerySource.class);
+            try {
+                return JacksonUtil.fromString(querySource.getSource(), QuerySource.class);
+            } catch (IllegalArgumentException e) {
+                log.warn("Error deserializing query source dto {}", e.getMessage(), e);
+            }
         }
         return null;
     }
