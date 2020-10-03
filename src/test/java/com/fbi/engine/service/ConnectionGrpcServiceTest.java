@@ -189,6 +189,7 @@ public class ConnectionGrpcServiceTest {
             .setConnectionUsername("usr")
             .setName("nm")
             .setLinkId("lnk")
+            .setRealmId(1L)
             .setConnectionType(1L)
             .putAllDetails(ImmutableMap.of("serverPort", "3412",
                 "@type", "Postgres",
@@ -238,6 +239,7 @@ public class ConnectionGrpcServiceTest {
         dto.setConnectionPassword("pwd");
         dto.setConnectionUsername("usr");
         dto.setName("test db local");
+        dto.setRealmId(1L);
         dto.setDetails(new PostgresConnectionDetails("localhost", 1111, "dbname", "param1=test"));
         ConnectionDTO savedConnectionDto = connectionService.save(dto);
 
@@ -284,6 +286,7 @@ public class ConnectionGrpcServiceTest {
         dto.setConnectionPassword("pwd");
         dto.setConnectionUsername("usr");
         dto.setName("test db local");
+        dto.setRealmId(1L);
         dto.setDetails(new PostgresConnectionDetails("localhost", 1111, "dbname", "param1=test"));
 
         dto = connectionService.save(dto);
@@ -322,6 +325,7 @@ public class ConnectionGrpcServiceTest {
         dto.setConnectionPassword("pwd");
         dto.setConnectionUsername("usr");
         dto.setName("test db local");
+        dto.setRealmId(1L);
         dto.setDetails(new PostgresConnectionDetails("localhost", 1111, "dbname", "param1=test"));
 
         dto = connectionService.save(dto);
@@ -373,6 +377,7 @@ public class ConnectionGrpcServiceTest {
         dto.setConnectionUsername("usr");
         dto.setName("test db local");
         dto.setLinkId("1234");
+        dto.setRealmId(1L);
         dto.setDetails(new PostgresConnectionDetails("localhost", 1111, "dbname", "param1=test"));
 
         dto = connectionService.save(dto);

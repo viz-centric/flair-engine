@@ -71,6 +71,10 @@ public class Connection implements Serializable {
     @Column(name = "link_id", nullable = false, unique = true)
     private String linkId;
 
+    @NotNull
+    @Column(name = "realm_id", nullable = false)
+    private Long realmId;
+
     @ManyToOne
     private ConnectionType connectionType;
 
@@ -110,6 +114,11 @@ public class Connection implements Serializable {
 
     public Connection linkId(String linkId) {
         this.linkId = linkId;
+        return this;
+    }
+
+    public Connection realmId(Long realmId) {
+        this.realmId = realmId;
         return this;
     }
 

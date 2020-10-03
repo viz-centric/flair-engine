@@ -147,6 +147,7 @@ public abstract class AbstractConnectionGrpcService extends ConnectionServiceGrp
 
         ConnectionDTO dto = new ConnectionDTO();
         dto.setName(request.getConnection().getName());
+        dto.setRealmId(request.getConnection().getRealmId());
         dto.setConnectionUsername(request.getConnection().getConnectionUsername());
         dto.setConnectionPassword(request.getConnection().getConnectionPassword());
         dto.setLinkId(request.getConnection().getLinkId());

@@ -35,6 +35,7 @@ public class TestConnectionServiceTest {
     public void testConnectionWorksByConnection() {
         Connection connection = new Connection();
         connection.setName("connection name");
+        connection.setRealmId(1L);
         when(queryService.executeQuery(any(QueryParams.class))).thenReturn(new CacheMetadata().setResult("[]"));
         when(connectionMapper.toEntity(any(ConnectionDTO.class))).thenReturn(connection);
         String result = service.testConnection(

@@ -109,6 +109,7 @@ public class ConnectionResourceIntTest {
         mysqlDetail.setServerPort(3306);
         Connection connection = new Connection()
             .name(connName)
+            .realmId(1L)
             .connectionUsername(DEFAULT_CONNECTION_USERNAME)
             .connectionPassword(DEFAULT_CONNECTION_PASSWORD)
             .linkId(linkId);
@@ -135,6 +136,7 @@ public class ConnectionResourceIntTest {
         testConnection.setConnectionUsername(connectionDTO.getConnectionUsername());
         testConnection.setDetails(connectionDTO.getDetails());
         testConnection.setName(connectionDTO.getName());
+        testConnection.setRealmId(connectionDTO.getRealmId());
         testConnection.setLinkId(connectionDTO.getLinkId());
 
         restConnectionMockMvc.perform(post("/api/connections")
@@ -185,6 +187,25 @@ public class ConnectionResourceIntTest {
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(connectionDTO)))
             .andExpect(status().isBadRequest());
+
+        List<Connection> connectionList = connectionRepository.findAll();
+        assertThat(connectionList).hasSize(databaseSizeBeforeTest);
+    }
+
+    @Test
+    @Transactional
+    public void checkRealmIdIsRequired() throws Exception {
+        int databaseSizeBeforeTest = connectionRepository.findAll().size();
+        // set the field null
+        connection.setRealmId(null);
+
+        // Create the Connection, which fails.
+        ConnectionDTO connectionDTO = connectionMapper.toDto(connection);
+
+        restConnectionMockMvc.perform(post("/api/connections")
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(connectionDTO)))
+                .andExpect(status().isBadRequest());
 
         List<Connection> connectionList = connectionRepository.findAll();
         assertThat(connectionList).hasSize(databaseSizeBeforeTest);

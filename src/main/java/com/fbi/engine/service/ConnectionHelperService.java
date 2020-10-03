@@ -26,6 +26,7 @@ public class ConnectionHelperService {
         c.setConnectionPassword(connection.getConnectionPassword());
         c.setConnectionUsername(connection.getConnectionUsername());
         c.setName(connection.getName());
+        c.setRealmId(connection.getRealmId());
         c.setLinkId(connection.getLinkId());
 
         ConnectionTypeDTO connectionTypeDTO = connectionTypeService.findOne(connection.getConnectionType());
