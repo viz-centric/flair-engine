@@ -28,8 +28,6 @@ import javax.persistence.EntityManager;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.not;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -247,37 +245,6 @@ public class ConnectionResourceIntTest {
 
         List<Connection> connectionList = connectionRepository.findAll();
         assertThat(connectionList).hasSize(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
-    public void getAllConnections() throws Exception {
-        // Initialize the database
-        connectionRepository.saveAndFlush(connection);
-
-        // Get all the connectionList
-        restConnectionMockMvc.perform(get("/api/connections?sort=id,desc"))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(connection.getId().intValue())))
-            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
-            .andExpect(jsonPath("$.[*].connectionUsername").value(hasItem(DEFAULT_CONNECTION_USERNAME.toString())))
-            .andExpect(jsonPath("$.[*].linkId").value(hasItem(connection.getLinkId())));
-    }
-
-    @Test
-    @Transactional
-    public void getAllConnectionsDoesNotReturnDeleted() throws Exception {
-        // Initialize the database
-        Connection savedConnection = connectionRepository.saveAndFlush(createEntity("customName", "customLink"));
-
-        connectionRepository.delete(savedConnection);
-
-        // Get all the connectionList
-        restConnectionMockMvc.perform(get("/api/connections?sort=id,desc"))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-                .andExpect(jsonPath("$.[*].id").value(not(hasItem(savedConnection.getId().intValue()))));
     }
 
     @Test
