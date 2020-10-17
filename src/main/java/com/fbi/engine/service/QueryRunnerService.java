@@ -48,7 +48,7 @@ public class QueryRunnerService {
 
         String executeQuery = cacheMetadata.getResult();
 
-        log.debug("Run query executed {}", executeQuery);
+//        log.debug("Run query executed {}", executeQuery);
 
         if (StringUtils.isNotEmpty(executeQuery)) {
             return new RunQueryResultDTO()

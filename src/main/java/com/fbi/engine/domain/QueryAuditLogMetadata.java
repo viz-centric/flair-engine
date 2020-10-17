@@ -8,4 +8,5 @@ import lombok.Data;
 public class QueryAuditLogMetadata {
     private String dashboardId;
     private String datasourceId;
+    private String action;
 }
