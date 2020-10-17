@@ -10,6 +10,7 @@ import java.util.Map;
 public class QueryLogMeta {
     private String dashboardId;
     private String datasourceId;
+    private String action;
 
     public static QueryLogMeta fromMap(Map<String, String> map) {
         if (map == null) {
@@ -18,6 +19,7 @@ public class QueryLogMeta {
         return QueryLogMeta.builder()
                 .datasourceId(map.get("datasourceId"))
                 .dashboardId(map.get("dashboardId"))
+                .action(map.get("action"))
                 .build();
     }
 }
