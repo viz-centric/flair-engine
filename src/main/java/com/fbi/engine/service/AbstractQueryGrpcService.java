@@ -83,7 +83,7 @@ public abstract class AbstractQueryGrpcService extends QueryServiceGrpc.QuerySer
                 .metadata(QueryLogMeta.fromMap(queryDTO.getMetadata()))
                 .build());
         log.debug("Query all result request {}", flairQuery.getStatement());
-        log.info("Query all result result {}", result);
+//        log.info("Query all result result {}", result);
 
         responseObserver.onNext(QueryAllResponse.newBuilder()
                 .setData(result.getResult())
@@ -186,7 +186,7 @@ public abstract class AbstractQueryGrpcService extends QueryServiceGrpc.QuerySer
                                 .setReadFromCache(connectionParameters.isEnabled())
                                 .setWriteToCache(connectionParameters.isEnabled()));
 
-                log.debug("Query being executed result {}: {}", cacheMetadata, cacheMetadata.getResult());
+//                log.debug("Query being executed result {}: {}", cacheMetadata, cacheMetadata.getResult());
 
                 if (cacheMetadata.isStale()) {
                     log.debug("Cache is stale, fetching new data {}", cacheMetadata);

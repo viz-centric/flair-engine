@@ -206,7 +206,7 @@ public class AthenaQueryTest {
         queryDto.setConditionExpressions(Arrays.asList(expDto));
         queryDto.setSource("ecommerce");
 
-        expectedQuery="select * from ecommerce where product_price >= 500 or product_name = 'Team Golf New England Patriots Putter Grip'";
+        expectedQuery="select * from ecommerce where (product_price >= 500 or product_name = 'Team Golf New England Patriots Putter Grip')";
 
         FlairQuery query = new FlairQuery(queryDto.interpret(), queryDto.isMetaRetrieved());
 
@@ -265,7 +265,7 @@ public class AthenaQueryTest {
         queryDto.setConditionExpressions(Arrays.asList(expDto));
         queryDto.setSource("ecommerce");
 
-        expectedQuery="select * from ecommerce where product_price >= 500 and product_name = 'Team Golf New England Patriots Putter Grip'";
+        expectedQuery="select * from ecommerce where (product_price >= 500 and product_name = 'Team Golf New England Patriots Putter Grip')";
 
         FlairQuery query = new FlairQuery(queryDto.interpret(), queryDto.isMetaRetrieved());
 
