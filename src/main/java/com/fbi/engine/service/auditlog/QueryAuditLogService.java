@@ -35,6 +35,7 @@ public class QueryAuditLogService {
         QueryAuditLogMetadata metadata = new QueryAuditLogMetadata();
         metadata.setDashboardId(meta.getDashboardId());
         metadata.setDatasourceId(meta.getDatasourceId());
+        metadata.setAction(meta.getAction());
         return metadata;
     }
 }
