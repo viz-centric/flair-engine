@@ -30,6 +30,8 @@ public class ConnectionDTOTest implements Serializable {
 
     private String linkId;
 
+    private Long realmId;
+
     private ConnectionTypeDTO connectionType;
 
     @NotNull
@@ -121,5 +123,13 @@ public class ConnectionDTOTest implements Serializable {
             ", connectionPassword='" + getConnectionPassword() + "'" +
             ", linkId='" + getLinkId() + "'" +
             "}";
+    }
+
+    public Long getRealmId() {
+        return realmId;
+    }
+
+    public void setRealmId(Long realmId) {
+        this.realmId = realmId;
     }
 }

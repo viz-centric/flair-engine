@@ -6,16 +6,11 @@ import com.fbi.engine.service.ConnectionService;
 import com.fbi.engine.service.dto.ConnectionDTO;
 import com.fbi.engine.service.dto.UpdateConnectionDTO;
 import com.fbi.engine.web.rest.util.HeaderUtil;
-import com.fbi.engine.web.rest.util.PaginationUtil;
 import com.querydsl.core.types.Predicate;
 import io.github.jhipster.web.util.ResponseUtil;
-import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.querydsl.binding.QuerydslPredicate;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -30,7 +25,6 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -90,21 +84,6 @@ public class ConnectionResource {
     }
 
     /**
-     * GET  /connections : get all the connections.
-     *
-     * @param pageable the pagination information
-     * @return the ResponseEntity with status 200 (OK) and the list of connections in body
-     */
-    @GetMapping("/connections")
-    @Timed
-    public ResponseEntity<List<ConnectionDTO>> getAllConnections(@ApiParam Pageable pageable) {
-        log.debug("REST request to get a page of Connections");
-        Page<ConnectionDTO> page = connectionService.findAll(pageable);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/connections");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
-    }
-
-    /**
      * GET  /connections/:id : get the "id" connection.
      *
      * @param id the id of the connectionDTO to retrieve
@@ -142,33 +121,7 @@ public class ConnectionResource {
     @Timed
     public ResponseEntity<List<ConnectionDTO>> getAllConnections(@QuerydslPredicate(root = Connection.class) Predicate predicate) {
         log.debug("REST request to get a page of Connections");
-        return new ResponseEntity<>(connectionService.findAll(predicate), HttpStatus.OK);
+        return new ResponseEntity<>(connectionService.findAllByRealm(predicate), HttpStatus.OK);
     }
 
-    /**
-     * GET  /connections : get all the connections.
-     *
-     * @param pageable the pagination information
-     * @return the ResponseEntity with status 200 (OK) and the list of connections in body
-     */
-    @GetMapping("/connectionsIdAndName")
-    @Timed
-    public ResponseEntity<List<ConnectionDTO>> getAllConnectionsByIdAndNames(@ApiParam Pageable pageable) {
-        log.debug("REST request to get a page of Connections filter the id and names only");
-        Page<ConnectionDTO> page = connectionService.findAll(pageable);
-
-        List<ConnectionDTO> filteredList = new ArrayList<>();
-
-        for (ConnectionDTO c : page.getContent()) {
-            ConnectionDTO dto = new ConnectionDTO();
-            dto.setId(c.getId());
-            dto.setName(c.getName());
-
-            filteredList.add(dto);
-        }
-
-
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/connectionsIdAndName");
-        return new ResponseEntity<>(filteredList, headers, HttpStatus.OK);
-    }
 }

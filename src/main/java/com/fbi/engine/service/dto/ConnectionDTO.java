@@ -33,6 +33,9 @@ public class ConnectionDTO implements Serializable {
     @NotNull
     private String linkId;
 
+    @NotNull
+    private Long realmId;
+
     private ConnectionTypeDTO connectionType;
 
     @NotNull
@@ -136,4 +139,11 @@ public class ConnectionDTO implements Serializable {
             "}";
     }
 
+    public Long getRealmId() {
+        return realmId;
+    }
+
+    public void setRealmId(Long realmId) {
+        this.realmId = realmId;
+    }
 }

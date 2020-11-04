@@ -1,18 +1,19 @@
 package com.fbi.engine.service;
 
+import com.fbi.engine.domain.QConnection;
 import com.fbi.engine.domain.schema.ConnectionProperty;
 import com.fbi.engine.service.dto.ConnectionDTO;
 import com.fbi.engine.service.dto.ConnectionTypeDTO;
 import com.fbi.engine.service.dto.UpdateConnectionDTO;
 import com.fbi.engine.service.mapper.ConnectionDetailsMapper;
-import com.flair.bi.messages.ConnectionResponses;
 import com.flair.bi.messages.ConnectionServiceGrpc;
 import com.flair.bi.messages.ConnectionType;
 import com.flair.bi.messages.ConnectionTypesResponses;
 import com.flair.bi.messages.DeleteConnectionRequest;
 import com.flair.bi.messages.DeleteConnectionResponse;
-import com.flair.bi.messages.EmptyConnection;
 import com.flair.bi.messages.GetAllConnectionTypesRequest;
+import com.flair.bi.messages.GetAllConnectionsRequest;
+import com.flair.bi.messages.GetAllConnectionsResponse;
 import com.flair.bi.messages.GetConnectionRequest;
 import com.flair.bi.messages.GetConnectionResponse;
 import com.flair.bi.messages.ListTablesRequest;
@@ -23,6 +24,7 @@ import com.flair.bi.messages.TestConnectionRequest;
 import com.flair.bi.messages.TestConnectionResponse;
 import com.flair.bi.messages.UpdateConnectionRequest;
 import com.flair.bi.messages.UpdateConnectionResponse;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
 import lombok.RequiredArgsConstructor;
@@ -92,10 +94,19 @@ public abstract class AbstractConnectionGrpcService extends ConnectionServiceGrp
 
 
     @Override
-    public void getAllConnections(EmptyConnection request, StreamObserver<ConnectionResponses> responseObserver) {
+    public void getAllConnections(GetAllConnectionsRequest request, StreamObserver<GetAllConnectionsResponse> responseObserver) {
         log.debug("Getting all connections");
-        List<ConnectionDTO> connections = connectionService.findAllAsDto();
-        ConnectionResponses responses = ConnectionResponses.newBuilder()
+        BooleanExpression where = QConnection.connection.realmId.eq(request.getRealmId());
+        if (!StringUtils.isEmpty(request.getLinkId())) {
+            where.and(QConnection.connection.linkId.eq(request.getLinkId()));
+        }
+        if (request.getConnectionType() > 0) {
+            where.and(QConnection.connection.connectionType.id.eq(request.getConnectionType()));
+        }
+
+        List<ConnectionDTO> connections = connectionService.findAllByRealm(where);
+
+        GetAllConnectionsResponse responses = GetAllConnectionsResponse.newBuilder()
             .addAllConnection(connections
                 .stream()
                 .map(connection -> {
@@ -147,6 +158,7 @@ public abstract class AbstractConnectionGrpcService extends ConnectionServiceGrp
 
         ConnectionDTO dto = new ConnectionDTO();
         dto.setName(request.getConnection().getName());
+        dto.setRealmId(request.getConnection().getRealmId());
         dto.setConnectionUsername(request.getConnection().getConnectionUsername());
         dto.setConnectionPassword(request.getConnection().getConnectionPassword());
         dto.setLinkId(request.getConnection().getLinkId());
@@ -268,6 +280,7 @@ public abstract class AbstractConnectionGrpcService extends ConnectionServiceGrp
             .setConnectionPassword(connection.getConnectionPassword())
             .setConnectionType(connection.getConnectionType().getId())
             .setLinkId(connection.getLinkId())
+            .setRealmId(connection.getRealmId())
             .putAllDetails(connectionDetailsMapper.entityToMap(connection.getDetails()))
             .putAllConnectionParameters(connectionParameters)
             .build();

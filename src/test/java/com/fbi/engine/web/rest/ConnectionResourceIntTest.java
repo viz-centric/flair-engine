@@ -28,8 +28,6 @@ import javax.persistence.EntityManager;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.not;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -109,6 +107,7 @@ public class ConnectionResourceIntTest {
         mysqlDetail.setServerPort(3306);
         Connection connection = new Connection()
             .name(connName)
+            .realmId(1L)
             .connectionUsername(DEFAULT_CONNECTION_USERNAME)
             .connectionPassword(DEFAULT_CONNECTION_PASSWORD)
             .linkId(linkId);
@@ -135,6 +134,7 @@ public class ConnectionResourceIntTest {
         testConnection.setConnectionUsername(connectionDTO.getConnectionUsername());
         testConnection.setDetails(connectionDTO.getDetails());
         testConnection.setName(connectionDTO.getName());
+        testConnection.setRealmId(connectionDTO.getRealmId());
         testConnection.setLinkId(connectionDTO.getLinkId());
 
         restConnectionMockMvc.perform(post("/api/connections")
@@ -192,6 +192,25 @@ public class ConnectionResourceIntTest {
 
     @Test
     @Transactional
+    public void checkRealmIdIsRequired() throws Exception {
+        int databaseSizeBeforeTest = connectionRepository.findAll().size();
+        // set the field null
+        connection.setRealmId(null);
+
+        // Create the Connection, which fails.
+        ConnectionDTO connectionDTO = connectionMapper.toDto(connection);
+
+        restConnectionMockMvc.perform(post("/api/connections")
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(connectionDTO)))
+                .andExpect(status().isBadRequest());
+
+        List<Connection> connectionList = connectionRepository.findAll();
+        assertThat(connectionList).hasSize(databaseSizeBeforeTest);
+    }
+
+    @Test
+    @Transactional
     public void checkConnectionUsernameIsRequired() throws Exception {
         int databaseSizeBeforeTest = connectionRepository.findAll().size();
         // set the field null
@@ -226,37 +245,6 @@ public class ConnectionResourceIntTest {
 
         List<Connection> connectionList = connectionRepository.findAll();
         assertThat(connectionList).hasSize(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
-    public void getAllConnections() throws Exception {
-        // Initialize the database
-        connectionRepository.saveAndFlush(connection);
-
-        // Get all the connectionList
-        restConnectionMockMvc.perform(get("/api/connections?sort=id,desc"))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(connection.getId().intValue())))
-            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
-            .andExpect(jsonPath("$.[*].connectionUsername").value(hasItem(DEFAULT_CONNECTION_USERNAME.toString())))
-            .andExpect(jsonPath("$.[*].linkId").value(hasItem(connection.getLinkId())));
-    }
-
-    @Test
-    @Transactional
-    public void getAllConnectionsDoesNotReturnDeleted() throws Exception {
-        // Initialize the database
-        Connection savedConnection = connectionRepository.saveAndFlush(createEntity("customName", "customLink"));
-
-        connectionRepository.delete(savedConnection);
-
-        // Get all the connectionList
-        restConnectionMockMvc.perform(get("/api/connections?sort=id,desc"))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-                .andExpect(jsonPath("$.[*].id").value(not(hasItem(savedConnection.getId().intValue()))));
     }
 
     @Test

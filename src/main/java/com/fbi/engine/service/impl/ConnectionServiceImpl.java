@@ -7,11 +7,10 @@ import com.fbi.engine.service.ConnectionService;
 import com.fbi.engine.service.dto.ConnectionDTO;
 import com.fbi.engine.service.dto.UpdateConnectionDTO;
 import com.fbi.engine.service.mapper.ConnectionMapper;
+import com.google.common.collect.ImmutableList;
 import com.querydsl.core.types.Predicate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,20 +46,6 @@ public class ConnectionServiceImpl implements ConnectionService {
     }
 
     /**
-     * Get all the connections.
-     *
-     * @param pageable the pagination information
-     * @return the list of entities
-     */
-    @Override
-    @Transactional(readOnly = true)
-    public Page<ConnectionDTO> findAll(Pageable pageable) {
-        log.debug("Request to get all Connections");
-        return connectionRepository.findAll(pageable)
-            .map(connectionMapper::toDto);
-    }
-
-    /**
      * Get one connection by id.
      *
      * @param id the id of the entity
@@ -88,12 +73,6 @@ public class ConnectionServiceImpl implements ConnectionService {
     }
 
     @Override
-    public Connection findByConnectionName(String connectionName) {
-        log.debug("Request to get connection by name: {}", connectionName);
-        return connectionRepository.findByName(connectionName);
-    }
-
-    @Override
     public Connection findByConnectionLinkId(String linkId) {
         log.debug("Request to find connection by link id : {}", linkId);
         return connectionRepository.findByLinkId(linkId);
@@ -111,28 +90,14 @@ public class ConnectionServiceImpl implements ConnectionService {
     }
 
     @Override
-    public List<ConnectionDTO> findAll(Predicate predicate) {
+    public List<ConnectionDTO> findAllByRealm(Predicate predicate) {
         log.debug("Request to get all Connections");
-        return ((List<Connection>) connectionRepository.findAll(predicate))
+        Iterable<Connection> result = connectionRepository.findAll(predicate);
+        return ImmutableList.copyOf(result)
                 .stream()
                 .filter(it -> it.getStatus() != ConnectionStatus.DELETED)
                 .map(connectionMapper::toDto)
                 .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<Connection> findAll() {
-        log.debug("Request to get all Connections");
-        return connectionRepository.findAll();
-    }
-
-    @Override
-    public List<ConnectionDTO> findAllAsDto() {
-        log.debug("Request to get all Connections as dto");
-        return connectionRepository.findAll()
-            .stream()
-            .map(connectionMapper::toDto)
-            .collect(Collectors.toList());
     }
 
     @Override

@@ -4,8 +4,6 @@ import com.fbi.engine.domain.Connection;
 import com.fbi.engine.service.dto.ConnectionDTO;
 import com.fbi.engine.service.dto.UpdateConnectionDTO;
 import com.querydsl.core.types.Predicate;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -23,14 +21,6 @@ public interface ConnectionService {
     ConnectionDTO save(ConnectionDTO connectionDTO);
 
     /**
-     * Get all the connections.
-     *
-     * @param pageable the pagination information
-     * @return the list of entities
-     */
-    Page<ConnectionDTO> findAll(Pageable pageable);
-
-    /**
      * Get the "id" connection.
      *
      * @param id the id of the entity
@@ -45,19 +35,13 @@ public interface ConnectionService {
      */
     void delete(Long id);
 
-    Connection findByConnectionName(String connectionName);
-
     Connection findByConnectionLinkId(String linkId);
 
     ConnectionDTO findById(Long id);
 
     ConnectionDTO findByConnectionLinkIdAsDto(String linkId);
 
-    List<ConnectionDTO> findAll(Predicate predicate);
-
-    List<ConnectionDTO> findAllAsDto();
+    List<ConnectionDTO> findAllByRealm(Predicate predicate);
 
     ConnectionDTO updateConnection(UpdateConnectionDTO updateConnectionDTO);
-
-    List<Connection> findAll();
 }
