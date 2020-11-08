@@ -30,25 +30,28 @@
 	</modules>
 
 	<scm>
-		<connection>scm:git:https://github.com/viz-centric/flair-engine.git</connection>
-		<developerConnection>scm:git:https://github.com/viz-centric/flair-engine.git</developerConnection>
-		<tag>HEAD</tag>
-		<url>https://github.com/viz-centric/flair-engine.git</url>
-	</scm>
+        <connection>scm:git:${project.scm.url}</connection>
+        <url>${project.scm.url}</url>
+        <developerConnection>scm:git:${project.scm.url}</developerConnection>
+    </scm>
+
 	<distributionManagement>
-		<repository>
-			<id>dev-azure-com-vizcentric-flair-engine</id>
-			<url>https://pkgs.dev.azure.com/VizCentric/_packaging/flair-engine/maven/v1</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-	</distributionManagement>
+        <repository>
+            <id>aws-release</id>
+            <name>AWS Release Repository</name>
+            <url>s3://${bucket.name}/release</url>
+        </repository>
+        <snapshotRepository>
+            <id>aws-snapshot</id>
+            <name>AWS Snapshot Repository</name>
+            <url>s3://${bucket.name}/snapshot</url>
+        </snapshotRepository>
+    </distributionManagement>
 
 	<properties>
+		<project.scm.url>https://github.com/viz-centric/flair-engine.git</project.scm.url>
+        <aws-maven.version>5.0.0.RELEASE</aws-maven.version>
+        <bucket.name>vizcentric-mvn-repo</bucket.name>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
@@ -110,6 +113,13 @@
 	</dependencyManagement>
 
 	<build>
+		<extensions>
+            <extension>
+                <groupId>org.springframework.build</groupId>
+                <artifactId>aws-maven</artifactId>
+                <version>${aws-maven.version}</version>
+            </extension>
+        </extensions>
 		<pluginManagement>
 			<plugins>
 				<plugin>
