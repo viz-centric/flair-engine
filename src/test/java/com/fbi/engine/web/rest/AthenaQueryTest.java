@@ -89,7 +89,7 @@ public class AthenaQueryTest {
 
             expectedQuery="select * from ecommerce where order_item_id "+opr+" 1";
 
-            FlairQuery query = new FlairQuery(queryDto.interpret(), queryDto.isMetaRetrieved());
+            FlairQuery query = new FlairQuery(queryDto);
 
             FlairFactory flairFactory = queryAbstractFactory.getQueryFactory(connection.getConnectionType().getBundleClass());
 
@@ -147,7 +147,7 @@ public class AthenaQueryTest {
         Connection connection = connectionRepository.findByLinkId(ATHENA_ID);
 
 
-        FlairQuery query = new FlairQuery(queryDto.interpret(), queryDto.isMetaRetrieved());
+        FlairQuery query = new FlairQuery(queryDto);
 
         FlairFactory flairFactory = queryAbstractFactory.getQueryFactory(connection.getConnectionType().getBundleClass());
 
@@ -208,7 +208,7 @@ public class AthenaQueryTest {
 
         expectedQuery="select * from ecommerce where (product_price >= 500 or product_name = 'Team Golf New England Patriots Putter Grip')";
 
-        FlairQuery query = new FlairQuery(queryDto.interpret(), queryDto.isMetaRetrieved());
+        FlairQuery query = new FlairQuery(queryDto);
 
         FlairFactory flairFactory = queryAbstractFactory.getQueryFactory(connection.getConnectionType().getBundleClass());
 
@@ -267,7 +267,7 @@ public class AthenaQueryTest {
 
         expectedQuery="select * from ecommerce where (product_price >= 500 and product_name = 'Team Golf New England Patriots Putter Grip')";
 
-        FlairQuery query = new FlairQuery(queryDto.interpret(), queryDto.isMetaRetrieved());
+        FlairQuery query = new FlairQuery(queryDto);
 
         FlairFactory flairFactory = queryAbstractFactory.getQueryFactory(connection.getConnectionType().getBundleClass());
 
@@ -314,7 +314,7 @@ public class AthenaQueryTest {
 
         expectedQuery="select * from ecommerce where product_price between 500 AND 1000";
 
-        FlairQuery query = new FlairQuery(queryDto.interpret(), queryDto.isMetaRetrieved());
+        FlairQuery query = new FlairQuery(queryDto);
 
         FlairFactory flairFactory = queryAbstractFactory.getQueryFactory(connection.getConnectionType().getBundleClass());
 
@@ -361,7 +361,7 @@ public class AthenaQueryTest {
 
         expectedQuery="select * from ecommerce where product_name LIKE '%no%'";
 
-        FlairQuery query = new FlairQuery(queryDto.interpret(), queryDto.isMetaRetrieved());
+        FlairQuery query = new FlairQuery(queryDto);
 
         FlairFactory flairFactory = queryAbstractFactory.getQueryFactory(connection.getConnectionType().getBundleClass());
 
@@ -407,7 +407,7 @@ public class AthenaQueryTest {
 
         expectedQuery="SELECT EXTRACT(month FROM parse_datetime(order_date,'yyyy-MM-dd HH:mm:ss.SSSSSS')) as month, hour(order_date) as hr, EXTRACT(quarter FROM parse_datetime(order_date,'yyyy-MM-dd HH:mm:ss.SSSSSS')) as qt, CONCAT(EXTRACT(YEAR FROM parse_datetime(order_date,'yyyy-MM-dd HH:mm:ss.SSSSSS')), '-', EXTRACT(MONTH FROM parse_datetime(order_date,'yyyy-MM-dd HH:mm:ss.SSSSSS'))) as ym, CONCAT(EXTRACT(YEAR FROM parse_datetime(order_date,'yyyy-MM-dd HH:mm:ss.SSSSSS')), '-', EXTRACT(WEEK FROM parse_datetime(order_date,'yyyy-MM-dd HH:mm:ss.SSSSSS'))) as yw, CONCAT(EXTRACT(YEAR FROM parse_datetime(order_date,'yyyy-MM-dd HH:mm:ss.SSSSSS')), '-', EXTRACT(QUARTER FROM parse_datetime(order_date,'yyyy-MM-dd HH:mm:ss.SSSSSS'))) as yq FROM ecommerce";
 
-        FlairQuery query = new FlairQuery(queryDto.interpret(), queryDto.isMetaRetrieved());
+        FlairQuery query = new FlairQuery(queryDto);
 
         FlairFactory flairFactory = queryAbstractFactory.getQueryFactory(connection.getConnectionType().getBundleClass());
 
@@ -447,7 +447,7 @@ public class AthenaQueryTest {
 
         expectedQuery="SELECT Men, Women FROM ecommerce";
 
-        FlairQuery query = new FlairQuery(queryDto.interpret(), queryDto.isMetaRetrieved());
+        FlairQuery query = new FlairQuery(queryDto);
 
         FlairFactory flairFactory = queryAbstractFactory.getQueryFactory(connection.getConnectionType().getBundleClass());
 
@@ -485,7 +485,7 @@ public class AthenaQueryTest {
 
         expectedQuery="SELECT substr(product_name) FROM ecommerce";
 
-        FlairQuery query = new FlairQuery(queryDto.interpret(), queryDto.isMetaRetrieved());
+        FlairQuery query = new FlairQuery(queryDto);
 
         FlairFactory flairFactory = queryAbstractFactory.getQueryFactory(connection.getConnectionType().getBundleClass());
 
@@ -532,7 +532,7 @@ public class AthenaQueryTest {
 
         expectedQuery="SELECT count(*), min(order_item_product_price), max(order_item_product_price), sum(order_item_product_price) FROM ecommerce";
 
-        FlairQuery query = new FlairQuery(queryDto.interpret(), queryDto.isMetaRetrieved());
+        FlairQuery query = new FlairQuery(queryDto);
 
         FlairFactory flairFactory = queryAbstractFactory.getQueryFactory(connection.getConnectionType().getBundleClass());
 

@@ -33,8 +33,7 @@ public class QueryRunnerService {
                 .setResultCode(RunQueryResultDTO.Result.DATASOURCE_NOT_FOUND);
         }
 
-        FlairQuery query = new FlairQuery(queryDTO.interpret(),
-                queryDTO.isMetaRetrieved(), queryDTO.getSource());
+        FlairQuery query = new FlairQuery(queryDTO);
 
         String userName = Constant.USERNAME_CONTEXT_KEY.get();
         log.debug("runQuery for username: {}", userName);
@@ -68,8 +67,7 @@ public class QueryRunnerService {
             throw new IllegalArgumentException("Datasource not found for id " + datasourceId);
         }
 
-        FlairQuery query = new FlairQuery(queryDTO.interpret(),
-                queryDTO.isMetaRetrieved(), queryDTO.getSource());
+        FlairQuery query = new FlairQuery(queryDTO);
 
         Query queryResult = queryService.compileQuery(conn, query);
 

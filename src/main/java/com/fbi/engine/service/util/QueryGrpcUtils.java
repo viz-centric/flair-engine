@@ -11,6 +11,7 @@ import com.project.bi.query.dto.HavingDTO;
 import com.project.bi.query.dto.QueryDTO;
 import com.project.bi.query.dto.QuerySource;
 import com.project.bi.query.dto.SortDTO;
+import com.project.bi.query.dto.TransformationDTO;
 import com.project.bi.query.expression.condition.ConditionExpression;
 import com.project.bi.query.expression.condition.impl.AndConditionExpression;
 import com.project.bi.query.expression.condition.impl.OrConditionExpression;
@@ -30,6 +31,7 @@ public final class QueryGrpcUtils {
         if (request.hasQuerySource()) {
             queryDTO.setQuerySource(getQuerySourceDTO(request.getQuerySource()));
         }
+        queryDTO.setTransformations(getQueryTransformations(request.getTransformationsList()));
         queryDTO.setMetadata(request.getMetaMap());
         queryDTO.setFields(toFieldDTOs(request.getFieldsList()));
         queryDTO.setGroupBy(toFieldDTOs(request.getGroupByList()));
@@ -44,6 +46,12 @@ public final class QueryGrpcUtils {
         queryDTO.setHaving(getListHavingDTO(request.getHavingList()));
         queryDTO.setConditionExpressions(getListConditionExpressionDTO(request.getConditionExpressionsList()));
         return queryDTO;
+    }
+
+    private static List<TransformationDTO> getQueryTransformations(List<String> transformationsList) {
+        return transformationsList.stream()
+                .map(t -> JacksonUtil.fromString(t, TransformationDTO.class))
+                .collect(Collectors.toList());
     }
 
     private static QuerySource getQuerySourceDTO(Query.QuerySource querySource) {

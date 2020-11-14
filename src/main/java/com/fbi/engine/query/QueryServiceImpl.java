@@ -30,6 +30,7 @@ public class QueryServiceImpl implements QueryService {
     private final FlairCachingService flairCachingService;
     private final FlairCachingConfig flairCachingConfig;
     private final QueryAuditLogService queryAuditLogService;
+    private final QueryResultPostProcessor queryResultPostProcessor;
 
     @Override
     public CacheMetadata executeQuery(QueryParams queryParams) {
@@ -108,9 +109,12 @@ public class QueryServiceImpl implements QueryService {
             return new CacheMetadata();
         }
 
+        String result = writer2.toString();
+        String newResult = queryResultPostProcessor.process(flairQuery, result);
+
         CacheMetadata cacheMetadata = new CacheMetadata();
         cacheMetadata.setInterpretedQuery(query.getQuery());
-        cacheMetadata.setResult(writer2.toString());
+        cacheMetadata.setResult(newResult);
         cacheMetadata.setStale(false);
         return cacheMetadata;
     }

@@ -37,7 +37,7 @@ public class QueryResource {
         if (connection == null) {
             return ResponseEntity.badRequest().body(null);
         }
-        FlairQuery query = new FlairQuery(queryDTO.interpret(), queryDTO.isMetaRetrieved());
+        FlairQuery query = new FlairQuery(queryDTO);
         return ResponseEntity.ok(queryService.executeQuery(QueryParams.builder()
                 .connection(connection)
                 .flairQuery(query)

@@ -47,11 +47,15 @@ public class QueryServiceImplTest {
     @Mock
     QueryAuditLogService queryAuditLogService;
 
+    @Mock
+    QueryResultPostProcessor queryResultPostProcessor;
+
     private QueryServiceImpl service;
 
     @Before
     public void setUp() throws Exception {
-        service = new QueryServiceImpl(queryAbstractFactory, flairCachingService, flairCachingConfig, queryAuditLogService);
+        service = new QueryServiceImpl(queryAbstractFactory, flairCachingService, flairCachingConfig, queryAuditLogService,
+                queryResultPostProcessor);
         when(flairCachingConfig.isEnabled()).thenReturn(true);
     }
 
