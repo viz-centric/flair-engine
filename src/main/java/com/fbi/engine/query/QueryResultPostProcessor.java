@@ -127,11 +127,11 @@ public class QueryResultPostProcessor {
         LocalDate date = LocalDate.parse(dateStr, ResultSetSerializer.DATE_TIME_FORMATTER);
         switch (groupType) {
             case WEEK:
-                return date.getYear() + "-" + date.get(WEEK_FIELDS.weekOfYear());
+                return date.getYear() + "-" + twoDigits(date.get(WEEK_FIELDS.weekOfYear()));
             case DAY:
-                return date.getYear() + "-" + date.getMonthValue() + "-" + date.getDayOfMonth();
+                return date.getYear() + "-" + twoDigits(date.getMonthValue()) + "-" + twoDigits(date.getDayOfMonth());
             case MONTH:
-                return date.getYear() + "-" + date.getMonthValue();
+                return date.getYear() + "-" + twoDigits(date.getMonthValue());
             case QUARTER:
                 if (date.getMonthValue() <= 3) {
                     return date.getYear() + "-" + 1;
@@ -147,6 +147,10 @@ public class QueryResultPostProcessor {
                 return date.getYear();
         }
         return null;
+    }
+
+    private String twoDigits(Object value) {
+        return value.toString().length() > 1 ? value.toString() : "0" + value.toString();
     }
 
     private Number aggregateNumbers(FieldDTO field, Number val1, Number val2) {
