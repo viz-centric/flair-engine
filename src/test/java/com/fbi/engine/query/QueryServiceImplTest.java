@@ -1,5 +1,6 @@
 package com.fbi.engine.query;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fbi.engine.config.FlairCachingConfig;
 import com.fbi.engine.domain.Connection;
 import com.fbi.engine.domain.ConnectionType;
@@ -47,13 +48,13 @@ public class QueryServiceImplTest {
     @Mock
     QueryAuditLogService queryAuditLogService;
 
-    @Mock
     QueryResultPostProcessor queryResultPostProcessor;
 
     private QueryServiceImpl service;
 
     @Before
     public void setUp() throws Exception {
+        queryResultPostProcessor = new QueryResultPostProcessor(new ObjectMapper());
         service = new QueryServiceImpl(queryAbstractFactory, flairCachingService, flairCachingConfig, queryAuditLogService,
                 queryResultPostProcessor);
         when(flairCachingConfig.isEnabled()).thenReturn(true);
