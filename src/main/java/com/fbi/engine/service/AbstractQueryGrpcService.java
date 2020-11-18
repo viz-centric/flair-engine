@@ -75,7 +75,8 @@ public abstract class AbstractQueryGrpcService extends QueryServiceGrpc.QuerySer
         }
 
         QueryDTO queryDTO = QueryGrpcUtils.mapToQueryDTO(request.getQuery());
-        FlairQuery flairQuery = new FlairQuery(queryDTO.interpret(), true, queryDTO.getSource());
+        queryDTO.setMetaRetrieved(true);
+        FlairQuery flairQuery = new FlairQuery(queryDTO);
         CacheMetadata result = queryService.executeQuery(QueryParams.builder()
                 .connection(connection)
                 .flairQuery(flairQuery)
@@ -132,7 +133,7 @@ public abstract class AbstractQueryGrpcService extends QueryServiceGrpc.QuerySer
             log.info("Interpreted query {}", queryDTO.toString());
             String userName = Constant.USERNAME_CONTEXT_KEY.get();
             log.debug("getData for username: {}", userName);
-            FlairQuery flairQuery = new FlairQuery(queryDTO.interpret(), queryDTO.isMetaRetrieved());
+            FlairQuery flairQuery = new FlairQuery(queryDTO);
             String retVal = queryService.executeQuery(QueryParams.builder()
                     .connection(connection)
                     .flairQuery(flairQuery)
@@ -171,7 +172,7 @@ public abstract class AbstractQueryGrpcService extends QueryServiceGrpc.QuerySer
                 int refreshAfterTimesRead = connectionParameters.getRefreshAfterTimesRead();
                 int refreshAfterMinutes = connectionParameters.getRefreshAfterMinutes();
 
-                FlairQuery flairQuery = new FlairQuery(queryDTO.interpret(), queryDTO.isMetaRetrieved());
+                FlairQuery flairQuery = new FlairQuery(queryDTO);
 
                 log.debug("Query being executed {}", flairQuery.getStatement());
 

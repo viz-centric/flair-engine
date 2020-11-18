@@ -21,7 +21,7 @@ import java.time.format.DateTimeFormatter;
 
 public class ResultSetSerializer extends JsonSerializer<ResultSet> {
 
-    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern(FlairFactoryConst.DATASOURCE_TIMESTAMP_FORMAT);
+    public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern(FlairFactoryConst.DATASOURCE_TIMESTAMP_FORMAT);
 
     @Override
     public Class<ResultSet> handledType() {

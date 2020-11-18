@@ -4,10 +4,10 @@ import com.project.bi.query.FlairQuery;
 
 public class KafkaQuery implements Query {
 
-    private String query;
+    private final String query;
     private final boolean pullMeta;
     private final String source;
-    private FlairQuery flairQuery;
+    private final FlairQuery flairQuery;
 
     public KafkaQuery(String query, boolean pullMeta, String source, FlairQuery flairQuery) {
         this.query = query;
@@ -34,8 +34,4 @@ public class KafkaQuery implements Query {
         return query;
     }
 
-    public void setQuery(String query) {
-        this.query = query;
-        this.flairQuery = new FlairQuery(query, this.flairQuery.isPullMeta(), this.flairQuery.getSource());
-    }
 }
