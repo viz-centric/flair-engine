@@ -34,40 +34,20 @@
     </distributionManagement>
     <repositories>
         <repository>
-            <id>dev-azure-com-vizcentric-flair-engine</id>
-            <url>https://pkgs.dev.azure.com/VizCentric/_packaging/flair-engine/maven/v1</url>
+            <id>aws-release</id>
+            <url>s3://${bucket.name}/release</url>
             <releases>
                 <enabled>true</enabled>
             </releases>
             <snapshots>
-                <enabled>true</enabled>
+                <enabled>false</enabled>
             </snapshots>
         </repository>
         <repository>
+            <id>aws-snapshot</id>
+            <url>s3://${bucket.name}/snapshot</url>
             <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-            <id>dev-azure-com-vizcentric-flair-commons</id>
-            <url>https://pkgs.dev.azure.com/VizCentric/_packaging/flair-commons/maven/v1</url>
-        </repository>
-        <repository>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-            <id>dev-azure-com-vizcentric-flair-protobuf-messages</id>
-            <url>https://pkgs.dev.azure.com/VizCentric/_packaging/flair-protobuf-messages/maven/v1</url>
-        </repository>
-        <repository>
-            <id>dev-azure-com-vizcentric-flair-query-language</id>
-            <url>https://pkgs.dev.azure.com/VizCentric/_packaging/flair-query-language/maven/v1</url>
-            <releases>
-                <enabled>true</enabled>
+                <enabled>false</enabled>
             </releases>
             <snapshots>
                 <enabled>true</enabled>
@@ -201,7 +181,7 @@
 
         <!-- our dependencies -->
         <flair-messages.version>0.3.23</flair-messages.version>
-        <flair-query-language.version>1.6.38</flair-query-language.version>
+        <flair-query-language.version>1.6.39</flair-query-language.version>
         <project-bi-common.version>1.4.19</project-bi-common.version>
         <all-grpc.version>1.23.0</all-grpc.version>
         <lombok.version>1.18.8</lombok.version>
