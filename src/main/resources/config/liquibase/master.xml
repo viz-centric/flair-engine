@@ -16,4 +16,5 @@
     <include file="config/liquibase/changelog/20190505212100_connection_status.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20200712212100_query_audit_log.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20201003212100_connection_realm_id.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20201127212100_bigquery.xml" relativeToChangelogFile="false"/>
 </databaseChangeLog>
