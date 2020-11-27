@@ -24,7 +24,8 @@ import java.io.Serializable;
         @JsonSubTypes.Type(value = MongoDBConnectionDetails.class, name = "MongoDB"),
         @JsonSubTypes.Type(value = CockroachdbConnectionDetails.class, name = "Cockroachdb"),
         @JsonSubTypes.Type(value = KafkaConnectionDetails.class, name = "Kafka"),
-        @JsonSubTypes.Type(value = SnowflakeConnectionDetails.class, name = "Snowflake")
+        @JsonSubTypes.Type(value = SnowflakeConnectionDetails.class, name = "Snowflake"),
+        @JsonSubTypes.Type(value = BigqueryConnectionDetails.class, name = "BigQuery")
     })
 @Getter
 @Setter

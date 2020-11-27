@@ -1,6 +1,7 @@
 package com.fbi.engine.service.mapper;
 
 import com.fbi.engine.domain.details.AthenaConnectionDetails;
+import com.fbi.engine.domain.details.BigqueryConnectionDetails;
 import com.fbi.engine.domain.details.CockroachdbConnectionDetails;
 import com.fbi.engine.domain.details.ConnectionDetails;
 import com.fbi.engine.domain.details.KafkaConnectionDetails;
@@ -64,6 +65,13 @@ public class ConnectionDetailsMapper {
                 }
                 ((SnowflakeConnectionDetails) connectionDetails).setSchemaName(value.get("schemaName"));
                 break;
+            case "BigQuery":
+                connectionDetails = new BigqueryConnectionDetails();
+                ((BigqueryConnectionDetails) connectionDetails).setEmail(value.get("email"));
+                ((BigqueryConnectionDetails) connectionDetails).setPrivateKey(value.get("privateKey"));
+                ((BigqueryConnectionDetails) connectionDetails).setProjectId(value.get("projectId"));
+                ((BigqueryConnectionDetails) connectionDetails).setDatabaseName(value.get("dataset"));
+                break;
             default:
                 throw new RuntimeException("Cannot find a mapper for " + value);
         }
@@ -116,6 +124,12 @@ public class ConnectionDetailsMapper {
                 map.put("additionalParameters", ((SnowflakeConnectionDetails) connectionDetails).getAdditionalParameters());
             }
             map.put("schemaName", ((SnowflakeConnectionDetails) connectionDetails).getSchemaName());
+        } else if (connectionDetails instanceof BigqueryConnectionDetails) {
+            map.put("@type", "BigQuery");
+            map.put("email", ((BigqueryConnectionDetails) connectionDetails).getEmail());
+            map.put("dataset", ((BigqueryConnectionDetails) connectionDetails).getDatabaseName());
+            map.put("projectId", ((BigqueryConnectionDetails) connectionDetails).getProjectId());
+            map.put("privateKey", ((BigqueryConnectionDetails) connectionDetails).getPrivateKey());
         } else {
             throw new RuntimeException("Cannot find a mapper for " + connectionDetails.getClass().getSimpleName());
         }
