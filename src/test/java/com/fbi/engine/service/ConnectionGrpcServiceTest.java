@@ -420,7 +420,7 @@ public class ConnectionGrpcServiceTest {
         }).when(streamObserver)
             .onNext(any(ListTablesResponse.class));
 
-        when(listTablesService.listTables(eq("connid"), eq("%hello%"), eq(10), isNull(com.fbi.engine.domain.Connection.class), "schema_name"))
+        when(listTablesService.listTables(eq("connid"), eq("%hello%"), eq(10), isNull(com.fbi.engine.domain.Connection.class), eq("")))
             .thenReturn(ImmutableSet.of("firstTable", "secondTable"));
 
         connectionGrpcService.listTables(ListTablesRequest.newBuilder()
@@ -437,12 +437,13 @@ public class ConnectionGrpcServiceTest {
     public void testListTablesReturnsError() {
         StreamObserver<ListTablesResponse> streamObserver = Mockito.mock(StreamObserver.class);
 
-        when(listTablesService.listTables(eq("connid"), eq("%hello%"), eq(10), isNull(com.fbi.engine.domain.Connection.class), "schema_name"))
+        when(listTablesService.listTables(eq("connid"), eq("%hello%"), eq(10), isNull(com.fbi.engine.domain.Connection.class), eq("schema_name")))
             .thenReturn(null);
 
         connectionGrpcService.listTables(ListTablesRequest.newBuilder()
             .setConnectionLinkId("connid")
             .setTableNameLike("%hello%")
+            .setSchemaName("schema_name")
             .setMaxEntries(10)
             .build(), streamObserver);
 

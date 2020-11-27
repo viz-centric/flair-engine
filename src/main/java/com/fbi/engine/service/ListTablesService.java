@@ -64,7 +64,7 @@ public class ListTablesService {
         String userName = Constant.USERNAME_CONTEXT_KEY.get();
         log.debug("listTables for username: {}", userName);
 
-        String schema = schemaName != null ? "(schema " + schemaName + ")" : "";
+        String schema = StringUtils.isNotEmpty(schemaName) ? "(schema " + schemaName + ")" : "";
         FlairQuery query = new FlairQuery("SHOW TABLES " + schema + " LIKE '%" + sanitize(tableNameLike) + "%' LIMIT " + maxEntries, false);
         String executeQuery = queryService.executeQuery(QueryParams.builder()
                 .connection(conn)
