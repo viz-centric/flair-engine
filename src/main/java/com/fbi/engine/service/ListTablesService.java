@@ -34,7 +34,7 @@ public class ListTablesService {
     private final ConnectionService connectionService;
     private final ObjectMapper objectMapper;
 
-    public Set<String> listTables(String connectionLinkId, String tableNameLike, int maxEntries, Connection connection) {
+    public Set<String> listTables(String connectionLinkId, String tableNameLike, int maxEntries, Connection connection, String schemaName) {
         com.fbi.engine.domain.Connection conn;
         if (!StringUtils.isEmpty(connectionLinkId)) {
             log.info("List tables for link ID {} and table name {}", connectionLinkId, tableNameLike);
@@ -50,7 +50,7 @@ public class ListTablesService {
 
         log.info("List tables for connection {}", conn.getName());
 
-        HashSet<String> sets = new HashSet<>(executeQuery(tableNameLike, maxEntries, conn));
+        HashSet<String> sets = new HashSet<>(executeQuery(tableNameLike, maxEntries, conn, schemaName));
         Set<String> strings = sets
                 .stream()
                 .filter(item -> item.toUpperCase().contains(tableNameLike.toUpperCase()))
@@ -60,11 +60,12 @@ public class ListTablesService {
         return strings;
     }
 
-    private Set<String> executeQuery(String tableNameLike, int maxEntries, Connection conn) {
+    private Set<String> executeQuery(String tableNameLike, int maxEntries, Connection conn, String schemaName) {
         String userName = Constant.USERNAME_CONTEXT_KEY.get();
         log.debug("listTables for username: {}", userName);
 
-        FlairQuery query = new FlairQuery("SHOW TABLES LIKE '%" + sanitize(tableNameLike) + "%' LIMIT " + maxEntries, false);
+        String schema = schemaName != null ? "(schema " + schemaName + ")" : "";
+        FlairQuery query = new FlairQuery("SHOW TABLES " + schema + " LIKE '%" + sanitize(tableNameLike) + "%' LIMIT " + maxEntries, false);
         String executeQuery = queryService.executeQuery(QueryParams.builder()
                 .connection(conn)
                 .flairQuery(query)

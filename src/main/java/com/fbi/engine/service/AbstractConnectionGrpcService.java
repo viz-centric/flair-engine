@@ -220,9 +220,10 @@ public abstract class AbstractConnectionGrpcService extends ConnectionServiceGrp
     public void listTables(ListTablesRequest request, StreamObserver<ListTablesResponse> responseObserver) {
         log.info("Listing tables for connection link id {}", request.getConnectionLinkId());
         Set<String> tables = listTablesService.listTables(request.getConnectionLinkId(),
-            request.getTableNameLike(),
-            request.getMaxEntries(),
-            connectionHelperService.toConnectionEntity(request.hasConnection() ? request.getConnection() : null));
+                request.getTableNameLike(),
+                request.getMaxEntries(),
+                connectionHelperService.toConnectionEntity(request.hasConnection() ? request.getConnection() : null),
+                request.getSchemaName());
 
         if (tables == null) {
             responseObserver.onError(Status.INVALID_ARGUMENT.withDescription(CONNECTION_NOT_FOUND).asRuntimeException());
