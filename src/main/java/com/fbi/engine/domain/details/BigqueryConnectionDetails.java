@@ -27,12 +27,12 @@ public class BigqueryConnectionDetails extends ConnectionDetails implements Seri
         StringBuilder connectionString = new StringBuilder();
 
         connectionString.append("jdbc:bigquery://https://www.googleapis.com/bigquery/v2:443")
-                .append("?DefaultDataset=")
+                .append(";DefaultDataset=")
                 .append(getDatabaseName())
-                .append("&OAuthServiceAcctEmail=")
+                .append(";OAuthServiceAcctEmail=")
                 .append(email)
-                .append("&OAuthType=0")
-                .append("&ProjectId=")
+                .append(";OAuthType=0")
+                .append(";ProjectId=")
                 .append(projectId)
         ;
 
