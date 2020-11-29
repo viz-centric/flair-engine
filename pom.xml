@@ -782,6 +782,42 @@
             <artifactId>AthenaJDBC42</artifactId>
             <version>2.0.9</version>
         </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.google.cloud.spark</groupId>-->
+<!--            <artifactId>spark-bigquery-with-dependencies_2.12</artifactId>-->
+<!--            <version>0.18.0</version>-->
+<!--            <scope>provided</scope>-->
+<!--        </dependency>-->
+        <!-- https://mvnrepository.com/artifact/com.google.cloud/google-cloud-bigquerystorage -->
+        <dependency>
+            <groupId>com.google.cloud</groupId>
+            <artifactId>google-cloud-bigquerystorage</artifactId>
+            <version>0.101.0-beta</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.google.cloud/gcloud-java-bigquery -->
+<!--        <dependency>-->
+<!--            <groupId>com.google.cloud</groupId>-->
+<!--            <artifactId>gcloud-java-bigquery</artifactId>-->
+<!--            <version>0.2.8</version>-->
+<!--        </dependency>-->
+        <!-- https://mvnrepository.com/artifact/com.google.api.grpc/grpc-google-cloud-bigquerystorage-v1beta1 -->
+<!--        <dependency>-->
+<!--            <groupId>com.google.api.grpc</groupId>-->
+<!--            <artifactId>grpc-google-cloud-bigquerystorage-v1beta1</artifactId>-->
+<!--            <version>0.106.4</version>-->
+<!--        </dependency>-->
+
+        <dependency>
+            <groupId>com.google.cloud</groupId>
+            <artifactId>google-cloud-bigquery</artifactId>
+            <version>1.116.2</version>
+        </dependency>
+        <dependency>
+            <groupId>local</groupId>
+            <artifactId>GoogleBigQueryJDBC42</artifactId>
+            <version>1.2.11.1014</version>
+        </dependency>
         <dependency>
             <groupId>net.snowflake</groupId>
             <artifactId>snowflake-jdbc</artifactId>

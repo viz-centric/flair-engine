@@ -12,15 +12,9 @@ import java.io.Serializable;
 public class BigqueryConnectionDetails extends ConnectionDetails implements Serializable {
 
     private String privateKey;
+    private String privateKeyPath;
     private String email;
     private String projectId;
-
-    public BigqueryConnectionDetails(String dataset, String projectId, String email, String privateKey) {
-        super(null, null, dataset);
-        this.projectId = projectId;
-        this.email = email;
-        this.privateKey = privateKey;
-    }
 
     @Override
     public String getConnectionString() {
@@ -34,6 +28,8 @@ public class BigqueryConnectionDetails extends ConnectionDetails implements Seri
                 .append(";OAuthType=0")
                 .append(";ProjectId=")
                 .append(projectId)
+                .append(";OAuthPvtKeyPath=")
+                .append(privateKeyPath)
         ;
 
         return connectionString.toString();
