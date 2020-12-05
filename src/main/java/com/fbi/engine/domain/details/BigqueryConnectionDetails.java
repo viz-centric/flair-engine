@@ -34,4 +34,9 @@ public class BigqueryConnectionDetails extends ConnectionDetails implements Seri
 
         return connectionString.toString();
     }
+
+    @Override
+    public boolean isExternal() {
+        return true;
+    }
 }

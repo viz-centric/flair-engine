@@ -42,4 +42,9 @@ public abstract class ConnectionDetails implements Serializable {
 
     @JsonIgnore
     public abstract String getConnectionString();
+
+    @JsonIgnore
+    public boolean isExternal() {
+        return false;
+    }
 }

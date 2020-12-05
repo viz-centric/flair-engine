@@ -13,11 +13,12 @@ flair-cache:
   enabled: false
 
 app:
-  connections:
-    location: ${CONNECTION_UPLOAD_DIR:var/connections/}
   auth:
     jwt-key: ${GRPC_JWT_KEY:secretKey1secretKey1secretKey1secretKey1secretKey1secretKey1secretKey1}
-
+  drivers:
+    dir: ${DRIVERS_DIR:/var/drivers}
+    names:
+      - "com.simba.googlebigquery.jdbc42.Driver"
 ---
 spring:
   profiles: dev

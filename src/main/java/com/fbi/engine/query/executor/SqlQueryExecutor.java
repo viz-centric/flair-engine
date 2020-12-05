@@ -72,7 +72,18 @@ public abstract class SqlQueryExecutor implements QueryExecutor {
                 connectionPassword
         );
 
-        try (java.sql.Connection c = connectionDataValue.getDataSource().getConnection()) {
+        java.sql.Connection c = null;
+
+        try {
+            if (connectionDataValue == null) {
+                c = DriverManager.getConnection(
+                        this.connection.getDetails().getConnectionString(),
+                        this.connection.getConnectionUsername(),
+                        this.connection.getConnectionPassword());
+            } else {
+                c = connectionDataValue.getDataSource().getConnection();
+            }
+
             log.debug("Connection obtained, executing query {}", query.getQuery());
             try (Statement statement = c.createStatement()) {
                 statement.execute(query.getQuery());
@@ -80,6 +91,7 @@ public abstract class SqlQueryExecutor implements QueryExecutor {
                     writer.write(new ResultSetConverter(objectMapper, query.isMetadataRetrieved()).convert(resultSet));
                 }
             }
+
         } catch (SQLTransientConnectionException e) {
             log.error("Connection to database timed out, stacktrace: {}", e.getMessage());
             throw new ExecutionException("Database timed out", e);
@@ -89,7 +101,16 @@ public abstract class SqlQueryExecutor implements QueryExecutor {
         } catch (IOException e) {
             log.error("Deserialization of data failed, message: {}", e.getMessage());
             throw new ExecutionException("Reading data failed", e);
+        } finally {
+            if (c != null) {
+                try {
+                    c.close();
+                } catch (SQLException t) {
+                    throw new RuntimeException(t);
+                }
+            }
         }
+
     }
 
     private ConnectionDataValue getConnection(ConnectionDetails connectionDetails, String username, String password) {
@@ -100,6 +121,9 @@ public abstract class SqlQueryExecutor implements QueryExecutor {
     }
 
     private ConnectionDataValue createConnectionValue(ConnectionDataKey connectionData) {
+        if (connectionData.connectionDetails.isExternal()) {
+            return null;
+        }
         DataSource hikariConnection = createHikariConnection(connectionData, getConnectionProperties());
         return new ConnectionDataValue(hikariConnection);
     }
