@@ -4,6 +4,8 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Data
 public class ConnectionPropertiesSchema implements Serializable {
@@ -25,5 +27,6 @@ public class ConnectionPropertiesSchema implements Serializable {
 
     private List<ConnectionProperty> connectionProperties;
 
+    private Map<String, String> config = new ConcurrentHashMap<>();
 
 }

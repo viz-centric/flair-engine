@@ -251,6 +251,7 @@ public abstract class AbstractConnectionGrpcService extends ConnectionServiceGrp
 
     private ConnectionType.ConnectionPropertiesSchema createConnectionPropertiesSchema(ConnectionTypeDTO connType) {
         return ConnectionType.ConnectionPropertiesSchema.newBuilder()
+            .putAllConfig(connType.getConnectionPropertiesSchema().getConfig())
             .setConnectionDetailsClass(connType.getConnectionPropertiesSchema().getConnectionDetailsClass())
             .setConnectionDetailsType(connType.getConnectionPropertiesSchema().getConnectionDetailsType())
             .setImagePath(connType.getConnectionPropertiesSchema().getImagePath())

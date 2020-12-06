@@ -180,7 +180,7 @@
         <project.scm.id>github-credentials</project.scm.id>
 
         <!-- our dependencies -->
-        <flair-messages.version>0.3.24.0-SNAPSHOT</flair-messages.version>
+        <flair-messages.version>0.3.24.1-SNAPSHOT</flair-messages.version>
         <flair-query-language.version>1.6.40.0-SNAPSHOT</flair-query-language.version>
         <project-bi-common.version>1.4.19</project-bi-common.version>
         <all-grpc.version>1.23.0</all-grpc.version>

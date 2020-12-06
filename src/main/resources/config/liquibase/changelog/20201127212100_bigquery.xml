@@ -11,7 +11,7 @@
                 values (11,
                         'BigQuery',
                         'com.fbi.engine.query.factory.impl.BigqueryFlairFactory',
-                        '{ "connectionDetailsType": "BigQuery", "imagePath": "#bigquery", "connectionDetailsClass": "com.fbi.engine.domain.details.BigqueryConnectionDetails", "connectionProperties":[ { "displayName": "Dataset", "fieldName": "dataset", "order": 1, "fieldType": "String", "defaultValue": "dataset", "required": true }, { "displayName": "Project ID", "fieldName": "projectId", "order": 2, "fieldType": "String", "required": true }, { "displayName": "Email", "fieldName": "email", "order": 3, "fieldType": "String", "required": true }, { "displayName": "JSON contents", "fieldName": "privateKey", "order": 4, "fieldType": "Text", "required": true }] }');
+                        '{ "connectionDetailsType": "BigQuery", "config": {"disableUsername": true, "disablePassword": true}, "imagePath": "#bigquery", "connectionDetailsClass": "com.fbi.engine.domain.details.BigqueryConnectionDetails", "connectionProperties":[ { "displayName": "Dataset", "fieldName": "dataset", "order": 1, "fieldType": "String", "defaultValue": "dataset", "required": true }, { "displayName": "Project ID", "fieldName": "projectId", "order": 2, "fieldType": "String", "required": true }, { "displayName": "Email", "fieldName": "email", "order": 3, "fieldType": "String", "required": true }, { "displayName": "JSON contents", "fieldName": "privateKey", "order": 4, "fieldType": "Text", "required": true }] }');
         </sql>
 
     </changeSet>
