@@ -1,6 +1,8 @@
 package com.fbi.engine.service;
 
 import com.fbi.engine.domain.QConnection;
+import com.fbi.engine.domain.details.BigqueryConnectionDetails;
+import com.fbi.engine.domain.details.ConnectionDetails;
 import com.fbi.engine.domain.schema.ConnectionProperty;
 import com.fbi.engine.service.dto.ConnectionDTO;
 import com.fbi.engine.service.dto.ConnectionTypeDTO;
@@ -30,11 +32,19 @@ import io.grpc.stub.StreamObserver;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -53,6 +63,10 @@ public abstract class AbstractConnectionGrpcService extends ConnectionServiceGrp
     private final ConnectionDetailsMapper connectionDetailsMapper;
     private final ListTablesService listTablesService;
     private final ConnectionHelperService connectionHelperService;
+
+    @Value("${app.datasources.keys.dir}")
+    private String datasourceKey;
+
     @Override
     public void getConnection(GetConnectionRequest request, StreamObserver<GetConnectionResponse> responseObserver) {
         log.info("Get connection request: {}", request);
@@ -156,13 +170,15 @@ public abstract class AbstractConnectionGrpcService extends ConnectionServiceGrp
             return;
         }
 
+        ConnectionTypeDTO connectionType = connectionTypeService.findOne(request.getConnection().getConnectionType());
+
         ConnectionDTO dto = new ConnectionDTO();
         dto.setName(request.getConnection().getName());
         dto.setRealmId(request.getConnection().getRealmId());
         dto.setConnectionUsername(request.getConnection().getConnectionUsername());
         dto.setConnectionPassword(request.getConnection().getConnectionPassword());
         dto.setLinkId(request.getConnection().getLinkId());
-        dto.setConnectionType(connectionTypeService.findOne(request.getConnection().getConnectionType()));
+        dto.setConnectionType(connectionType);
         dto.setDetails(connectionDetailsMapper.mapToEntity(request.getConnection().getDetailsMap()));
 
         log.info("Saving connection {}", dto);
@@ -176,10 +192,30 @@ public abstract class AbstractConnectionGrpcService extends ConnectionServiceGrp
 
         log.debug("Saved connection parameters {}", connectionParameters);
 
+        String storeKey = connectionType.getConnectionPropertiesSchema().getConfig().get("storeKey");
+        if (Objects.equals(storeKey, "true")) {
+            saveKey(createdConnection);
+        }
+
         responseObserver.onNext(SaveConnectionResponse.newBuilder()
             .setConnection(toConnectionProto(createdConnection, connectionParameters))
             .build());
         responseObserver.onCompleted();
+    }
+
+    private void saveKey(ConnectionDTO connection) {
+        ConnectionDetails details = connection.getDetails();
+        if (details instanceof BigqueryConnectionDetails) {
+            String privateKey = ((BigqueryConnectionDetails) details).getPrivateKey();
+            try {
+                Path path = Paths.get(datasourceKey, connection.getLinkId() + ".json");
+                Files.write(path, privateKey.getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+                ((BigqueryConnectionDetails) details).setPrivateKeyPath(path.toAbsolutePath().toString());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            connectionService.save(connection);
+        }
     }
 
     @Override

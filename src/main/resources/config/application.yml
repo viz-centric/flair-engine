@@ -13,6 +13,9 @@ flair-cache:
   enabled: false
 
 app:
+  datasources:
+    keys:
+      dir: ${DATABASE_KEY_DIR:/var/db_keys}
   auth:
     jwt-key: ${GRPC_JWT_KEY:secretKey1secretKey1secretKey1secretKey1secretKey1secretKey1secretKey1}
   drivers:
