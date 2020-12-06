@@ -39,13 +39,13 @@ public class ListTablesServiceTest {
 
     @Test
     public void listTablesReturnsNullIfConnectionNotFound() {
-        Set<String> result = service.listTables("someconnectionid", "table_", 10, new Connection(), "schema_name");
+        Set<String> result = service.listTables("someconnectionid", "table_", 10, new Connection());
         assertNull(result);
     }
 
     @Test
     public void listTablesReturnsNullIfConnectionIdAndObjectAreEmpty() {
-        Set<String> result = service.listTables("", "table_", 10, null, "schema_name");
+        Set<String> result = service.listTables("", "table_", 10, null);
         assertNull(result);
     }
 
@@ -55,7 +55,7 @@ public class ListTablesServiceTest {
         when(queryService.executeQuery(any(QueryParams.class)))
             .thenReturn(new CacheMetadata().setResult("{\"data\":[{\"tablename\":\"table_first\"},{\"tablename\":\"table_second\"}]}"));
 
-        Set<String> result = service.listTables("", "table_", 10, connection, "schema_name");
+        Set<String> result = service.listTables("", "table_", 10, connection);
         List<String> resultList = new ArrayList<>(result);
         assertEquals(2, resultList.size());
         assertTrue(resultList.contains("table_first"));
@@ -68,7 +68,7 @@ public class ListTablesServiceTest {
         when(queryService.executeQuery(any(QueryParams.class)))
             .thenReturn(new CacheMetadata().setResult("{\"data\":[{\"tablename\":\"table_first\"},{\"tablename\":\"table_second\"},{\"tablename\":\"my_table\"},{\"tablename\":\"my_table_\"}]}"));
 
-        Set<String> result = service.listTables("", "table_", 10, connection, "schema_name");
+        Set<String> result = service.listTables("", "table_", 10, connection);
         List<String> resultList = new ArrayList<>(result);
         assertEquals(3, resultList.size());
         assertTrue(resultList.contains("table_first"));
@@ -82,7 +82,7 @@ public class ListTablesServiceTest {
         when(queryService.executeQuery(any(QueryParams.class)))
             .thenReturn(new CacheMetadata().setResult("{\"data\":[{\"tablename\":\"table_first\"},{\"tablename\":\"table_second\"},{\"tablename\":\"table_second\"}]}"));
 
-        Set<String> result = service.listTables("", "table_", 10, connection, "schema_name");
+        Set<String> result = service.listTables("", "table_", 10, connection);
         List<String> resultList = new ArrayList<>(result);
         assertEquals(2, resultList.size());
         assertTrue(resultList.contains("table_first"));
@@ -95,7 +95,7 @@ public class ListTablesServiceTest {
         when(queryService.executeQuery(any(QueryParams.class)))
             .thenReturn(new CacheMetadata().setResult("{\"data\":[{\"tablename\":\"table_first\"},{\"tablename\":\"table_second\"},{\"tablename\":\"table_second\"},{\"tablename\":\"table_third\"},{\"tablename\":\"table_fourth\"}]}"));
 
-        Set<String> result = service.listTables("", "table_", 2, connection, "schema_name");
+        Set<String> result = service.listTables("", "table_", 2, connection);
         List<String> resultList = new ArrayList<>(result);
         assertEquals(2, resultList.size());
         assertTrue(!Objects.equals(resultList.get(0), resultList.get(1)));
@@ -107,7 +107,7 @@ public class ListTablesServiceTest {
         when(queryService.executeQuery(any(QueryParams.class)))
             .thenReturn(new CacheMetadata().setResult("{\"data\":[{\""));
 
-        Set<String> result = service.listTables("", "table_", 10, connection, "schema_name");
+        Set<String> result = service.listTables("", "table_", 10, connection);
         assertEquals(0, result.size());
     }
 }

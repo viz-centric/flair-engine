@@ -34,7 +34,7 @@ public class ListTablesService {
     private final ConnectionService connectionService;
     private final ObjectMapper objectMapper;
 
-    public Set<String> listTables(String connectionLinkId, String tableNameLike, int maxEntries, Connection connection, String schemaName) {
+    public Set<String> listTables(String connectionLinkId, String tableNameLike, int maxEntries, Connection connection) {
         com.fbi.engine.domain.Connection conn;
         if (!StringUtils.isEmpty(connectionLinkId)) {
             log.info("List tables for link ID {} and table name {}", connectionLinkId, tableNameLike);
@@ -49,6 +49,8 @@ public class ListTablesService {
         }
 
         log.info("List tables for connection {}", conn.getName());
+
+        String schemaName = conn.getDetails().getDatabaseName();
 
         HashSet<String> sets = new HashSet<>(executeQuery(tableNameLike, maxEntries, conn, schemaName));
         Set<String> strings = sets

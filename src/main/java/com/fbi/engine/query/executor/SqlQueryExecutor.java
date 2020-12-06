@@ -34,6 +34,8 @@ import java.util.concurrent.ConcurrentHashMap;
 @RequiredArgsConstructor
 public abstract class SqlQueryExecutor implements QueryExecutor {
 
+    private static final int CONNECTION_TIMEOUT_MS = 300_000;
+
     static {
         // Put the redshift driver at the end so that it doesn't
         // conflict with postgres queries
@@ -86,6 +88,7 @@ public abstract class SqlQueryExecutor implements QueryExecutor {
 
             log.debug("Connection obtained, executing query {}", query.getQuery());
             try (Statement statement = c.createStatement()) {
+                statement.setQueryTimeout(CONNECTION_TIMEOUT_MS);
                 statement.execute(query.getQuery());
                 try (ResultSet resultSet = statement.getResultSet()) {
                     writer.write(new ResultSetConverter(objectMapper, query.isMetadataRetrieved()).convert(resultSet));
@@ -140,7 +143,7 @@ public abstract class SqlQueryExecutor implements QueryExecutor {
         HikariConfig config = new HikariConfig();
         config.setDataSourceProperties(dataSourceProperties);
         config.setReadOnly(true);
-        config.setConnectionTimeout(30_000);
+        config.setConnectionTimeout(CONNECTION_TIMEOUT_MS);
         config.setMaximumPoolSize(50);
         config.setMinimumIdle(1);
         config.setIdleTimeout(60_000);
