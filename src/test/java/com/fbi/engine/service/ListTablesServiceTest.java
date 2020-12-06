@@ -2,6 +2,7 @@ package com.fbi.engine.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fbi.engine.domain.Connection;
+import com.fbi.engine.domain.details.AthenaConnectionDetails;
 import com.fbi.engine.query.QueryService;
 import com.fbi.engine.service.cache.CacheMetadata;
 import com.fbi.engine.service.cache.QueryParams;
@@ -52,6 +53,7 @@ public class ListTablesServiceTest {
     @Test
     public void listTablesReturnsTableNames() {
         Connection connection = new Connection();
+        connection.setDetails(new AthenaConnectionDetails());
         when(queryService.executeQuery(any(QueryParams.class)))
             .thenReturn(new CacheMetadata().setResult("{\"data\":[{\"tablename\":\"table_first\"},{\"tablename\":\"table_second\"}]}"));
 
@@ -65,6 +67,7 @@ public class ListTablesServiceTest {
     @Test
     public void listTablesReturnsTableNamesFiltered() {
         Connection connection = new Connection();
+        connection.setDetails(new AthenaConnectionDetails());
         when(queryService.executeQuery(any(QueryParams.class)))
             .thenReturn(new CacheMetadata().setResult("{\"data\":[{\"tablename\":\"table_first\"},{\"tablename\":\"table_second\"},{\"tablename\":\"my_table\"},{\"tablename\":\"my_table_\"}]}"));
 
@@ -79,6 +82,7 @@ public class ListTablesServiceTest {
     @Test
     public void listTablesReturnsTableNamesThatRepeat() {
         Connection connection = new Connection();
+        connection.setDetails(new AthenaConnectionDetails());
         when(queryService.executeQuery(any(QueryParams.class)))
             .thenReturn(new CacheMetadata().setResult("{\"data\":[{\"tablename\":\"table_first\"},{\"tablename\":\"table_second\"},{\"tablename\":\"table_second\"}]}"));
 
@@ -92,6 +96,7 @@ public class ListTablesServiceTest {
     @Test
     public void listTablesReturnsTableNamesThatRepeatAndOverMaxEntries() {
         Connection connection = new Connection();
+        connection.setDetails(new AthenaConnectionDetails());
         when(queryService.executeQuery(any(QueryParams.class)))
             .thenReturn(new CacheMetadata().setResult("{\"data\":[{\"tablename\":\"table_first\"},{\"tablename\":\"table_second\"},{\"tablename\":\"table_second\"},{\"tablename\":\"table_third\"},{\"tablename\":\"table_fourth\"}]}"));
 
@@ -104,6 +109,7 @@ public class ListTablesServiceTest {
     @Test
     public void listTablesReturnsNullForInvalidJson() {
         Connection connection = new Connection();
+        connection.setDetails(new AthenaConnectionDetails());
         when(queryService.executeQuery(any(QueryParams.class)))
             .thenReturn(new CacheMetadata().setResult("{\"data\":[{\""));
 

@@ -32,7 +32,7 @@ import io.grpc.stub.StreamObserver;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
@@ -63,9 +63,7 @@ public abstract class AbstractConnectionGrpcService extends ConnectionServiceGrp
     private final ConnectionDetailsMapper connectionDetailsMapper;
     private final ListTablesService listTablesService;
     private final ConnectionHelperService connectionHelperService;
-
-    @Value("${app.datasources.keys.dir}")
-    private String datasourceKey;
+    private final Environment environment;
 
     @Override
     public void getConnection(GetConnectionRequest request, StreamObserver<GetConnectionResponse> responseObserver) {
@@ -208,7 +206,7 @@ public abstract class AbstractConnectionGrpcService extends ConnectionServiceGrp
         if (details instanceof BigqueryConnectionDetails) {
             String privateKey = ((BigqueryConnectionDetails) details).getPrivateKey();
             try {
-                Path path = Paths.get(datasourceKey, connection.getLinkId() + ".json");
+                Path path = Paths.get(environment.getProperty("app.datasources.keys.dir"), connection.getLinkId() + ".json");
                 Files.write(path, privateKey.getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
                 ((BigqueryConnectionDetails) details).setPrivateKeyPath(path.toAbsolutePath().toString());
             } catch (IOException e) {
