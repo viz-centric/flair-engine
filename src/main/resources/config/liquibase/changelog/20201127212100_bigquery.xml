@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+
+    <changeSet id="20201127212100" author="ir73">
+
+        <sql stripComments="true">
+            insert into connection_type (id, name, bundle_class, connection_properties_schema)
+                values (11,
+                        'BigQuery',
+                        'com.fbi.engine.query.factory.impl.BigqueryFlairFactory',
+                        '{ "connectionDetailsType": "BigQuery", "config": {"disableUsername": true, "disablePassword": true, "storeKey": true}, "imagePath": "#bigquery", "connectionDetailsClass": "com.fbi.engine.domain.details.BigqueryConnectionDetails", "connectionProperties":[ { "displayName": "Dataset", "fieldName": "dataset", "order": 1, "fieldType": "String", "required": true }, { "displayName": "Project ID", "fieldName": "projectId", "order": 2, "fieldType": "String", "required": true }, { "displayName": "Email", "fieldName": "email", "order": 3, "fieldType": "String", "required": true }, { "displayName": "JSON contents", "fieldName": "privateKey", "order": 4, "fieldType": "Text", "required": true }] }');
+        </sql>
+
+    </changeSet>
+
+</databaseChangeLog>

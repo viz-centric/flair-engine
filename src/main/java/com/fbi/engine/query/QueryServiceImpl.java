@@ -2,6 +2,8 @@ package com.fbi.engine.query;
 
 import com.fbi.engine.config.FlairCachingConfig;
 import com.fbi.engine.domain.Connection;
+import com.fbi.engine.domain.details.BigqueryConnectionDetails;
+import com.fbi.engine.domain.details.ConnectionDetails;
 import com.fbi.engine.domain.query.Query;
 import com.fbi.engine.query.abstractfactory.QueryAbstractFactory;
 import com.fbi.engine.query.factory.FlairFactory;
@@ -16,9 +18,14 @@ import com.project.bi.exceptions.ExecutionException;
 import com.project.bi.query.FlairQuery;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Optional;
 
 @Service
@@ -100,6 +107,22 @@ public class QueryServiceImpl implements QueryService {
                 .meta(queryParams.getMetadata())
                 .build());
 
+        String linkId = connection.getLinkId();
+        Path path = null;
+        if (StringUtils.isEmpty(linkId)) {
+            ConnectionDetails details = connection.getDetails();
+            if (details instanceof BigqueryConnectionDetails) {
+                String privateKey = ((BigqueryConnectionDetails) details).getPrivateKey();
+                try {
+                    path = Files.createTempFile(Math.random() + "", ".json");
+                    Files.write(path, privateKey.getBytes(StandardCharsets.UTF_8));
+                    ((BigqueryConnectionDetails) details).setPrivateKeyPath(path.toAbsolutePath().toString());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+
         StringWriter writer2 = new StringWriter();
         try {
             QueryExecutor executor = flairFactory.getExecutor(connection);
@@ -107,6 +130,14 @@ public class QueryServiceImpl implements QueryService {
         } catch (ExecutionException e) {
             log.error("Error executing statement " + query.getQuery(), e);
             return new CacheMetadata();
+        } finally {
+            if (path != null) {
+                try {
+                    Files.deleteIfExists(path);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
         }
 
         String result = writer2.toString();

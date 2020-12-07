@@ -2,6 +2,7 @@ package com.fbi.engine.service;
 
 import com.fbi.engine.config.grpc.Constant;
 import com.fbi.engine.domain.Connection;
+import com.fbi.engine.domain.details.ConnectionDetails;
 import com.fbi.engine.query.QueryService;
 import com.fbi.engine.service.cache.QueryParams;
 import com.project.bi.query.FlairQuery;
@@ -23,7 +24,8 @@ public class TestConnectionService {
         String userName = Constant.USERNAME_CONTEXT_KEY.get();
         log.debug("testConnection for username: {}", userName);
 
-        FlairQuery query = new FlairQuery("SHOW TABLES LIMIT 1", false);
+        ConnectionDetails details = connection.getDetails();
+        FlairQuery query = new FlairQuery("SHOW TABLES (schema " + details.getDatabaseName() + ") LIMIT 1", false);
         String executeQuery = queryService.executeQuery(QueryParams.builder()
                 .connection(connection)
                 .flairQuery(query)
