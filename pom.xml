@@ -88,7 +88,7 @@
         <maven-scm-provider-gitexe.version>1.9.5</maven-scm-provider-gitexe.version>
         <maven-source-plugin.version>3.0.1</maven-source-plugin.version>
         <maven-javadoc-plugin.version>3.0.1</maven-javadoc-plugin.version>
-        <apache-httpclient.version>4.5</apache-httpclient.version>
+        <apache-httpclient.version>4.5.13</apache-httpclient.version>
         <argLine>-Djava.security.egd=file:/dev/./urandom -Xmx256m</argLine>
         <assertj.version>3.6.2</assertj.version>
         <awaitility.version>3.0.0</awaitility.version>
