@@ -124,7 +124,7 @@
         <node.version>v6.11.1</node.version>
         <npm.version>5.3.0</npm.version>
         <postgresql.version>42.2.12</postgresql.version>
-        <bc.version>1.59</bc.version>
+        <bc.version>1.67</bc.version>
         <!-- These remain empty unless the corresponding profile is active -->
         <profile.no-liquibase />
         <profile.swagger />
